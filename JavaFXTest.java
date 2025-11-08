@@ -58,7 +58,7 @@ public final class JavaFXTest
                                          File selectedFile = fileChooser.showOpenDialog(mainStage);
                                          if(selectedFile != null)
                                          {
-                                             label.setText("Selected: " + selectedFile.getName());
+                                             buttonFileChooser.setText("Selected: " + selectedFile.getName());
                                          }
                                      });
 
