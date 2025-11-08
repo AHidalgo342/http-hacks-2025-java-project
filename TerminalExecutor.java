@@ -21,7 +21,7 @@ public class TerminalExecutor
     {
         try {
             Terminal.runCommand("ffmpeg -i " + src + " " + dst);
-        } catch (Exception _) { /* DO LATER */ }
+        } catch (Exception e) { /* DO LATER */ }
     }
 
     /**
@@ -45,6 +45,6 @@ public class TerminalExecutor
 
         try {
             Terminal.runCommand(sb.toString());
-        } catch(Exception _) { /* DO LATER */ }
+        } catch(Exception e) { /* DO LATER */ }
     }
 }

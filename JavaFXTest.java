@@ -112,6 +112,8 @@ public final class JavaFXTest
             System.out.println("Button clicked")
         );
 
+        setupVideo();
+
         // Setup VBox layout. Pass elements that will be displayed on it.
         LAYOUT_MAIN = new VBox(10,
                           label,
@@ -127,12 +129,25 @@ public final class JavaFXTest
         mainStage.show();
     }
 
+    private static void setupVideo()
+    {
+        final Button buttonCompressVideo;
+        buttonCompressVideo = new Button("Compress Video");
+        NODES_VIDEO.add(buttonCompressVideo);
+        buttonCompressVideo.setOnAction(actionEvent ->
+                                      {
+
+
+                                      });
+
+    }
+
 
     private static void SetVBox(final VBox vBox, final List<Node> nodes)
     {
         vBox.getChildren().removeAll(vBox.getChildren());
-        vBox.getChildren().addAll(nodes);
         vBox.getChildren().addAll(NODES_CONSTANT);
+        vBox.getChildren().addAll(nodes);
 
 
     }
