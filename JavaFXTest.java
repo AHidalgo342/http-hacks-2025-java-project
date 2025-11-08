@@ -25,7 +25,7 @@ public final class JavaFXTest
                                                                  .startsWith("windows");
     private static final String   FILE_DESCRIPTION_VIDEO = "Video Files";
     private static final String   FILE_DESCRIPTION_IMAGE = "Image Files";
-    private static final String   FILE_DESCRIPTION_AUDIO = "Audio FIles";
+    private static final String   FILE_DESCRIPTION_AUDIO = "Audio Files";
     private static final String[] FILE_TYPES_VIDEO       = {"*.mp4",
                                                             "*.m4a",
                                                             "*.mov",
@@ -63,12 +63,12 @@ public final class JavaFXTest
 
         if(isWindows)
         {
-            runCommand(location,
+            Terminal.runCommand(location,
                        "dir");
         }
         else
         {
-            runCommand(location,
+            Terminal.runCommand(location,
                        "ls");
         }
         // END OS Check testing

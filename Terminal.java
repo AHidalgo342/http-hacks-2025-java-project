@@ -12,7 +12,8 @@ public class Terminal {
                                                    .toLowerCase()
                                                    .startsWith("windows");
 
-    public static void runCommand(final String command)
+    public static void runCommand(File location,
+                                  final String command)
             throws
             IOException,
             InterruptedException
