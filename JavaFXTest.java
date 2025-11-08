@@ -50,6 +50,7 @@ public final class JavaFXTest
         final Label  label;
         final VBox   layout;
         final Button buttonFileChooser;
+        final Button buttonDestinationChooser;
         final Scene  scene;
 
         // Test label.
@@ -92,10 +93,18 @@ public final class JavaFXTest
                                           }
                                       });
 
+        //Button for destination chooser
+        buttonDestinationChooser = new Button("Select Destination");
+        buttonDestinationChooser.setOnAction(actionEvent ->
+            //add functionality later
+            System.out.println("Button clicked")
+        );
+
         // Setup VBox layout. Pass elements that will be displayed on it.
         layout = new VBox(10,
                           label,
-                          buttonFileChooser);
+                          buttonFileChooser,
+                          buttonDestinationChooser);
 
         // Setup scene
         scene = new Scene(layout,
