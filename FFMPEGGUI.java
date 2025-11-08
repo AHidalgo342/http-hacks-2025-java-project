@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * GUI entry point.
@@ -116,6 +117,10 @@ public final class FFMPEGGUI
         scene = new Scene(LAYOUT_MAIN,
                           300,
                           200);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass()
+            .getResource("style.css"))
+            .toExternalForm());
+
         mainStage.setTitle("JavaFX Test");
         mainStage.setScene(scene);
         mainStage.show();
@@ -133,7 +138,7 @@ public final class FFMPEGGUI
 
                                         });
     }
- 
+
     private static void SetVBox(final VBox vBox,
                                 final List<Node> nodes)
     {
