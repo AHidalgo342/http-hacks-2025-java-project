@@ -23,6 +23,25 @@ public final class JavaFXTest
     private static final boolean isWindows = System.getProperty("os.name")
                                                    .toLowerCase()
                                                    .startsWith("windows");
+    private static final boolean  isWindows              = System.getProperty("os.name")
+                                                                 .toLowerCase()
+                                                                 .startsWith("windows");
+    private static       String   FILE_DESCRIPTION_VIDEO = "Video Files";
+    private static       String   FILE_DESCRIPTION_IMAGE = "Image Files";
+    private static       String   FILE_DESCRIPTION_AUDIO = "Audio FIles";
+    private static       String[] FILE_TYPES_VIDEO       = {"*.mp4",
+                                                            "*.m4a",
+                                                            "*.mov",
+                                                            "*.avi",
+                                                            "*.wmv",
+                                                            "*.webm",
+                                                            "*.gif"};
+
+    private static String[] FILE_TYPES_IMAGE = {"*.png",
+                                                "*.jpg"};
+    private static String[] FILE_TYPES_AUDIO = {"*.wav",
+                                                "*.mp3",
+                                                "*.aac"};
 
     /**
      * Initial setup of JavaFX GUI and static elements.
@@ -64,30 +83,36 @@ public final class JavaFXTest
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters()
-                   .addAll(new FileChooser.ExtensionFilter("Video Files",
-                                                           "*.mp4",
-                                                           "*.m4a",
-                                                           "*.mov",
-                                                           "*.avi",
-                                                           "*.wmv",
-                                                           "*.webm",
-                                                           "*.gif"),
-                           new FileChooser.ExtensionFilter("Image Files",
-                                                           "*.png",
-                                                           "*.jpg"),
-                           new FileChooser.ExtensionFilter("Audio Files",
-                                                           "*.wav",
-                                                           "*.mp3",
-                                                           "*.aac"));
+                   .addAll(new FileChooser.ExtensionFilter(FILE_DESCRIPTION_VIDEO,
+                                                           FILE_TYPES_VIDEO),
+                           new FileChooser.ExtensionFilter(FILE_DESCRIPTION_IMAGE,
+                                                           FILE_TYPES_IMAGE),
+                           new FileChooser.ExtensionFilter(FILE_DESCRIPTION_AUDIO,
+                                                           FILE_TYPES_AUDIO));
 
         // Button File Selector setup. Add button event to open file selection.
         buttonFileChooser = new Button("Select a file");
-        buttonFileChooser.setOnAction(e ->
+        buttonFileChooser.setOnAction(actionEvent ->
                                       {
-                                          File selectedFile = fileChooser.showOpenDialog(mainStage);
+                                          // file the user selected
+                                          final File selectedFile = fileChooser.showOpenDialog(mainStage);
                                           if(selectedFile != null)
                                           {
+                                              // update select button text
                                               buttonFileChooser.setText("Selected: " + selectedFile.getName());
+
+
+                                              // get the name of the description of the file type
+                                              final String selectedFileDescription = fileChooser.getSelectedExtensionFilter()
+                                                                                                .getDescription();
+                                              System.out.println(selectedFileDescription);
+                                              if(selectedFileDescription.equals(FILE_DESCRIPTION_VIDEO))
+                                              {
+                                                  System.out.println("this shit is a video");
+                                              }
+
+                                              //                                            label.setVisible(false);
+                                              label.setDisable(true);
                                           }
                                       });
 
@@ -130,14 +155,16 @@ public final class JavaFXTest
         }
         else
         {
-            builder.command("sh", "-c", command);
+            builder.command("sh",
+                            "-c",
+                            command);
         }
 
         Process process = builder.start();
 
         OutputStream outputStream = process.getOutputStream();
-        InputStream inputStream = process.getInputStream();
-        InputStream errorStream = process.getErrorStream();
+        InputStream  inputStream  = process.getInputStream();
+        InputStream  errorStream  = process.getErrorStream();
 
         printStream(inputStream);
         printStream(errorStream);
@@ -147,7 +174,8 @@ public final class JavaFXTest
         outputStream.flush();
         outputStream.close();
 
-        if (!isFinished) {
+        if(!isFinished)
+        {
             process.destroyForcibly();
         }
     }
@@ -156,9 +184,11 @@ public final class JavaFXTest
     throws
     IOException
     {
-        try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+        try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream)))
+        {
             String line;
-            while((line = bufferedReader.readLine()) != null) {
+            while((line = bufferedReader.readLine()) != null)
+            {
                 System.out.println(line);
             }
         }
