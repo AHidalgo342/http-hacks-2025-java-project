@@ -9,19 +9,32 @@ import javafx.scene.control.Label;
 
 import java.io.File;
 
+/**
+ * GUI entry point.
+ *
+ * @author Szymon Zemojtel
+ * @version 1
+ */
 public final class JavaFXTest
         extends Application
 {
+
+    /**
+     * Initial setup of JavaFX GUI and static elements.
+     * @param mainStage the main stage the GUI is drawn on.
+     */
     @Override
     public void start(final Stage mainStage)
     {
         final Label  label;
-        final Scene  scene;
         final VBox   layout;
-        final Button buttonFileSelect;
+        final Button buttonFileChooser;
+        final Scene  scene;
 
+        // Test label.
         label = new Label("Hello JavaFX!");
 
+        // File Chooser Setup
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters()
@@ -38,8 +51,9 @@ public final class JavaFXTest
                            new FileChooser.ExtensionFilter("All Files",
                                                            "*.*"));
 
-        buttonFileSelect = new Button("Select a file");
-        buttonFileSelect.setOnAction(e ->
+        // Button File Selector setup. Add button event to open file selection.
+        buttonFileChooser = new Button("Select a file");
+        buttonFileChooser.setOnAction(e ->
                                      {
                                          File selectedFile = fileChooser.showOpenDialog(mainStage);
                                          if(selectedFile != null)
@@ -48,11 +62,12 @@ public final class JavaFXTest
                                          }
                                      });
 
-
+        // Setup VBox layout. Pass elements that will be displayed on it.
         layout = new VBox(10,
                           label,
-                          buttonFileSelect);
+                          buttonFileChooser);
 
+        // Setup scene
         scene = new Scene(layout,
                           300,
                           200);
