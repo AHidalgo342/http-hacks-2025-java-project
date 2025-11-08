@@ -26,35 +26,33 @@ public class TerminalExecutor
             if(src.toString()
                   .matches(it))
             {
-                isVideo = src.toString()
-                             .matches(it);
+                isVideo = true;
+                break;
             }
         }
 
-        if(isVideo)
+        try
         {
-            try
+            if(isVideo)
             {
                 Terminal.runCommand("ffmpeg -i " + src + " -c copy " + dst);
             }
-            catch(Exception e) { /* do later */ }
-        }
-        else
-        {
-            try
+            else
             {
                 Terminal.runCommand("ffmpeg -i " + src + " " + dst);
             }
-            catch(Exception e)
-            { /* DO LATER */ }
+        }
+        catch(Exception e)
+        {
+            System.err.println(e.getMessage());
         }
     }
 
     /**
      * Compresses a file.
      *
-     * @param src File to convert
-     * @param dst Destination of file
+     * @param src  File to convert
+     * @param dst  Destination of file
      * @param args Optional arguments
      */
     public static void compressFile(final File src,
@@ -69,8 +67,13 @@ public class TerminalExecutor
         sb.append(" -vcodec h264 -b:v 1000k -an ");
         sb.append(dst.toString());
 
-        try {
+        try
+        {
             Terminal.runCommand(sb.toString());
-        } catch(Exception e) { /* DO LATER */ }
+        }
+        catch(Exception e)
+        {
+            System.err.println(e.getMessage());
+        }
     }
 }

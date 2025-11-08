@@ -24,7 +24,7 @@ public final class FFMPEGGUI
 
     private static final String   FILE_DESCRIPTION_VIDEO = "Video Files";
     private static final String   FILE_DESCRIPTION_AUDIO = "Audio Files";
-    public static final String[] FILE_TYPES_VIDEO       = {"*.mp4",
+    public static final String[] FILE_TYPES_VIDEO        = {"*.mp4",
                                                             "*.m4a",
                                                             "*.mov",
                                                             "*.avi",
@@ -38,7 +38,6 @@ public final class FFMPEGGUI
 
     private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();
     private static final List<Node> NODES_VIDEO    = new ArrayList<Node>();
-
 
     private static VBox LAYOUT_MAIN;
 
@@ -55,7 +54,7 @@ public final class FFMPEGGUI
     {
         final Label  label;
         final Button buttonFileChooser;
-        final Button buttonDestinationChooser;
+        final Button buttonDestChooser;
         final Scene  scene;
 
         // Test label.
@@ -77,33 +76,33 @@ public final class FFMPEGGUI
                                       {
                                           // file the user selected
                                           final File selectedFile = fileChooser.showOpenDialog(mainStage);
-                                          if(selectedFile != null)
+                                          if(selectedFile == null)
                                           {
-                                              // update select button text
-                                              buttonFileChooser.setText("Selected: " + selectedFile.getName());
+                                              return;
+                                          }
+                                          // update select button text
+                                          buttonFileChooser.setText("Selected: " + selectedFile.getName());
 
-
-                                              // get the name of the description of the file type
-                                              final String selectedFileDescription = fileChooser.getSelectedExtensionFilter()
-                                                                                                .getDescription();
-                                              System.out.println(selectedFileDescription);
-                                              if(selectedFileDescription.equals(FILE_DESCRIPTION_VIDEO))
-                                              {
-                                                  System.out.println("this shit is a video");
-                                                  SetVBox(LAYOUT_MAIN,
-                                                          NODES_VIDEO);
-                                              }
-
-
+                                          // get the name of the description of the file type
+                                          final String selectedFileDescription = fileChooser.getSelectedExtensionFilter()
+                                                                                            .getDescription();
+                                          System.out.println(selectedFileDescription);
+                                          if(selectedFileDescription.equals(FILE_DESCRIPTION_VIDEO))
+                                          {
+                                              System.out.println("this shit is a video");
+                                              SetVBox(LAYOUT_MAIN,
+                                                      NODES_VIDEO);
                                           }
                                       });
 
         //Button for destination chooser
-        buttonDestinationChooser = new Button("Select Destination");
-        NODES_CONSTANT.add(buttonDestinationChooser);
-        buttonDestinationChooser.setOnAction(actionEvent ->
-                                                     //add functionality later
-                                                     System.out.println("Button clicked"));
+        buttonDestChooser = new Button("Select Destination");
+        NODES_CONSTANT.add(buttonDestChooser);
+        buttonDestChooser.setOnAction(actionEvent ->
+                                      {
+                                          //add functionality later
+                                          System.out.println("Button clicked");
+                                      });
 
         setupVideo();
 
@@ -111,7 +110,7 @@ public final class FFMPEGGUI
         LAYOUT_MAIN = new VBox(10,
                                label,
                                buttonFileChooser,
-                               buttonDestinationChooser);
+                               buttonDestChooser);
 
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
@@ -126,7 +125,6 @@ public final class FFMPEGGUI
     {
         final Button buttonCompressVideo;
 
-
         buttonCompressVideo = new Button("Compress Video");
         NODES_VIDEO.add(buttonCompressVideo);
         buttonCompressVideo.setOnAction(actionEvent ->
@@ -134,10 +132,8 @@ public final class FFMPEGGUI
                                             // action when button clicked
 
                                         });
-
     }
-
-
+ 
     private static void SetVBox(final VBox vBox,
                                 final List<Node> nodes)
     {
@@ -147,9 +143,5 @@ public final class FFMPEGGUI
             .addAll(NODES_CONSTANT);
         vBox.getChildren()
             .addAll(nodes);
-
-
     }
-
-
 }
