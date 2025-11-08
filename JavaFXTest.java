@@ -21,7 +21,7 @@ public final class JavaFXTest
 
     private static final String   FILE_DESCRIPTION_VIDEO = "Video Files";
     private static final String   FILE_DESCRIPTION_IMAGE = "Image Files";
-    private static final String   FILE_DESCRIPTION_AUDIO = "Audio FIles";
+    private static final String   FILE_DESCRIPTION_AUDIO = "Audio Files";
     private static final String[] FILE_TYPES_VIDEO       = {"*.mp4",
                                                             "*.m4a",
                                                             "*.mov",
