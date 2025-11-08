@@ -18,12 +18,11 @@ import java.util.List;
  * @author alex-hidalgo
  * @version 1
  */
-public final class JavaFXTest
+public final class FFMPEGGUI
         extends Application
 {
 
     private static final String   FILE_DESCRIPTION_VIDEO = "Video Files";
-    private static final String   FILE_DESCRIPTION_IMAGE = "Image Files";
     private static final String   FILE_DESCRIPTION_AUDIO = "Audio Files";
     private static final String[] FILE_TYPES_VIDEO       = {"*.mp4",
                                                             "*.m4a",
@@ -32,16 +31,13 @@ public final class JavaFXTest
                                                             "*.wmv",
                                                             "*.webm",
                                                             "*.gif"};
-
-    private static final String[] FILE_TYPES_IMAGE = {"*.png",
-                                                      "*.jpg"};
     private static final String[] FILE_TYPES_AUDIO = {"*.wav",
                                                       "*.mp3",
                                                       "*.aac"};
 
 
     private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();
-    private static final List<Node> NODES_VIDEO = new ArrayList<Node>();
+    private static final List<Node> NODES_VIDEO    = new ArrayList<Node>();
 
 
     private static VBox LAYOUT_MAIN;
@@ -71,8 +67,6 @@ public final class JavaFXTest
         fileChooser.getExtensionFilters()
                    .addAll(new FileChooser.ExtensionFilter(FILE_DESCRIPTION_VIDEO,
                                                            FILE_TYPES_VIDEO),
-                           new FileChooser.ExtensionFilter(FILE_DESCRIPTION_IMAGE,
-                                                           FILE_TYPES_IMAGE),
                            new FileChooser.ExtensionFilter(FILE_DESCRIPTION_AUDIO,
                                                            FILE_TYPES_AUDIO));
 
@@ -96,9 +90,9 @@ public final class JavaFXTest
                                               if(selectedFileDescription.equals(FILE_DESCRIPTION_VIDEO))
                                               {
                                                   System.out.println("this shit is a video");
-                                                  SetVBox(LAYOUT_MAIN, NODES_VIDEO);
+                                                  SetVBox(LAYOUT_MAIN,
+                                                          NODES_VIDEO);
                                               }
-
 
 
                                           }
@@ -108,17 +102,16 @@ public final class JavaFXTest
         buttonDestinationChooser = new Button("Select Destination");
         NODES_CONSTANT.add(buttonDestinationChooser);
         buttonDestinationChooser.setOnAction(actionEvent ->
-            //add functionality later
-            System.out.println("Button clicked")
-        );
+                                                     //add functionality later
+                                                     System.out.println("Button clicked"));
 
         setupVideo();
 
         // Setup VBox layout. Pass elements that will be displayed on it.
         LAYOUT_MAIN = new VBox(10,
-                          label,
-                          buttonFileChooser,
-                          buttonDestinationChooser);
+                               label,
+                               buttonFileChooser,
+                               buttonDestinationChooser);
 
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
@@ -132,22 +125,28 @@ public final class JavaFXTest
     private static void setupVideo()
     {
         final Button buttonCompressVideo;
+
+
         buttonCompressVideo = new Button("Compress Video");
         NODES_VIDEO.add(buttonCompressVideo);
         buttonCompressVideo.setOnAction(actionEvent ->
-                                      {
+                                        {
+                                            // action when button clicked
 
-
-                                      });
+                                        });
 
     }
 
 
-    private static void SetVBox(final VBox vBox, final List<Node> nodes)
+    private static void SetVBox(final VBox vBox,
+                                final List<Node> nodes)
     {
-        vBox.getChildren().removeAll(vBox.getChildren());
-        vBox.getChildren().addAll(NODES_CONSTANT);
-        vBox.getChildren().addAll(nodes);
+        vBox.getChildren()
+            .removeAll(vBox.getChildren());
+        vBox.getChildren()
+            .addAll(NODES_CONSTANT);
+        vBox.getChildren()
+            .addAll(nodes);
 
 
     }
