@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
  * Contains functionality for running terminal commands.
  *
  * @author Alex Hidalgo
+ * @author Marcy Ordinario
  * @version 1.0
  */
 public class Terminal {
@@ -12,6 +13,13 @@ public class Terminal {
                                                    .toLowerCase()
                                                    .startsWith("windows");
 
+    /**
+     * Runs a command on the terminal.
+     *
+     * @param command               String command to run
+     * @throws IOException          If an IO exception occurs
+     * @throws InterruptedException If the process is interrupted
+     */
     public static void runCommand(final String command)
             throws
             IOException,
@@ -54,6 +62,12 @@ public class Terminal {
         }
     }
 
+    /**
+     * Prints the result of a terminal command to console.
+     *
+     * @param inputStream  InputStream to print
+     * @throws IOException If an IO exception occurs
+     */
     private static void printStream(InputStream inputStream)
             throws
             IOException

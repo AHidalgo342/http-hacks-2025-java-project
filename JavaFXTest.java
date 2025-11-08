@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
 import java.io.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * GUI entry point.
@@ -20,9 +19,6 @@ public final class JavaFXTest
         extends Application
 {
 
-    private static final boolean  isWindows              = System.getProperty("os.name")
-                                                                 .toLowerCase()
-                                                                 .startsWith("windows");
     private static final String   FILE_DESCRIPTION_VIDEO = "Video Files";
     private static final String   FILE_DESCRIPTION_IMAGE = "Image Files";
     private static final String   FILE_DESCRIPTION_AUDIO = "Audio FIles";
@@ -34,11 +30,11 @@ public final class JavaFXTest
                                                             "*.webm",
                                                             "*.gif"};
 
-    private static String[] FILE_TYPES_IMAGE = {"*.png",
-                                                "*.jpg"};
-    private static String[] FILE_TYPES_AUDIO = {"*.wav",
-                                                "*.mp3",
-                                                "*.aac"};
+    private static final String[] FILE_TYPES_IMAGE = {"*.png",
+                                                      "*.jpg"};
+    private static final String[] FILE_TYPES_AUDIO = {"*.wav",
+                                                      "*.mp3",
+                                                      "*.aac"};
 
     /**
      * Initial setup of JavaFX GUI and static elements.
@@ -55,23 +51,6 @@ public final class JavaFXTest
         final VBox   layout;
         final Button buttonFileChooser;
         final Scene  scene;
-
-        // START OS Check testing
-
-        File location = new File(System.getProperty("user.dir"));
-        System.out.println(location);
-
-        if(isWindows)
-        {
-            runCommand(location,
-                       "dir");
-        }
-        else
-        {
-            runCommand(location,
-                       "ls");
-        }
-        // END OS Check testing
 
         // Test label.
         label = new Label("Hello JavaFX!");
@@ -126,7 +105,5 @@ public final class JavaFXTest
         mainStage.setScene(scene);
         mainStage.show();
     }
-
-
 
 }
