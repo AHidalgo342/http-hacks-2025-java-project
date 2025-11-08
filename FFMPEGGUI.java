@@ -22,13 +22,13 @@ public final class FFMPEGGUI
         extends Application
 {
 
-    public static final String[] FILE_TYPES_VIDEO       = {"*.mp4",
-                                                           "*.m4a",
-                                                           "*.mov",
-                                                           "*.avi",
-                                                           "*.wmv",
-                                                           "*.webm",
-                                                           "*.gif"};
+    public static final String[] FILE_TYPES_VIDEO = {"*.mp4",
+                                                     "*.m4a",
+                                                     "*.mov",
+                                                     "*.avi",
+                                                     "*.wmv",
+                                                     "*.webm",
+                                                     "*.gif"};
     public static final String[] FILE_TYPES_AUDIO = {"*.wav",
                                                      "*.mp3",
                                                      "*.aac",
@@ -37,10 +37,8 @@ public final class FFMPEGGUI
     private static final String   FILE_DESCRIPTION_VIDEO = "Video Files";
     private static final String   FILE_DESCRIPTION_AUDIO = "Audio Files";
 
-
     private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();
     private static final List<Node> NODES_VIDEO    = new ArrayList<Node>();
-
 
     private static VBox LAYOUT_MAIN;
 
@@ -85,7 +83,6 @@ public final class FFMPEGGUI
                                               // update select button text
                                               buttonFileChooser.setText("Selected: " + selectedFile.getName());
 
-
                                               // get the name of the description of the file type
                                               final String selectedFileDescription = fileChooser.getSelectedExtensionFilter()
                                                                                                 .getDescription();
@@ -96,8 +93,6 @@ public final class FFMPEGGUI
                                                   SetVBox(LAYOUT_MAIN,
                                                           NODES_VIDEO);
                                               }
-
-
                                           }
                                       });
 
@@ -129,17 +124,12 @@ public final class FFMPEGGUI
     {
         final Button buttonCompressVideo;
 
-
         buttonCompressVideo = new Button("Compress Video");
         NODES_VIDEO.add(buttonCompressVideo);
         buttonCompressVideo.setOnAction(actionEvent ->
-                                        {
-                                            // action when button clicked
-
-                                        });
+                                        { /* action when button clicked */ });
 
     }
-
 
     private static void SetVBox(final VBox vBox,
                                 final List<Node> nodes)
@@ -150,9 +140,5 @@ public final class FFMPEGGUI
             .addAll(NODES_CONSTANT);
         vBox.getChildren()
             .addAll(nodes);
-
-
     }
-
-
 }

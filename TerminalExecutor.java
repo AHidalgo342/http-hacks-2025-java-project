@@ -49,6 +49,7 @@ public class TerminalExecutor
             { /* DO LATER */ }
         }
     }
+
     /**
      * Compresses a file.
      *
