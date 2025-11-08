@@ -5,6 +5,7 @@ import java.nio.file.Path;
  * Terminal wrapper class.
  *
  * @author Marcy Ordinario
+ * @author Alex Hidalgo
  * @version 1.0
  */
 public class TerminalExecutor

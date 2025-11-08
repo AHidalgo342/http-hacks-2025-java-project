@@ -8,22 +8,25 @@ import java.util.concurrent.TimeUnit;
  * @author Marcy Ordinario
  * @version 1.0
  */
-public class Terminal {
+public class Terminal
+{
     private static final boolean isWindows = System.getProperty("os.name")
                                                    .toLowerCase()
                                                    .startsWith("windows");
 
     /**
-     * Runs a command on the terminal.
+     * Runs a command on the terminal. Also returns the
+     * first line of output from the terminal.
      *
-     * @param command               String command to run
+     * @param command String command to run
+     * @return String first line of output; null if no output
      * @throws IOException          If an IO exception occurs
      * @throws InterruptedException If the process is interrupted
      */
-    public static void runCommand(final String command)
-            throws
-            IOException,
-            InterruptedException
+    public static String runCommand(final String command)
+    throws
+    IOException,
+    InterruptedException
     {
         File location = new File(System.getProperty("user.dir"));
         System.out.println(location);
@@ -36,47 +39,110 @@ public class Terminal {
 
         if(isWindows)
         {
-            builder.command("cmd.exe", "/c", command);
+            builder.command("cmd.exe",
+                            "/c",
+                            command);
         }
         else
         {
-            builder.command("sh", "-c", command);
+            builder.command("sh",
+                            "-c",
+                            command);
         }
 
         Process process = builder.start();
 
         OutputStream outputStream = process.getOutputStream();
-        InputStream inputStream = process.getInputStream();
-        InputStream errorStream = process.getErrorStream();
+        InputStream  inputStream  = process.getInputStream();
+        InputStream  errorStream  = process.getErrorStream();
 
-        printStream(inputStream);
-        printStream(errorStream);
+        final String firstLnOutput;
+        final String inputStreamStr;
+        final String errorStreamStr;
+        inputStreamStr = printStream(inputStream);
+        errorStreamStr = printStream(errorStream);
+
+        if(errorStreamStr != null)
+        {
+            firstLnOutput = errorStreamStr;
+        }
+        else
+        {
+            firstLnOutput = inputStreamStr;
+        }
 
         boolean isFinished = process.waitFor(30,
-                TimeUnit.SECONDS);
+                                             TimeUnit.SECONDS);
         outputStream.flush();
         outputStream.close();
 
-        if (!isFinished) {
+        if(!isFinished)
+        {
             process.destroyForcibly();
+        }
+
+        return firstLnOutput;
+    }
+
+    /**
+     * Returns true if FFmpeg is installed in the system,
+     * else false.
+     *
+     * @return true if FFmpeg installed; else false
+     */
+    public static boolean FFmpegExists()
+    {
+        try
+        {
+            String whichResult;
+
+            if(isWindows)
+            {
+                whichResult = runCommand("where ffmpeg");
+                // Unsuccessful find starts with "INFO:"
+                return !whichResult.contains("INFO:");
+            }
+            else
+            {
+                whichResult = runCommand("which ffmpeg");
+                // Unsuccessful find starts with "which:"
+                return !whichResult.contains("which:");
+            }
+        }
+        catch(Exception e)
+        {
+            // If crash happens, assume FFmpeg doesn't exist
+            return false;
         }
     }
 
     /**
      * Prints the result of a terminal command to console.
+     * Also returns the first line of output from the terminal.
      *
-     * @param inputStream  InputStream to print
+     * @param inputStream InputStream to print
+     * @return String first line of output; null if no output
      * @throws IOException If an IO exception occurs
      */
-    private static void printStream(InputStream inputStream)
-            throws
-            IOException
+    private static String printStream(InputStream inputStream)
+    throws
+    IOException
     {
-        try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+        final String returnStr;
+
+        try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream)))
+        {
             String line;
-            while((line = bufferedReader.readLine()) != null) {
+
+            line = bufferedReader.readLine();
+            System.out.println();
+            returnStr = line;
+            while((line = bufferedReader.readLine()) != null)
+            {
                 System.out.println(line);
             }
         }
+
+        return returnStr;
     }
 }

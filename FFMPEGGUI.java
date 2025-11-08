@@ -55,6 +55,7 @@ public final class FFMPEGGUI
     IOException,
     InterruptedException
     {
+        System.out.println(Terminal.FFmpegExists());
         final Label  label;
         final Button buttonFileChooser;
         final Button buttonDestinationChooser;
