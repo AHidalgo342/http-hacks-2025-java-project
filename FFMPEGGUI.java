@@ -42,7 +42,9 @@ public final class FFMPEGGUI
     private static final List<Node> NODES_VIDEO    = new ArrayList<Node>();
 
 
+
     private static VBox LAYOUT_MAIN;
+    private static Scene MAIN_SCENE;
 
     /**
      * Initial setup of JavaFX GUI and static elements.
@@ -59,7 +61,11 @@ public final class FFMPEGGUI
         final Label  label;
         final Button buttonFileChooser;
         final Button buttonDestinationChooser;
-        final Scene  scene;
+
+
+        mainStage.setTitle("JavaFX Test");
+        mainStage.setScene(MAIN_SCENE);
+        mainStage.show();
 
         // Test label.
         label = new Label("Hello JavaFX!");
@@ -95,6 +101,7 @@ public final class FFMPEGGUI
                                                   System.out.println("this shit is a video");
                                                   SetVBox(LAYOUT_MAIN,
                                                           NODES_VIDEO);
+                                                  showFileSelectedScene(mainStage, selectedFile);
                                               }
 
 
@@ -116,12 +123,9 @@ public final class FFMPEGGUI
                                buttonFileChooser,
                                buttonDestinationChooser);
 
-        // Setup scene
-        scene = new Scene(LAYOUT_MAIN,
-                          300,
-                          200);
+        MAIN_SCENE = new Scene(LAYOUT_MAIN, 300, 200);
         mainStage.setTitle("JavaFX Test");
-        mainStage.setScene(scene);
+        mainStage.setScene(MAIN_SCENE);
         mainStage.show();
     }
 
@@ -139,7 +143,53 @@ public final class FFMPEGGUI
                                         });
 
     }
+    private static void showFileSelectedScene(Stage mainStage, File selectedFile)
+    {
+        VBox fileSelectedLayout = new VBox(10);
 
+        Label fileLabel = new Label("Selected: " + selectedFile.getName());
+        Button backButton = getBackButton(mainStage);
+
+        fileSelectedLayout.getChildren().addAll(fileLabel, backButton);
+
+        Scene fileSelectedScene = new Scene(fileSelectedLayout, 300, 200);
+        mainStage.setScene(fileSelectedScene);
+    }
+
+    private static Button getBackButton(Stage mainStage) {
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> {
+            // Reset the file chooser button text
+            for (Node _ : NODES_CONSTANT) {
+                resetToOriginalLayout();
+                mainStage.setScene(MAIN_SCENE);
+                }
+
+            // Clear any video-specific nodes that were added
+            SetVBox(LAYOUT_MAIN, new ArrayList<Node>());
+            // Goes back to the main scene
+            mainStage.setScene(MAIN_SCENE);
+        });
+        return backButton;
+    }
+
+    private static void resetToOriginalLayout() {
+        LAYOUT_MAIN.getChildren().clear();
+        // This is to reset the main scene
+        // You'll need to get the original label somehow, or recreate it
+        Label originalLabel = new Label("Hello JavaFX!");
+        LAYOUT_MAIN.getChildren().addAll(originalLabel);
+        LAYOUT_MAIN.getChildren().addAll(NODES_CONSTANT);
+
+        // Reset the file chooser button text
+        for (Node node : NODES_CONSTANT) {
+            if (node instanceof Button button && button.getText().startsWith("Selected: ")) {
+                    button.setText("Select a file");
+                    break;
+                }
+
+        }
+    }
 
     private static void SetVBox(final VBox vBox,
                                 final List<Node> nodes)
