@@ -20,13 +20,13 @@ public final class JavaFXTest
         extends Application
 {
 
-    private static final boolean isWindows = System.getProperty("os.name")
-                                                   .toLowerCase()
-                                                   .startsWith("windows");
-    private static       String   FILE_DESCRIPTION_VIDEO = "Video Files";
-    private static       String   FILE_DESCRIPTION_IMAGE = "Image Files";
-    private static       String   FILE_DESCRIPTION_AUDIO = "Audio FIles";
-    private static       String[] FILE_TYPES_VIDEO       = {"*.mp4",
+    private static final boolean  isWindows              = System.getProperty("os.name")
+                                                                 .toLowerCase()
+                                                                 .startsWith("windows");
+    private static final String   FILE_DESCRIPTION_VIDEO = "Video Files";
+    private static final String   FILE_DESCRIPTION_IMAGE = "Image Files";
+    private static final String   FILE_DESCRIPTION_AUDIO = "Audio FIles";
+    private static final String[] FILE_TYPES_VIDEO       = {"*.mp4",
                                                             "*.m4a",
                                                             "*.mov",
                                                             "*.avi",
@@ -55,6 +55,23 @@ public final class JavaFXTest
         final VBox   layout;
         final Button buttonFileChooser;
         final Scene  scene;
+
+        // START OS Check testing
+
+        File location = new File(System.getProperty("user.dir"));
+        System.out.println(location);
+
+        if(isWindows)
+        {
+            runCommand(location,
+                       "dir");
+        }
+        else
+        {
+            runCommand(location,
+                       "ls");
+        }
+        // END OS Check testing
 
         // Test label.
         label = new Label("Hello JavaFX!");
@@ -110,8 +127,6 @@ public final class JavaFXTest
         mainStage.show();
     }
 
-    public static void main(final String[] args)
-    {
-        launch(args);
-    }
+
+
 }
