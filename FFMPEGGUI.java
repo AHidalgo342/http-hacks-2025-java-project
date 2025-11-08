@@ -140,20 +140,13 @@ public final class FFMPEGGUI
                                         });
 
 
-        final List<String> fileTypesVideoTrimmed = new ArrayList<String>();
-        for(final String curString : FILE_TYPES_VIDEO)
-        {
-            final String curStringTrimmed;
-            curStringTrimmed = curString.substring(1);
-            fileTypesVideoTrimmed.add(curStringTrimmed);
-        }
+        final List<String> fileTypesVideoTrimmed;
+        fileTypesVideoTrimmed = Helper.removeFirstCharacters(1, FILE_TYPES_VIDEO);
 
         comboBoxFiletypesViceo = new ComboBox<String>();
         comboBoxFiletypesViceo.getItems()
                               .addAll(fileTypesVideoTrimmed);
         NODES_VIDEO.add(comboBoxFiletypesViceo);
-
-
 
     }
 
