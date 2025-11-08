@@ -23,9 +23,6 @@ public final class JavaFXTest
     private static final boolean isWindows = System.getProperty("os.name")
                                                    .toLowerCase()
                                                    .startsWith("windows");
-    private static final boolean  isWindows              = System.getProperty("os.name")
-                                                                 .toLowerCase()
-                                                                 .startsWith("windows");
     private static       String   FILE_DESCRIPTION_VIDEO = "Video Files";
     private static       String   FILE_DESCRIPTION_IMAGE = "Image Files";
     private static       String   FILE_DESCRIPTION_AUDIO = "Audio FIles";
@@ -58,23 +55,6 @@ public final class JavaFXTest
         final VBox   layout;
         final Button buttonFileChooser;
         final Scene  scene;
-
-        // START OS Check testing
-
-        File location = new File(System.getProperty("user.dir"));
-        System.out.println(location);
-
-        if(isWindows)
-        {
-            runCommand(location,
-                       "dir");
-        }
-        else
-        {
-            runCommand(location,
-                       "ls");
-        }
-        // END OS Check testing
 
         // Test label.
         label = new Label("Hello JavaFX!");
@@ -133,64 +113,5 @@ public final class JavaFXTest
     public static void main(final String[] args)
     {
         launch(args);
-    }
-
-    public static void runCommand(final File whereToRun,
-                                  final String command)
-    throws
-    IOException,
-    InterruptedException
-    {
-        System.out.println("Running in: " + whereToRun);
-        System.out.println("Command: " + command);
-
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.directory(whereToRun);
-
-        if(isWindows)
-        {
-            builder.command("cmd.exe",
-                            "/c",
-                            command);
-        }
-        else
-        {
-            builder.command("sh",
-                            "-c",
-                            command);
-        }
-
-        Process process = builder.start();
-
-        OutputStream outputStream = process.getOutputStream();
-        InputStream  inputStream  = process.getInputStream();
-        InputStream  errorStream  = process.getErrorStream();
-
-        printStream(inputStream);
-        printStream(errorStream);
-
-        boolean isFinished = process.waitFor(30,
-                                             TimeUnit.SECONDS);
-        outputStream.flush();
-        outputStream.close();
-
-        if(!isFinished)
-        {
-            process.destroyForcibly();
-        }
-    }
-
-    private static void printStream(InputStream inputStream)
-    throws
-    IOException
-    {
-        try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream)))
-        {
-            String line;
-            while((line = bufferedReader.readLine()) != null)
-            {
-                System.out.println(line);
-            }
-        }
     }
 }
