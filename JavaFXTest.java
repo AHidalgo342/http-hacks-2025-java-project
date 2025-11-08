@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -7,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * GUI entry point.
@@ -36,6 +39,13 @@ public final class JavaFXTest
                                                       "*.mp3",
                                                       "*.aac"};
 
+
+    private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();
+    private static final List<Node> NODES_VIDEO = new ArrayList<Node>();
+
+
+    private static VBox LAYOUT_MAIN;
+
     /**
      * Initial setup of JavaFX GUI and static elements.
      *
@@ -48,7 +58,6 @@ public final class JavaFXTest
     InterruptedException
     {
         final Label  label;
-        final VBox   layout;
         final Button buttonFileChooser;
         final Button buttonDestinationChooser;
         final Scene  scene;
@@ -69,6 +78,7 @@ public final class JavaFXTest
 
         // Button File Selector setup. Add button event to open file selection.
         buttonFileChooser = new Button("Select a file");
+        NODES_CONSTANT.add(buttonFileChooser);
         buttonFileChooser.setOnAction(actionEvent ->
                                       {
                                           // file the user selected
@@ -86,33 +96,46 @@ public final class JavaFXTest
                                               if(selectedFileDescription.equals(FILE_DESCRIPTION_VIDEO))
                                               {
                                                   System.out.println("this shit is a video");
+                                                  SetVBox(LAYOUT_MAIN, NODES_VIDEO);
                                               }
 
-                                              //                                            label.setVisible(false);
-                                              label.setDisable(true);
+
+
                                           }
                                       });
 
         //Button for destination chooser
         buttonDestinationChooser = new Button("Select Destination");
+        NODES_CONSTANT.add(buttonDestinationChooser);
         buttonDestinationChooser.setOnAction(actionEvent ->
             //add functionality later
             System.out.println("Button clicked")
         );
 
         // Setup VBox layout. Pass elements that will be displayed on it.
-        layout = new VBox(10,
+        LAYOUT_MAIN = new VBox(10,
                           label,
                           buttonFileChooser,
                           buttonDestinationChooser);
 
         // Setup scene
-        scene = new Scene(layout,
+        scene = new Scene(LAYOUT_MAIN,
                           300,
                           200);
         mainStage.setTitle("JavaFX Test");
         mainStage.setScene(scene);
         mainStage.show();
     }
+
+
+    private static void SetVBox(final VBox vBox, final List<Node> nodes)
+    {
+        vBox.getChildren().removeAll(vBox.getChildren());
+        vBox.getChildren().addAll(nodes);
+        vBox.getChildren().addAll(NODES_CONSTANT);
+
+
+    }
+
 
 }
