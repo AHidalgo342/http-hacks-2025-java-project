@@ -11,7 +11,7 @@ import java.io.File;
 /**
  * GUI entry point.
  *
- * @author Szymon Zemojtel
+ * @author Szymon Zemojtel 
  * @version 1
  */
 public final class JavaFXTest
