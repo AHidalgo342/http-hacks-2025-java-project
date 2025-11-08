@@ -22,26 +22,25 @@ public final class FFMPEGGUI
         extends Application
 {
 
-    public static final String[] FILE_TYPES_VIDEO = {"*.mp4",
-                                                     "*.m4a",
-                                                     "*.mov",
-                                                     "*.avi",
-                                                     "*.wmv",
-                                                     "*.webm",
-                                                     "*.gif"};
-    public static final String[] FILE_TYPES_AUDIO = {"*.wav",
-                                                     "*.mp3",
-                                                     "*.aac",
-                                                     "*.flac",
-                                                     "*.m4a"};
     private static final String   FILE_DESCRIPTION_VIDEO = "Video Files";
     private static final String   FILE_DESCRIPTION_AUDIO = "Audio Files";
+    public static final String[] FILE_TYPES_VIDEO       = {"*.mp4",
+                                                            "*.m4a",
+                                                            "*.mov",
+                                                            "*.avi",
+                                                            "*.wmv",
+                                                            "*.webm",
+                                                            "*.gif"};
+    private static final String[] FILE_TYPES_AUDIO = {"*.wav",
+                                                      "*.mp3",
+                                                      "*.aac"};
+
 
     private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();
     private static final List<Node> NODES_VIDEO    = new ArrayList<Node>();
 
+
     private static VBox LAYOUT_MAIN;
-    private static Scene MAIN_SCENE;
 
     /**
      * Initial setup of JavaFX GUI and static elements.
@@ -54,15 +53,10 @@ public final class FFMPEGGUI
     IOException,
     InterruptedException
     {
-        System.out.println(Terminal.FFmpegExists());
         final Label  label;
         final Button buttonFileChooser;
         final Button buttonDestinationChooser;
-
-
-        mainStage.setTitle("JavaFX Test");
-        mainStage.setScene(MAIN_SCENE);
-        mainStage.show();
+        final Scene  scene;
 
         // Test label.
         label = new Label("Hello JavaFX!");
@@ -88,6 +82,7 @@ public final class FFMPEGGUI
                                               // update select button text
                                               buttonFileChooser.setText("Selected: " + selectedFile.getName());
 
+
                                               // get the name of the description of the file type
                                               final String selectedFileDescription = fileChooser.getSelectedExtensionFilter()
                                                                                                 .getDescription();
@@ -97,8 +92,9 @@ public final class FFMPEGGUI
                                                   System.out.println("this shit is a video");
                                                   SetVBox(LAYOUT_MAIN,
                                                           NODES_VIDEO);
-                                                  showFileSelectedScene(mainStage, selectedFile);
                                               }
+
+
                                           }
                                       });
 
@@ -117,9 +113,12 @@ public final class FFMPEGGUI
                                buttonFileChooser,
                                buttonDestinationChooser);
 
-        MAIN_SCENE = new Scene(LAYOUT_MAIN, 300, 200);
+        // Setup scene
+        scene = new Scene(LAYOUT_MAIN,
+                          300,
+                          200);
         mainStage.setTitle("JavaFX Test");
-        mainStage.setScene(MAIN_SCENE);
+        mainStage.setScene(scene);
         mainStage.show();
     }
 
@@ -127,60 +126,18 @@ public final class FFMPEGGUI
     {
         final Button buttonCompressVideo;
 
+
         buttonCompressVideo = new Button("Compress Video");
         NODES_VIDEO.add(buttonCompressVideo);
         buttonCompressVideo.setOnAction(actionEvent ->
-                                        { /* action when button clicked */ });
+                                        {
+                                            // action when button clicked
+
+                                        });
 
     }
-    private static void showFileSelectedScene(Stage mainStage, File selectedFile)
-    {
-        VBox fileSelectedLayout = new VBox(10);
 
-        Label fileLabel = new Label("Selected: " + selectedFile.getName());
-        Button backButton = getBackButton(mainStage);
 
-        fileSelectedLayout.getChildren().addAll(fileLabel, backButton);
-
-        Scene fileSelectedScene = new Scene(fileSelectedLayout, 300, 200);
-        mainStage.setScene(fileSelectedScene);
-    }
-
-    private static Button getBackButton(Stage mainStage) {
-        Button backButton = new Button("Back");
-        backButton.setOnAction(e -> {
-            // Reset the file chooser button text
-            for (Node _ : NODES_CONSTANT) {
-                resetToOriginalLayout();
-                mainStage.setScene(MAIN_SCENE);
-                }
-
-            // Clear any video-specific nodes that were added
-            SetVBox(LAYOUT_MAIN, new ArrayList<Node>());
-            // Goes back to the main scene
-            mainStage.setScene(MAIN_SCENE);
-        });
-        return backButton;
-    }
-
-    private static void resetToOriginalLayout() {
-        LAYOUT_MAIN.getChildren().clear();
-        // This is to reset the main scene
-        // You'll need to get the original label somehow, or recreate it
-        Label originalLabel = new Label("Hello JavaFX!");
-        LAYOUT_MAIN.getChildren().addAll(originalLabel);
-        LAYOUT_MAIN.getChildren().addAll(NODES_CONSTANT);
-
-        // Reset the file chooser button text
-        for (Node node : NODES_CONSTANT) {
-            if (node instanceof Button button && button.getText().startsWith("Selected: ")) {
-                    button.setText("Select a file");
-                    break;
-                }
-
-        }
-    }
- 
     private static void SetVBox(final VBox vBox,
                                 final List<Node> nodes)
     {
@@ -190,5 +147,9 @@ public final class FFMPEGGUI
             .addAll(NODES_CONSTANT);
         vBox.getChildren()
             .addAll(nodes);
+
+
     }
+
+
 }
