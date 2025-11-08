@@ -1,4 +1,3 @@
-import com.sun.glass.ui.CommonDialogs;
 import javafx.application.Application;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
