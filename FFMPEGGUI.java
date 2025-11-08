@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -25,16 +26,16 @@ public final class FFMPEGGUI
 
     private static final String   FILE_DESCRIPTION_VIDEO = "Video Files";
     private static final String   FILE_DESCRIPTION_AUDIO = "Audio Files";
-    public static final String[] FILE_TYPES_VIDEO        = {"*.mp4",
+    public static final  String[] FILE_TYPES_VIDEO       = {"*.mp4",
                                                             "*.m4a",
                                                             "*.mov",
                                                             "*.avi",
                                                             "*.wmv",
                                                             "*.webm",
                                                             "*.gif"};
-    private static final String[] FILE_TYPES_AUDIO = {"*.wav",
-                                                      "*.mp3",
-                                                      "*.aac"};
+    private static final String[] FILE_TYPES_AUDIO       = {"*.wav",
+                                                            "*.mp3",
+                                                            "*.aac"};
 
 
     private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();
@@ -87,7 +88,6 @@ public final class FFMPEGGUI
                                           // get the name of the description of the file type
                                           final String selectedFileDescription = fileChooser.getSelectedExtensionFilter()
                                                                                             .getDescription();
-                                          System.out.println(selectedFileDescription);
                                           if(selectedFileDescription.equals(FILE_DESCRIPTION_VIDEO))
                                           {
                                               System.out.println("this shit is a video");
@@ -117,9 +117,9 @@ public final class FFMPEGGUI
         scene = new Scene(LAYOUT_MAIN,
                           300,
                           200);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass()
-            .getResource("style.css"))
-            .toExternalForm());
+        scene.getStylesheets()
+             .add(Objects.requireNonNull(getClass().getResource("style.css"))
+                         .toExternalForm());
 
         mainStage.setTitle("JavaFX Test");
         mainStage.setScene(scene);
@@ -128,7 +128,8 @@ public final class FFMPEGGUI
 
     private static void setupVideo()
     {
-        final Button buttonCompressVideo;
+        final Button           buttonCompressVideo;
+        final ComboBox<String> comboBoxFiletypesViceo;
 
         buttonCompressVideo = new Button("Compress Video");
         NODES_VIDEO.add(buttonCompressVideo);
@@ -137,6 +138,23 @@ public final class FFMPEGGUI
                                             // action when button clicked
 
                                         });
+
+
+        final List<String> fileTypesVideoTrimmed = new ArrayList<String>();
+        for(final String curString : FILE_TYPES_VIDEO)
+        {
+            final String curStringTrimmed;
+            curStringTrimmed = curString.substring(1);
+            fileTypesVideoTrimmed.add(curStringTrimmed);
+        }
+
+        comboBoxFiletypesViceo = new ComboBox<String>();
+        comboBoxFiletypesViceo.getItems()
+                              .addAll(fileTypesVideoTrimmed);
+        NODES_VIDEO.add(comboBoxFiletypesViceo);
+
+
+
     }
 
     private static void SetVBox(final VBox vBox,
