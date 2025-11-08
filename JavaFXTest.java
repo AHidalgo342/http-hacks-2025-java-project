@@ -39,26 +39,21 @@ public final class JavaFXTest
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters()
-                   .addAll(new FileChooser.ExtensionFilter("Image Files",
-                                                           "*.png",
-                                                           "*.jpg",
-                                                           "*.gif"),
-                           new FileChooser.ExtensionFilter("Text Files",
-                                                           "*.txt"),
-
-                           new FileChooser.ExtensionFilter("Audio Files",
-                                                           "*.wav",
-                                                           "*.mp3",
-                                                           "*.aac"),
-                           new FileChooser.ExtensionFilter("Video Files",
+                   .addAll(new FileChooser.ExtensionFilter("Video Files",
                                                            "*.mp4",
                                                            "*.m4a",
                                                            "*.mov",
                                                            "*.avi",
                                                            "*.wmv",
-                                                           "*.webm"),
-                           new FileChooser.ExtensionFilter("All Files",
-                                                           "*.*"));
+                                                           "*.webm",
+                                                           "*.gif"),
+                           new FileChooser.ExtensionFilter("Image Files",
+                                                           "*.png",
+                                                           "*.jpg"),
+                           new FileChooser.ExtensionFilter("Audio Files",
+                                                           "*.wav",
+                                                           "*.mp3",
+                                                           "*.aac"));
 
         // Button File Selector setup. Add button event to open file selection.
         buttonFileChooser = new Button("Select a file");
@@ -83,6 +78,8 @@ public final class JavaFXTest
         mainStage.setTitle("JavaFX Test");
         mainStage.setScene(scene);
         mainStage.show();
+
+
     }
 
     public static void main(final String[] args)
