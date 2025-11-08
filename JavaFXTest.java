@@ -6,17 +6,23 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
-import java.io.File;
+import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * GUI entry point.
  *
  * @author Szymon Zemojtel
+ * @author alex-hidalgo
  * @version 1
  */
 public final class JavaFXTest
         extends Application
 {
+
+    private static final boolean isWindows = System.getProperty("os.name")
+                                                   .toLowerCase()
+                                                   .startsWith("windows");
 
     /**
      * Initial setup of JavaFX GUI and static elements.
@@ -25,11 +31,31 @@ public final class JavaFXTest
      */
     @Override
     public void start(final Stage mainStage)
+    throws
+    IOException,
+    InterruptedException
     {
         final Label  label;
         final VBox   layout;
         final Button buttonFileChooser;
         final Scene  scene;
+
+        // START OS Check testing
+
+        File location = new File(System.getProperty("user.dir"));
+        System.out.println(location);
+
+        if(isWindows)
+        {
+            runCommand(location,
+                       "dir");
+        }
+        else
+        {
+            runCommand(location,
+                       "ls");
+        }
+        // END OS Check testing
 
         // Test label.
         label = new Label("Hello JavaFX!");
@@ -77,12 +103,64 @@ public final class JavaFXTest
         mainStage.setTitle("JavaFX Test");
         mainStage.setScene(scene);
         mainStage.show();
-
-
     }
 
     public static void main(final String[] args)
     {
         launch(args);
+    }
+
+    public static void runCommand(final File whereToRun,
+                                  final String command)
+    throws
+    IOException,
+    InterruptedException
+    {
+        System.out.println("Running in: " + whereToRun);
+        System.out.println("Command: " + command);
+
+        ProcessBuilder builder = new ProcessBuilder();
+        builder.directory(whereToRun);
+
+        if(isWindows)
+        {
+            builder.command("cmd.exe",
+                            "/c",
+                            command);
+        }
+        else
+        {
+            builder.command("sh", "-c", command);
+        }
+
+        Process process = builder.start();
+
+        OutputStream outputStream = process.getOutputStream();
+        InputStream inputStream = process.getInputStream();
+        InputStream errorStream = process.getErrorStream();
+
+        printStream(inputStream);
+        printStream(errorStream);
+
+        boolean isFinished = process.waitFor(30,
+                                             TimeUnit.SECONDS);
+        outputStream.flush();
+        outputStream.close();
+
+        if (!isFinished) {
+            process.destroyForcibly();
+        }
+    }
+
+    private static void printStream(InputStream inputStream)
+    throws
+    IOException
+    {
+        try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while((line = bufferedReader.readLine()) != null) {
+                System.out.println(line);
+            }
+        }
     }
 }
