@@ -22,18 +22,20 @@ public final class FFMPEGGUI
         extends Application
 {
 
+    public static final String[] FILE_TYPES_VIDEO       = {"*.mp4",
+                                                           "*.m4a",
+                                                           "*.mov",
+                                                           "*.avi",
+                                                           "*.wmv",
+                                                           "*.webm",
+                                                           "*.gif"};
+    public static final String[] FILE_TYPES_AUDIO = {"*.wav",
+                                                     "*.mp3",
+                                                     "*.aac",
+                                                     "*.flac",
+                                                     "*.m4a"};
     private static final String   FILE_DESCRIPTION_VIDEO = "Video Files";
     private static final String   FILE_DESCRIPTION_AUDIO = "Audio Files";
-    private static final String[] FILE_TYPES_VIDEO       = {"*.mp4",
-                                                            "*.m4a",
-                                                            "*.mov",
-                                                            "*.avi",
-                                                            "*.wmv",
-                                                            "*.webm",
-                                                            "*.gif"};
-    private static final String[] FILE_TYPES_AUDIO = {"*.wav",
-                                                      "*.mp3",
-                                                      "*.aac"};
 
 
     private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();

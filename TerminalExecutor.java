@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -19,11 +18,36 @@ public class TerminalExecutor
     public static void convertFile(final File src,
                                    final Path dst)
     {
-        try {
-            Terminal.runCommand("ffmpeg -i " + src + " " + dst);
-        } catch (Exception e) { /* DO LATER */ }
-    }
+        boolean isVideo = false;
 
+        for(String it : FFMPEGGUI.FILE_TYPES_VIDEO)
+        {
+            if(src.toString()
+                  .matches(it))
+            {
+                isVideo = src.toString()
+                             .matches(it);
+            }
+        }
+
+        if(isVideo)
+        {
+            try
+            {
+                Terminal.runCommand("ffmpeg -i " + src + " -c copy " + dst);
+            }
+            catch(Exception e) { /* do later */ }
+        }
+        else
+        {
+            try
+            {
+                Terminal.runCommand("ffmpeg -i " + src + " " + dst);
+            }
+            catch(Exception e)
+            { /* DO LATER */ }
+        }
+    }
     /**
      * Compresses a file.
      *
