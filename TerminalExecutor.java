@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalTime;
 
+import static java.lang.System.exit;
+
 /**
  * Terminal wrapper class.
  *
@@ -15,8 +17,35 @@ public class TerminalExecutor
 
     public static final int  PREFIX_MULTIPLIER_KILO = 1000;
     public static final int  PREFIX_MULTIPLIER_MEGA = 1000000;
-    public static final int  PREFIX_MULTIPLIER_GIGA = 1000000000;
     public static final long BYTES_TO_BITS          = 8L;
+
+    private static boolean isVideo(File src)
+    {
+        boolean video = false;
+
+        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
+        {
+            final String fileExtension;
+            fileExtension = src.toString()
+                               .substring(1);
+
+            if(it.endsWith(fileExtension))
+            {
+                video = true;
+                break;
+            }
+        }
+        return video;
+    }
+
+    private static boolean isGif(File file)
+    {
+        final String fileExtension;
+        fileExtension = FFMPEGGUI.FILE_TYPES_VIDEO[6].substring(1);
+
+        return file.toString()
+                   .endsWith(fileExtension);
+    }
 
     /**
      * Converts a file from one type to another.
@@ -27,29 +56,23 @@ public class TerminalExecutor
     public static void convertFile(final File src,
                                    final File dst)
     {
-        boolean isVideo = false;
-
-        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
-        {
-            final String fileExtension;
-            fileExtension = src.toString().substring(1);
-
-            if(it.endsWith(fileExtension))
-            {
-                isVideo = true;
-                break;
-            }
-        }
-
         try
         {
-            if(isVideo)
+            if(isGif(src))
             {
-                Terminal.runCommand("ffmpeg -flush_packets 1 -i " + src + " -c copy -y " + dst);
+                Terminal.runCommand("ffmpeg -y -i " + src + " -movflags faststart -pix_fmt yuv420p -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" " + dst);
+            }
+            else if(isGif(dst))
+            {
+                Terminal.runCommand("ffmpeg -y -ss 30 -t 3 -i " + src + " -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 " + dst);
+            }
+            if(isVideo(src))
+            {
+                Terminal.runCommand("ffmpeg -y -i " + src + " -c copy " + dst);
             }
             else
             {
-                Terminal.runCommand("ffmpeg -flush_packets 1 -i " + src + " -y " + dst);
+                Terminal.runCommand("ffmpeg -y -i " + src + " " + dst);
             }
         }
         catch(Exception e)
@@ -57,6 +80,7 @@ public class TerminalExecutor
             System.err.println(e.getMessage());
         }
     }
+
 
     /**
      * Compresses a file.
@@ -88,26 +112,42 @@ public class TerminalExecutor
     InterruptedException
     {
         String fileLengthVerbose = Terminal.runCommand("ffmpeg -v quiet -stats -i " + src + " -f null -");
-        String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
-        String fileLengthTimeStamp = fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
 
-        // bitrate = target size / duration
-        char targetSizePrefix = options[0].charAt(options[0].length() - 1);
+        long bitrateKBPS = getBitrateKBPS(options,
+                                          fileLengthVerbose);
+        if(isVideo(src))
+        {
+            compressVideo(src,
+                          dst,
+                          options,
+                          bitrateKBPS);
+        }
+        else
+        {
+            compressAudio(src,
+                          dst,
+                          options,
+                          bitrateKBPS);
+        }
+    }
 
-        // get the first option and convert it to an integer, remove last character (SI prefix)
-        int targetFileSize = Integer.parseInt(options[0]);
+    private static void compressAudio(File src,
+                                      File dst,
+                                      String[] options,
+                                      long bitrateKBPS)
+    {
+        exit(0);
+    }
 
-        long targetBitRate = targetFileSize * PREFIX_MULTIPLIER_MEGA * BYTES_TO_BITS;
-
-        int fileLengthSeconds = LocalTime.parse(fileLengthTimeStamp)
-                                         .toSecondOfDay();
-
-        long bitrateKBPS = targetBitRate / fileLengthSeconds / PREFIX_MULTIPLIER_KILO;
-
+    private static void compressVideo(File src,
+                                      File dst,
+                                      String[] options,
+                                      long bitrateKBPS)
+    {
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -avioflags direct -y -i ");
+        sb.append("ffmpeg -y -v quiet -i ");
         sb.append(src.getAbsolutePath());
         // Audio bitrate 48k
         sb.append(" -b:a 48k -b:v ");
@@ -136,5 +176,23 @@ public class TerminalExecutor
         {
             System.err.println(e.getMessage());
         }
+    }
+
+    private static long getBitrateKBPS(String[] options,
+                                       String fileLengthVerbose)
+    {
+        String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
+        String   fileLengthTimeStamp        = fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
+
+
+        int targetFileSize = Integer.parseInt(options[0]);
+
+        long targetSizeBits = targetFileSize * PREFIX_MULTIPLIER_MEGA * BYTES_TO_BITS;
+
+        int fileLengthSeconds = LocalTime.parse(fileLengthTimeStamp)
+                                         .toSecondOfDay();
+
+        // bitrate = target size / duration
+        return targetSizeBits / fileLengthSeconds / PREFIX_MULTIPLIER_KILO;
     }
 }

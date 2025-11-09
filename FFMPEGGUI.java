@@ -91,13 +91,32 @@ public final class FFMPEGGUI
 
         System.out.println(Terminal.FFmpegExists());
 
-//                final String[] options = {"1"};
+//        final String[] options = {"1", "10"};
 
         //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
         //                                     new File("./meep.m4a"));
 //                        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
 //                                                      new File("."),
 //                                                      options);
+//                TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
+//                                              new File("."),
+//                                              options);
+//        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
+//                                      new File("./meep.mp4"),
+//                                      options);
+//        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Downloads/knower.gif"),
+//                                     new File("./knower.m4a"));
+//        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Videos/deltarune.mp4"),
+//                                     new File("./splosion.gif"));
+//
+//        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
+//                                     new File("./meep.m4a"));
+//        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
+//                                      new File("./meep.mp4"),
+//                                      options);
+//        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
+//                                      new File("./meep.mov"),
+//                                      options);
 
         // Test label
         label = new Label("FFmpeg GUI");
