@@ -14,7 +14,6 @@ import java.time.LocalTime;
  */
 public class TerminalExecutor
 {
-
     public static final int  PREFIX_MULTIPLIER_KILO = 1000;
     public static final int  PREFIX_MULTIPLIER_MEGA = 1000000;
     public static final long BYTES_TO_BITS          = 8L;
@@ -95,8 +94,9 @@ public class TerminalExecutor
         {
             sb.append("-ss 30 -t 3 ");
         }
-        sb.append("-i ");
+        sb.append("-i \"");
         sb.append(src.getAbsolutePath());
+        sb.append("\"");
 
         if(isGif(src) && isVideo(fileType))
         {
@@ -111,10 +111,12 @@ public class TerminalExecutor
             sb.append(" -c:v copy -b:a 320k -ab 192k ");
         }
 
-        sb.append(dst);
+        sb.append("\"");
+        sb.append(dst.getAbsolutePath());
         sb.append(File.separator);
         sb.append(Helper.getBaseFileName(src.getName()));
         sb.append(fileType);
+        sb.append("\"");
 
         callTerminal(sb);
     }
@@ -149,7 +151,7 @@ public class TerminalExecutor
     IOException,
     InterruptedException
     {
-        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i " + src.getAbsolutePath() + " -f null -",
+        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i \"" + src.getAbsolutePath() + "\" -f null -",
                                                       true);
         System.out.println(fileLengthVerbose);
 
@@ -182,19 +184,22 @@ public class TerminalExecutor
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -y -i ");
+        sb.append("ffmpeg -y -i \"");
         sb.append(src.getAbsolutePath());
         // Audio bitrate flag
-        sb.append(" -b:a ");
+        sb.append("\" -b:a ");
         // Audio bitrate specified
         sb.append(bitrateKBPS);
         sb.append("k ");
         // Specify mono
         sb.append(" -ac 1 ");
-        sb.append(dst.toString());
+
+        sb.append("\"");
+        sb.append(dst.getAbsolutePath());
         sb.append(File.separator);
         sb.append(name);
         sb.append(Helper.getFileType(src.getName()));
+        sb.append("\"");
 
         callTerminal(sb);
     }
@@ -208,10 +213,10 @@ public class TerminalExecutor
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -y -i ");
+        sb.append("ffmpeg -y -i \"");
         sb.append(src.getAbsolutePath());
         // Audio bitrate 48k
-        sb.append(" -b:a 48k -b:v ");
+        sb.append("\" -b:a 48k -b:v ");
         // Video bitrate specified
         sb.append(bitrateKBPS);
         sb.append("k ");
@@ -223,10 +228,13 @@ public class TerminalExecutor
             // Specify mono
             sb.append(" -ac 1 ");
         }
-        sb.append(dst.toString());
+
+        sb.append("\"");
+        sb.append(dst.getAbsolutePath());
         sb.append(File.separator);
         sb.append(name);
         sb.append(Helper.getFileType(src.getName()));
+        sb.append("\"");
 
         callTerminal(sb);
     }
