@@ -501,7 +501,7 @@ public final class FFMPEGGUI
     {
         final String originalLabelTerminalOutputText;
         originalLabelTerminalOutputText = LABEL_TERMINAL_OUTPUT.getText();
-        LABEL_TERMINAL_OUTPUT.setText(originalLabelTerminalOutputText + terminalOutputToAdds);
+        LABEL_TERMINAL_OUTPUT.setText(originalLabelTerminalOutputText + terminalOutputToAdd);
 
     }
 }
