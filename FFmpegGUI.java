@@ -380,7 +380,7 @@ public final class FFmpegGUI
         mainStage.setMinHeight(350);
 
         // scene setup and display
-        mainStage.setTitle("FFmpeg GUI");
+        mainStage.setTitle("JEFFmpeg");
         mainStage.setScene(scene);
         mainStage.setOpacity(1.0);
         mainStage.show();
@@ -838,5 +838,15 @@ public final class FFmpegGUI
         {
             throw new RuntimeException(exception);
         }
+    }
+
+    /**
+     * Entry point for the program.
+     *
+     * @param args unused
+     */
+    public static void main(final String[] args)
+    {
+        launch(args);
     }
 }
