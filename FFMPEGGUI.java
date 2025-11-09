@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -181,6 +182,8 @@ public final class FFMPEGGUI
                                label,
                                buttonFileChooser,
                                buttonDestChooser);
+
+        LAYOUT_MAIN.setAlignment(Pos.CENTER);
 
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
