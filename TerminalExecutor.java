@@ -1,4 +1,3 @@
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 
 import java.io.File;
@@ -17,47 +16,6 @@ public class TerminalExecutor
     public static final int  PREFIX_MULTIPLIER_KILO = 1000;
     public static final int  PREFIX_MULTIPLIER_MEGA = 1000000;
     public static final long BYTES_TO_BITS          = 8L;
-
-    private static boolean isVideo(File src)
-    {
-        boolean video = false;
-
-        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
-        {
-            final String fileExtension;
-            fileExtension = it.substring(1);
-
-            System.out.println("File extension: " + fileExtension);
-
-            if(src.toString()
-                  .endsWith(fileExtension))
-            {
-                video = true;
-                break;
-            }
-        }
-        return video;
-    }
-
-    private static boolean isVideo(String str)
-    {
-        boolean video = false;
-
-        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
-        {
-            final String fileExtension;
-            fileExtension = it.substring(1);
-
-            System.out.println("File extension: " + fileExtension);
-
-            if(str.endsWith(fileExtension))
-            {
-                video = true;
-                break;
-            }
-        }
-        return video;
-    }
 
     /**
      * Converts a file from one type to another.
@@ -139,6 +97,40 @@ public class TerminalExecutor
         }
     }
 
+    /**
+     * Returns true if the given file is in a supported
+     * video format, else false.
+     *
+     * @param src File to check extension type of
+     * @return true if file is in a supported video format,
+     *         else false
+     */
+    private static boolean isVideo(File src)
+    {
+        boolean video = false;
+
+        if(src == null)
+        {
+            return false;
+        }
+
+        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
+        {
+            final String fileExtension;
+            fileExtension = it.substring(1);
+
+            System.out.println("File extension: " + fileExtension);
+
+            if(src.toString()
+                  .endsWith(fileExtension))
+            {
+                video = true;
+                break;
+            }
+        }
+        return video;
+    }
+
     private static void compressAudio(File src,
                                       File dst,
                                       String name,
@@ -152,10 +144,14 @@ public class TerminalExecutor
         // Audio bitrate flag
         sb.append("\" -b:a ");
         // Audio bitrate specified
-        sb.append(bitrateKBPS / 2); // todo this sucks
+        sb.append(bitrateKBPS);
+        sb.append("k -maxrate ");
+        sb.append(bitrateKBPS);
+        sb.append("k -bufsize ");
+        sb.append(bitrateKBPS);
         sb.append("k ");
         // Specify mono
-        sb.append(" -ac 1 ");
+        sb.append("-ac 1 ");
 
         sb.append("\"");
         sb.append(dst.getAbsolutePath());
@@ -215,6 +211,10 @@ public class TerminalExecutor
 
         int fileLengthSeconds = LocalTime.parse(fileLengthTimeStamp)
                                          .toSecondOfDay();
+
+        System.out.println("--------------------------------------------------------------");
+        System.out.println("Target file size: " + targetSizeBits + " bits");
+        System.out.println("File size: " + fileLengthSeconds + " seconds");
 
         return targetSizeBits / fileLengthSeconds / PREFIX_MULTIPLIER_KILO;
     }
