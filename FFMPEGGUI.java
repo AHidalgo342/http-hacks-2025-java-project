@@ -185,8 +185,8 @@ public final class FFMPEGGUI
 
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
-                          300,
-                          200);
+                          500,
+                          500);
         scene.getStylesheets()
              .add(Objects.requireNonNull(getClass().getResource("style.css"))
                          .toExternalForm());
