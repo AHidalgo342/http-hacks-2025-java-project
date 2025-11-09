@@ -270,11 +270,11 @@ public final class FFMPEGGUI
         NODES_VIDEO.add(comboBoxFiletypesVideo);
 
         // force the field to be numeric only
-        final TextField textFieldNumberTargetMB;
-        textFieldNumberTargetMB = new TextField("");
-        textFieldNumberTargetMB.setPromptText("Target MB");
-        textFieldNumberTargetMB.getStyleClass().add("text-field");
-        textFieldNumberTargetMB.textProperty()
+        final TextField textFieldNumberTargetMBVideo;
+        textFieldNumberTargetMBVideo = new TextField("");
+        textFieldNumberTargetMBVideo.setPromptText("Target MB video");
+        textFieldNumberTargetMBVideo.getStyleClass().add("text-field");
+        textFieldNumberTargetMBVideo.textProperty()
                                .addListener(new ChangeListener<>()
                                {
                                    @Override
@@ -284,19 +284,18 @@ public final class FFMPEGGUI
                                    {
                                        if(!newValue.matches("\\d*"))
                                        {
-                                           textFieldNumberTargetMB.setText(newValue.replaceAll("\\D",
+                                           textFieldNumberTargetMBVideo.setText(newValue.replaceAll("\\D",
                                                                                                ""));
                                        }
 
-                                       updateCompressionSize(textFieldNumberTargetMB.getText());
+                                       updateCompressionSize(textFieldNumberTargetMBVideo.getText());
                                    }
                                });
 
 
-        gridPaneVideoCompress.getChildren().addFirst(textFieldNumberTargetMB);
-        GridPane.setRowIndex(textFieldNumberTargetMB, 0);
-        GridPane.setColumnIndex(textFieldNumberTargetMB, 0);
-        NODES_AUDIO.add(textFieldNumberTargetMB);
+        gridPaneVideoCompress.getChildren().addFirst(textFieldNumberTargetMBVideo);
+        GridPane.setRowIndex(textFieldNumberTargetMBVideo, 0);
+        GridPane.setColumnIndex(textFieldNumberTargetMBVideo, 0);
 
     }
 
@@ -305,9 +304,53 @@ public final class FFMPEGGUI
         final Button           buttonCompressAudio;
         final ComboBox<String> comboBoxFiletypesAudio;
 
+
+        final GridPane gridPaneAudioCompress;
+        gridPaneAudioCompress = new GridPane();
+        gridPaneAudioCompress.setHgap(10);
+        gridPaneAudioCompress.setAlignment(Pos.CENTER);
+        NODES_AUDIO.add(gridPaneAudioCompress);
+
+
         buttonCompressAudio = new Button("Compress Audio");
-        NODES_AUDIO.add(buttonCompressAudio);
         buttonCompressAudio.setOnAction(actionEvent -> compressFile());
+
+
+
+        gridPaneAudioCompress.getChildren().addFirst(buttonCompressAudio);
+        GridPane.setRowIndex(buttonCompressAudio, 0);
+        GridPane.setColumnIndex(buttonCompressAudio, 1);
+
+
+        // force the field to be numeric only
+        final TextField textFieldNumberTargetMBAudio;
+        textFieldNumberTargetMBAudio = new TextField("");
+        textFieldNumberTargetMBAudio.setPromptText("Target MB audio");
+        textFieldNumberTargetMBAudio.getStyleClass().add("text-field");
+        textFieldNumberTargetMBAudio.textProperty()
+                               .addListener(new ChangeListener<>()
+                               {
+                                   @Override
+                                   public void changed(final ObservableValue<? extends String> observable,
+                                                       final String oldValue,
+                                                       String newValue)
+                                   {
+                                       if(!newValue.matches("\\d*"))
+                                       {
+                                           textFieldNumberTargetMBAudio.setText(newValue.replaceAll("\\D",
+                                                                                               ""));
+                                       }
+
+                                       updateCompressionSize(textFieldNumberTargetMBAudio.getText());
+                                   }
+                               });
+
+
+        gridPaneAudioCompress.getChildren().addFirst(textFieldNumberTargetMBAudio);
+        GridPane.setRowIndex(textFieldNumberTargetMBAudio, 0);
+        GridPane.setColumnIndex(textFieldNumberTargetMBAudio, 0);
+
+
 
 
         final List<String> fileTypesAudioTrimmed;
