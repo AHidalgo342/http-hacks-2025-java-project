@@ -32,7 +32,7 @@ import java.util.Objects;
  * @author Alex Hidalgo
  * @author Daryan Worya
  * @author Marcy Ordinario
- * 
+ *
  * @version 44
  */
 public final class FFMPEGGUI
@@ -53,7 +53,7 @@ public final class FFMPEGGUI
                                                             "*.aac"};
 
     private static final int STAGE_HEIGHT_PX = 500;
-    private static final int STAGE_WIDTH_PX  = 500;
+    private static final int STAGE_WIDTH_PX  = 800;
     private static final int PADDING_PX      = 10;
 
     private static final int SKIP_FIRST = 1;
@@ -249,14 +249,14 @@ public final class FFMPEGGUI
         LAYOUT_MAIN.getStyleClass()
                    .add("vbox");
 
-        //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
-        //                                     new File("C:\\Users\\User\\Downloads"),
-        //                                     ".gif");
+//        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
+//                                     new File("C:\\Users\\User\\Downloads"),
+//                                     ".gif");
 
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
-                          STAGE_HEIGHT_PX,
-                          STAGE_WIDTH_PX);
+                          STAGE_WIDTH_PX,
+                          STAGE_HEIGHT_PX);
         scene.getStylesheets()
              .add(Objects.requireNonNull(getClass().getResource("style.css"))
                          .toExternalForm());
@@ -638,7 +638,5 @@ public final class FFMPEGGUI
         SCROLL_PANE_TERMINAL.layout();
         // scroll to bottom of scroll pane to see live terminal
         SCROLL_PANE_TERMINAL.setVvalue(1.0);
-
-
     }
 }

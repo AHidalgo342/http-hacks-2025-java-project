@@ -151,8 +151,7 @@ public class TerminalExecutor
     IOException,
     InterruptedException
     {
-        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i \"" + src.getAbsolutePath() + "\" -f null -",
-                                                      true);
+        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -flush_packets 1 -i \"" + src.getAbsolutePath() + "\" -f null -");
         System.out.println(fileLengthVerbose);
 
         long bitrateKBPS = getBitrateKBPS(options,
@@ -184,7 +183,7 @@ public class TerminalExecutor
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -y -i \"");
+        sb.append("ffmpeg -y -flush_packets 1 -i \"");
         sb.append(src.getAbsolutePath());
         // Audio bitrate flag
         sb.append("\" -b:a ");
@@ -213,7 +212,7 @@ public class TerminalExecutor
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -y -i \"");
+        sb.append("ffmpeg -y -flush_packets 1 -i \"");
         sb.append(src.getAbsolutePath());
         // Audio bitrate 48k
         sb.append("\" -b:a 48k -b:v ");
@@ -263,16 +262,14 @@ public class TerminalExecutor
             @Override
             public Void call()
             {
-                Platform.runLater(() -> {
-                    try
-                    {
-                        Terminal.runFFmpeg(sb.toString());
-                    }
-                    catch(Exception e)
-                    {
-                        throw new RuntimeException(e);
-                    }
-                });
+                try
+                {
+                    Terminal.runFFmpeg(sb.toString());
+                }
+                catch(Exception e)
+                {
+                    throw new RuntimeException(e);
+                }
 
                 return null;
             }
