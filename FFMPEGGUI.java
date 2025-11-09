@@ -1,7 +1,10 @@
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -18,8 +21,9 @@ import java.util.Objects;
  * GUI entry point.
  *
  * @author Szymon Zemojtel
- * @author alex-hidalgo
- * @version 1
+ * @author Alex Hidalgo
+ * @author Daryan Worya
+ * @version 22
  */
 public final class FFMPEGGUI
         extends Application
@@ -162,6 +166,27 @@ public final class FFMPEGGUI
         comboBoxFiletypesVideo.getItems()
                               .addAll(fileTypesVideoTrimmed);
         NODES_VIDEO.add(comboBoxFiletypesVideo);
+
+
+
+
+
+        // force the field to be numeric only
+        final TextField textFieldNumberTargetMB;
+        textFieldNumberTargetMB = new TextField("");
+        textFieldNumberTargetMB.setPromptText("Target MB");
+        textFieldNumberTargetMB.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    textFieldNumberTargetMB.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        NODES_VIDEO.add(textFieldNumberTargetMB);
+
 
     }
 
