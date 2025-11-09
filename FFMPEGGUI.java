@@ -117,9 +117,7 @@ public final class FFMPEGGUI
 //        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
 //                                      new File("./meep.mov"),
 //                                      options);
-
-        // Test label
-        label = new Label("FFmpeg GUI");
+ 
 
         // File/Directory Chooser Setup
         FileChooser fileChooser = new FileChooser();
@@ -212,12 +210,19 @@ public final class FFMPEGGUI
         setupVideo();
         setupAudio();
 
-        // Setup VBox layout. Pass elements that will be displayed on it.
-        LAYOUT_MAIN = new VBox(PADDING_PX,
-                               label);
-        LAYOUT_MAIN.getChildren().addAll(NODES_CONSTANT);
+        label = new Label("FFmpeg GUI");
 
+        VBox buttonContainer = new VBox(12, label);
+        buttonContainer.setAlignment(Pos.CENTER);
+
+        buttonContainer.getChildren().addAll(NODES_CONSTANT);
+
+        buttonContainer.getStyleClass().add("white-box");
+
+        LAYOUT_MAIN = new VBox(PADDING_PX, label, buttonContainer);
+        LAYOUT_MAIN.getStyleClass().add("vbox"); // optional: keep your existing vbox styles
         LAYOUT_MAIN.setAlignment(Pos.CENTER);
+
 
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
