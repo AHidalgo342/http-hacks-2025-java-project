@@ -4,10 +4,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -68,8 +65,9 @@ public final class FFMPEGGUI
 
     private static final TextField TEXT_FIELD_FILENAME_OUTPUT = new TextField();
 
-    private static Label LABEL_TITLE; // the animated neon title label
-    private static Label LABEL_TERMINAL_OUTPUT;
+    private static Label      LABEL_TITLE; // the animated neon title label
+    private static Label      LABEL_TERMINAL_OUTPUT;
+    private static ScrollPane SCROLL_PANE_TERMINAL;
 
 
     private static VBox LAYOUT_MAIN;
@@ -237,8 +235,18 @@ public final class FFMPEGGUI
         LABEL_TITLE.getStyleClass()
                    .add("neon-text");
 
+        SCROLL_PANE_TERMINAL = new ScrollPane();
+
         LABEL_TERMINAL_OUTPUT = new Label("Terminal output will appear here");
-        NODES_CONSTANT_BOTTOM.add(LABEL_TERMINAL_OUTPUT);
+        SCROLL_PANE_TERMINAL.setContent(LABEL_TERMINAL_OUTPUT);
+        SCROLL_PANE_TERMINAL.setMaxHeight(100);
+        SCROLL_PANE_TERMINAL.setMaxWidth(400);
+        SCROLL_PANE_TERMINAL.setVvalue(0.0);
+
+        NODES_CONSTANT_BOTTOM.add(SCROLL_PANE_TERMINAL);
+
+        LABEL_TERMINAL_OUTPUT.setAlignment(Pos.TOP_LEFT);
+
 
         // start the neon glow animation
         applyNeonAnimation(LABEL_TITLE);
@@ -293,7 +301,6 @@ public final class FFMPEGGUI
         buttonCompressVideo = new Button("Start Compressing Video");
 
 
-
         gridPaneVideoCompress.getChildren()
                              .addFirst(buttonCompressVideo);
 
@@ -320,14 +327,17 @@ public final class FFMPEGGUI
         comboBoxFiletypesVideo.setPrefWidth(200);
 
         placeholderButton = new Button("Placeholder");
-        placeholderButton.setOnAction(actionEvent -> {
-            System.out.println("Video placeholder button clicked");
-        });
+        placeholderButton.setOnAction(actionEvent ->
+                                      {
+                                          System.out.println("Video placeholder button clicked");
+                                      });
 
         // Create HBox to hold combobox and button side by side
         HBox hBoxFiletypeVideo = new HBox(10); // 10px spacing
         hBoxFiletypeVideo.setAlignment(Pos.CENTER);
-        hBoxFiletypeVideo.getChildren().addAll(comboBoxFiletypesVideo, placeholderButton);
+        hBoxFiletypeVideo.getChildren()
+                         .addAll(comboBoxFiletypesVideo,
+                                 placeholderButton);
 
         NODES_VIDEO.add(hBoxFiletypeVideo);
 
@@ -439,13 +449,16 @@ public final class FFMPEGGUI
         placeholderButton = new Button("Placeholder");
         placeholderButton.setMaxWidth(150);
         placeholderButton.setPrefWidth(150);
-        placeholderButton.setOnAction(actionEvent -> {
-            System.out.println("Audio placeholder button clicked");
-        });
+        placeholderButton.setOnAction(actionEvent ->
+                                      {
+                                          System.out.println("Audio placeholder button clicked");
+                                      });
 
         HBox hBoxFiletypeAudio = new HBox(10);
         hBoxFiletypeAudio.setAlignment(Pos.CENTER);
-        hBoxFiletypeAudio.getChildren().addAll(comboBoxFiletypesAudio, placeholderButton);
+        hBoxFiletypeAudio.getChildren()
+                         .addAll(comboBoxFiletypesAudio,
+                                 placeholderButton);
 
         NODES_AUDIO.add(hBoxFiletypeAudio); // Add the HBox instead of individual combobox
     }
@@ -531,6 +544,7 @@ public final class FFMPEGGUI
     public static void setTerminalOutput(final String terminalOutputToSet)
     {
         LABEL_TERMINAL_OUTPUT.setText(terminalOutputToSet);
+        SCROLL_PANE_TERMINAL.setVvalue(1.0);
 
     }
 
@@ -539,6 +553,12 @@ public final class FFMPEGGUI
         final String originalLabelTerminalOutputText;
         originalLabelTerminalOutputText = LABEL_TERMINAL_OUTPUT.getText();
         LABEL_TERMINAL_OUTPUT.setText(originalLabelTerminalOutputText + terminalOutputToAdd);
+
+        // update what the terminal thinks its size is
+        SCROLL_PANE_TERMINAL.layout();
+        // scroll to bottom of scroll pane to see live terminal
+        SCROLL_PANE_TERMINAL.setVvalue(1.0);
+
 
     }
 }

@@ -180,7 +180,7 @@ public class Terminal
                 returnStr = line;
                 while((line = bufferedReader.readLine()) != null)
                 {
-                    FFMPEGGUI.setTerminalOutput(line);
+                    FFMPEGGUI.addTerminalOutput(line + "\n");
                     System.out.println(line);
                 }
             }
@@ -190,7 +190,7 @@ public class Terminal
                 while((line = bufferedReader.readLine()) != null)
                 {
                     lastNonNullLine = line;
-                    FFMPEGGUI.setTerminalOutput(line);
+                    FFMPEGGUI.addTerminalOutput(line + "\n");
                     System.out.println(line);
                 }
                 returnStr = lastNonNullLine;
