@@ -27,6 +27,10 @@
     -fx-font-weight: bold;
 }
 
+.grid-pane {
+
+}
+
 .text-field {
     -fx-background-color: #7BBD44;
     -fx-text-fill: white;

@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
@@ -203,8 +204,16 @@ public final class FFMPEGGUI
         final Button           buttonCompressVideo;
         final ComboBox<String> comboBoxFiletypesVideo;
 
-        buttonCompressVideo = new Button("Compress Video");
-        NODES_VIDEO.add(buttonCompressVideo);
+        final GridPane gridPaneVideoCompress;
+        gridPaneVideoCompress = new GridPane();
+        gridPaneVideoCompress.setHgap(10);
+        NODES_VIDEO.add(gridPaneVideoCompress);
+
+        buttonCompressVideo = new Button("Start Compressing Video");
+        gridPaneVideoCompress.getChildren().addFirst(buttonCompressVideo);
+
+        GridPane.setRowIndex(buttonCompressVideo, 0);
+        GridPane.setColumnIndex(buttonCompressVideo, 1);
         buttonCompressVideo.setOnAction(actionEvent ->
                                         {
                                             String[] options = {compressionSize};
@@ -256,7 +265,10 @@ public final class FFMPEGGUI
                                    }
                                });
 
-        NODES_VIDEO.add(textFieldNumberTargetMB);
+
+        gridPaneVideoCompress.getChildren().addFirst(textFieldNumberTargetMB);
+        GridPane.setRowIndex(textFieldNumberTargetMB, 0);
+        GridPane.setColumnIndex(textFieldNumberTargetMB, 0);
 
 
     }
