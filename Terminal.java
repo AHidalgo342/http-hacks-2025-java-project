@@ -55,12 +55,12 @@ public class Terminal
     }
 
     /**
-     * Run an FFmpeg command.
+     * Runs an FFmpeg command on the terminal.
      *
-     * @param command The FFMPEG command to be run
-     * @return the last string in the terminal output
+     * @param command String command to run
+     * @return String last line of terminal output
      * @throws IOException          if an IO exception occurs
-     * @throws InterruptedException If the process is interupted
+     * @throws InterruptedException if the process is interrupted
      */
     public static String runFFmpeg(final String command)
     throws
@@ -72,12 +72,12 @@ public class Terminal
     }
 
     /**
-     * Run any command.
+     * Runs a command on the terminal.
      *
-     * @param command The command to be run
-     * @return the last string in the terminal output
-     * @throws IOException          If an IO exception occurs
-     * @throws InterruptedException if the process is interupted
+     * @param command String command to run
+     * @return String last line of terminal output
+     * @throws IOException          if an IO exception occurs
+     * @throws InterruptedException if the process is interrupted
      */
     public static String runCommand(final String command)
     throws
@@ -132,6 +132,8 @@ public class Terminal
 
         outputStream = process.getOutputStream();
 
+        // If NOT ffmpeg, read from input stream
+        // If ffmpeg, read from stderr
         if(streamType == Terminal.streamType.INPUT)
         {
             inputStream = process.getInputStream();
@@ -180,7 +182,7 @@ public class Terminal
     throws
     IOException
     {
-        final String            returnStr;
+        final String returnStr;
         final InputStreamReader inputStreamReader;
         inputStreamReader = new InputStreamReader(inputStream);
 
