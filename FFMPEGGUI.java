@@ -19,7 +19,6 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +31,9 @@ import java.util.Objects;
  * @author Szymon Zemojtel
  * @author Alex Hidalgo
  * @author Daryan Worya
- * @version 32
+ * @author Marcy Ordinario
+ * 
+ * @version 44
  */
 public final class FFMPEGGUI
         extends Application
@@ -190,19 +191,19 @@ public final class FFMPEGGUI
         GridPane.setColumnIndex(BUTTON_DEST_CHOOSER,
                                 1);
         BUTTON_DEST_CHOOSER.setOnAction(actionEvent ->
-                                      {
-                                          // Directory the user selected
-                                          final File selectedDir = dirChooser.showDialog(mainStage);
-                                          if(selectedDir == null)
-                                          {
-                                              return;
-                                          }
+                                        {
+                                            // Directory the user selected
+                                            final File selectedDir = dirChooser.showDialog(mainStage);
+                                            if(selectedDir == null)
+                                            {
+                                                return;
+                                            }
 
-                                          updateChosenDir(selectedDir);
+                                            updateChosenDir(selectedDir);
 
-                                          // update select button text
-                                          BUTTON_DEST_CHOOSER.setText("Selected: " + selectedDir.getName());
-                                      });
+                                            // update select button text
+                                            BUTTON_DEST_CHOOSER.setText("Selected: " + selectedDir.getName());
+                                        });
 
         setupVideo();
         setupAudio();
@@ -248,9 +249,9 @@ public final class FFMPEGGUI
         LAYOUT_MAIN.getStyleClass()
                    .add("vbox");
 
-//        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
-//                                     new File("C:\\Users\\User\\Downloads"),
-//                                     ".gif");
+        //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
+        //                                     new File("C:\\Users\\User\\Downloads"),
+        //                                     ".gif");
 
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
@@ -265,6 +266,19 @@ public final class FFMPEGGUI
         LAYOUT_MAIN.setScaleX(1.5);
         LAYOUT_MAIN.setScaleY(1.5);
 
+        mainStage.setMinWidth(615);
+        mainStage.setMinHeight(350);
+        // debug to display current width and height of stage
+        //        mainStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+        //            // on stage width change
+        //            LABEL_TITLE.setText(mainStage.getWidth() + " x " + mainStage.getHeight());
+        //        });
+        //
+        //        mainStage.heightProperty().addListener((obs, oldVal, newVal) -> {
+        //            // on stage height change
+        //            LABEL_TITLE.setText(mainStage.getWidth() + " x " + mainStage.getHeight());
+        //
+        //        });
 
         mainStage.setTitle("FFmpeg GUI");
         mainStage.setScene(scene);
@@ -310,16 +324,16 @@ public final class FFMPEGGUI
         COMBO_BOX_VIDEO_FILETYPES.setPrefWidth(200);
 
         COMBO_BOX_VIDEO_FILETYPES.getSelectionModel()
-                              .selectedItemProperty()
-                              .addListener(event ->
-                                           {
-                                               BUTTON_CONVERT_FILETYPES_VIDEO.setDisable(false);
+                                 .selectedItemProperty()
+                                 .addListener(event ->
+                                              {
+                                                  BUTTON_CONVERT_FILETYPES_VIDEO.setDisable(false);
 
-                                               // set the convert text to "Convert to {filetype to convert to}
-                                               BUTTON_CONVERT_FILETYPES_VIDEO.setText("Convert to " + COMBO_BOX_VIDEO_FILETYPES.getSelectionModel()
-                                                                                                                            .selectedItemProperty()
-                                                                                                                            .get());
-                                           });
+                                                  // set the convert text to "Convert to {filetype to convert to}
+                                                  BUTTON_CONVERT_FILETYPES_VIDEO.setText("Convert to " + COMBO_BOX_VIDEO_FILETYPES.getSelectionModel()
+                                                                                                                                  .selectedItemProperty()
+                                                                                                                                  .get());
+                                              });
 
 
         BUTTON_CONVERT_FILETYPES_VIDEO = new Button("Select Converting Filetype");
@@ -329,8 +343,9 @@ public final class FFMPEGGUI
         // Create HBox to hold combobox and button side by side
         HBox hBoxFiletypeVideo = new HBox(10); // 10px spacing
         hBoxFiletypeVideo.setAlignment(Pos.CENTER);
-        hBoxFiletypeVideo.getChildren().addAll(COMBO_BOX_VIDEO_FILETYPES,
-                                               BUTTON_CONVERT_FILETYPES_VIDEO);
+        hBoxFiletypeVideo.getChildren()
+                         .addAll(COMBO_BOX_VIDEO_FILETYPES,
+                                 BUTTON_CONVERT_FILETYPES_VIDEO);
 
         NODES_VIDEO.add(hBoxFiletypeVideo);
 
