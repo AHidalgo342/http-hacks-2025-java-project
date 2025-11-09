@@ -10,75 +10,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class Terminal
 {
+    private enum streamType {INPUT, ERROR}
     private static final boolean isWindows = System.getProperty("os.name")
                                                    .toLowerCase()
                                                    .startsWith("windows");
-
-
-    public static final char directoryCharacter = isWindows ?
-                                                    '\\' :
-                                                    '/';
-
-    /**
-     * Runs a command on the terminal. Also returns the
-     * first line of output from the terminal.
-     *
-     * @param command String command to run
-     * @return String first line of output; null if no output
-     * @throws IOException          If an IO exception occurs
-     * @throws InterruptedException If the process is interrupted
-     */
-    public static String runCommand(final String command)
-    throws
-    IOException,
-    InterruptedException
-    {
-        File location = new File(System.getProperty("user.dir"));
-        System.out.println(location);
-
-        System.out.println("Running in: " + location);
-        System.out.println("Command: " + command);
-
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.directory(location);
-
-        if(isWindows)
-        {
-            builder.command("cmd.exe",
-                            "/c",
-                            command);
-        }
-        else
-        {
-            builder.command("sh",
-                            "-c",
-                            command);
-        }
-
-        Process process = builder.start();
-
-        OutputStream outputStream = process.getOutputStream();
-        InputStream  errorStream  = process.getErrorStream();
-
-        final String firstLnOutput;
-
-        final String errorStreamStr;
-        errorStreamStr = printStream(errorStream);
-
-        firstLnOutput = errorStreamStr;
-
-        boolean isFinished = process.waitFor(30,
-                                             TimeUnit.SECONDS);
-        outputStream.flush();
-        outputStream.close();
-
-        if(!isFinished)
-        {
-            process.destroyForcibly();
-        }
-
-        return firstLnOutput;
-    }
 
     /**
      * Returns true if FFmpeg is installed in the system,
@@ -110,6 +45,97 @@ public class Terminal
             // If crash happens, assume FFmpeg doesn't exist
             return false;
         }
+    }
+
+    public static String runFFmpeg(final String command)
+    throws
+    IOException,
+    InterruptedException
+    {
+        return runCommand(command,
+                          streamType.ERROR);
+    }
+
+    private static String runCommand(final String command)
+    throws
+    IOException,
+    InterruptedException
+    {
+        return runCommand(command,
+                          streamType.INPUT);
+    }
+
+    /**
+     * Runs a command on the terminal. Also returns the
+     * first line of output from the terminal.
+     *
+     * @param command String command to run
+     * @return String first line of output; null if no output
+     * @throws IOException          If an IO exception occurs
+     * @throws InterruptedException If the process is interrupted
+     */
+    private static String runCommand(final String command,
+                                    final streamType streamType)
+    throws
+    IOException,
+    InterruptedException
+    {
+        File location = new File(System.getProperty("user.dir"));
+        System.out.println(location);
+
+        System.out.println("Running in: " + location);
+        System.out.println("Command: " + command);
+
+        ProcessBuilder builder = new ProcessBuilder();
+        builder.directory(location);
+
+        if(isWindows)
+        {
+            builder.command("cmd.exe",
+                            "/c",
+                            command);
+        }
+        else
+        {
+            builder.command("sh",
+                            "-c",
+                            command);
+        }
+
+        Process process = builder.start();
+
+        final OutputStream outputStream;
+        final InputStream  inputStream;
+
+        outputStream = process.getOutputStream();
+
+        if(streamType == Terminal.streamType.INPUT)
+        {
+            inputStream = process.getInputStream();
+        }
+        else
+        {
+            inputStream = process.getErrorStream();
+        }
+
+        final String firstLnOutput;
+
+        final String inputStreamStr;
+        inputStreamStr = printStream(inputStream);
+
+        firstLnOutput = inputStreamStr;
+
+        boolean isFinished = process.waitFor(30,
+                                             TimeUnit.SECONDS);
+        outputStream.flush();
+        outputStream.close();
+
+        if(!isFinished)
+        {
+            process.destroyForcibly();
+        }
+
+        return firstLnOutput;
     }
 
     /**

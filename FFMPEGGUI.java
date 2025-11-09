@@ -395,8 +395,13 @@ public final class FFMPEGGUI
         System.out.println(compressionSize);
         try
         {
+            final String outputFileName;
+            outputFileName = TEXT_FIELD_FILENAME_OUTPUT.getText();
+            Helper.getBaseFileName(outputFileName);
+
             TerminalExecutor.compressFile(fileToUse,
                                           destDir,
+                                          outputFileName,
                                           options);
         }
         catch(Exception e)
