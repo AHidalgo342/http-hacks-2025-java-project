@@ -116,7 +116,7 @@ public final class FFMPEGGUI
 
         // Button File Selector setup. Add button event to open file selection.
         buttonFileChooser = new Button("Select a file");
-        buttonFileChooser.getStyleClass().add("file-chooser");
+        buttonFileChooser.getStyleClass().addAll("button", "selected-file");
         NODES_CONSTANT.add(buttonFileChooser);
         buttonFileChooser.setOnAction(actionEvent ->
                                       {

@@ -17,10 +17,34 @@
     -fx-padding: 10px 20px;
     -fx-background-radius: 5px;
     -fx-font-weight: bold;
-    -fx-min-width: 250px;
-    -fx-max-width: 250px;
-    -fx-pref-width: 200px;
+    -fx-min-width: 0;
+    -fx-pref-width: -1;
+    -fx-max-width: 500px;
 }
+
+.selected-file {
+    -fx-padding: 10px 24px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-background-color: #6cb02a;
+    -fx-wrap-text: true;
+}
+
+.start-compressing {
+    -fx-padding: 10px 28px;
+    -fx-font-size: 20px;
+}
+
+.hbox-center {
+    -fx-alignment: center;
+    -fx-spacing: 18px;
+}
+.vbox {
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+}
+
 
 .combo-box {
     -fx-background-color: #7BBD44;
@@ -41,13 +65,15 @@
     -fx-font-size: 14px;
     -fx-padding: 10px 20px;
     -fx-background-radius: 5px;
-    -fx-min-width: 550px;
+    -fx-min-width: 0;
     -fx-max-width: 550px;
-    -fx-pref-width: 500px;
+}
+.file-chooser {
+    -fx-background-color: #6cb02a
 }
 
-.file-chooser {
-    -fx-background-color: #6cb02a;
+.compress-video {
+    -fx-alignment: center;
 }
 
 .button:hover {
