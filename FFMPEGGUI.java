@@ -296,7 +296,7 @@ public final class FFMPEGGUI
         setupAudio();
 
         // create title label
-        LABEL_TITLE = new Label("FFmpeg GUI");
+        LABEL_TITLE = new Label("JEFFmpeg");
         LABEL_TITLE.getStyleClass()
                    .add("neon-text");
 
