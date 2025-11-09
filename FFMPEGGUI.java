@@ -113,6 +113,7 @@ public final class FFMPEGGUI
 
         // Button File Selector setup. Add button event to open file selection.
         buttonFileChooser = new Button("Select a file");
+        buttonFileChooser.getStyleClass().add("file-chooser");
         NODES_CONSTANT.add(buttonFileChooser);
         buttonFileChooser.setOnAction(actionEvent ->
                                       {
@@ -247,6 +248,7 @@ public final class FFMPEGGUI
         final TextField textFieldNumberTargetMB;
         textFieldNumberTargetMB = new TextField("");
         textFieldNumberTargetMB.setPromptText("Target MB");
+        textFieldNumberTargetMB.getStyleClass().add("text-field");
         textFieldNumberTargetMB.textProperty()
                                .addListener(new ChangeListener<String>()
                                {

@@ -1,6 +1,6 @@
 /* styles.css - JavaFX CSS */
 .root {
-    -fx-background-color: #f0f0f0;
+    -fx-background-color: #DDC56E;
     -fx-padding: 20px;
 }
 
@@ -11,18 +11,21 @@
 }
 
 .button {
-    -fx-background-color: #7BBD44;
+    -fx-background-color: #6cb02a;
     -fx-text-fill: white;
     -fx-font-size: 20px;
     -fx-padding: 10px 20px;
     -fx-background-radius: 5px;
     -fx-font-weight: bold;
+    -fx-min-width: 250px;
+    -fx-max-width: 250px;
+    -fx-pref-width: 200px;
 }
 
 .combo-box {
     -fx-background-color: #7BBD44;
     -fx-text-fill: white;
-    -fx-font-size: 14px;
+    -fx-font-size: 20px;
     -fx-padding: 10px 20px;
     -fx-font-weight: bold;
 }
@@ -38,17 +41,29 @@
     -fx-font-size: 14px;
     -fx-padding: 10px 20px;
     -fx-background-radius: 5px;
+    -fx-min-width: 550px;
+    -fx-max-width: 550px;
+    -fx-pref-width: 500px;
+}
+
+.file-chooser {
+    -fx-background-color: #6cb02a;
 }
 
 .button:hover {
     -fx-background-color: #32832F;
+    -fx-cursor: hand;
 }
 
 .button:pressed {
     -fx-background-color: #1A4727;
 }
 
+
+
+
 .vbox {
     -fx-spacing: 15px;
     -fx-alignment: center;
 }
+
