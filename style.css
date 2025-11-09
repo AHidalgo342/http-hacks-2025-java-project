@@ -16,6 +16,16 @@
     -fx-font-size: 14px;
     -fx-padding: 10px 20px;
     -fx-background-radius: 5px;
+    -fx-font-weight: bold;
+}
+
+.text-field {
+    -fx-background-color: #7BBD44;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #EEE;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
 }
 
 .button:hover {

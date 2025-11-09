@@ -44,8 +44,8 @@ public final class FFMPEGGUI
 
 
     private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();
-    private static final List<Node> NODES_VIDEO = new ArrayList<Node>();
-    private static final List<Node> NODES_AUDIO = new ArrayList<Node>();
+    private static final List<Node> NODES_VIDEO    = new ArrayList<Node>();
+    private static final List<Node> NODES_AUDIO    = new ArrayList<Node>();
 
 
     private static VBox LAYOUT_MAIN;
@@ -72,9 +72,9 @@ public final class FFMPEGGUI
 
 //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
 //                                     new File("./meep.m4a"));
-        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
-                                      new File("./meep.mp4"),
-                                      options);
+//        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
+//                                      new File("./meep.mp4"),
+//                                      options);
 
         // Test label.
         label = new Label("Hello JavaFX!");
@@ -164,7 +164,8 @@ public final class FFMPEGGUI
 
 
         final List<String> fileTypesVideoTrimmed;
-        fileTypesVideoTrimmed = Helper.removeFirstCharacters(1, FILE_TYPES_VIDEO);
+        fileTypesVideoTrimmed = Helper.removeFirstCharacters(1,
+                                                             FILE_TYPES_VIDEO);
 
         comboBoxFiletypesVideo = new ComboBox<String>();
         comboBoxFiletypesVideo.getItems()
@@ -172,28 +173,30 @@ public final class FFMPEGGUI
         NODES_VIDEO.add(comboBoxFiletypesVideo);
 
 
-
-
-
         // force the field to be numeric only
         final TextField textFieldNumberTargetMB;
         textFieldNumberTargetMB = new TextField("");
         textFieldNumberTargetMB.setPromptText("Target MB");
-        textFieldNumberTargetMB.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    textFieldNumberTargetMB.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
+        textFieldNumberTargetMB.textProperty()
+                               .addListener(new ChangeListener<String>()
+                               {
+                                   @Override
+                                   public void changed(final ObservableValue<? extends String> observable,
+                                                       final String oldValue,
+                                                       String newValue)
+                                   {
+                                       if(!newValue.matches("\\d*"))
+                                       {
+                                           textFieldNumberTargetMB.setText(newValue.replaceAll("[^\\d]",
+                                                                                               ""));
+                                       }
+                                   }
+                               });
 
         NODES_VIDEO.add(textFieldNumberTargetMB);
 
 
     }
-
 
 
     private static void setupAudio()
@@ -211,7 +214,8 @@ public final class FFMPEGGUI
 
 
         final List<String> fileTypesAudioTrimmed;
-        fileTypesAudioTrimmed = Helper.removeFirstCharacters(1, FILE_TYPES_AUDIO);
+        fileTypesAudioTrimmed = Helper.removeFirstCharacters(1,
+                                                             FILE_TYPES_AUDIO);
 
         comboBoxFiletypesAudio = new ComboBox<String>();
         comboBoxFiletypesAudio.getItems()
