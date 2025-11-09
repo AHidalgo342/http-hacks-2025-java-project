@@ -51,7 +51,6 @@
 }
 
 .neon-text {
-    -fx-font-size: 32px;
     -fx-font-weight: bold;
     -fx-text-fill: #EEE;
     -fx-alignment: center;
