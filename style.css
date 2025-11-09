@@ -1,0 +1,32 @@
+/* styles.css - JavaFX CSS */
+.root {
+    -fx-background-color: #f0f0f0;
+    -fx-padding: 20px;
+}
+
+.label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.button {
+    -fx-background-color: #7BBD44;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #32832F;
+}
+
+.button:pressed {
+    -fx-background-color: #1A4727;
+}
+
+.vbox {
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+}

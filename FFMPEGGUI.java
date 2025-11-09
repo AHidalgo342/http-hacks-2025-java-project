@@ -152,6 +152,8 @@ public final class FFMPEGGUI
 
                                         });
 
+        buttonCompressVideo.getStyleClass().add("compress-video");
+
 
         final List<String> fileTypesVideoTrimmed;
         fileTypesVideoTrimmed = Helper.removeFirstCharacters(1, FILE_TYPES_VIDEO);
