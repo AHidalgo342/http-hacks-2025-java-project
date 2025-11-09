@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -60,6 +61,11 @@ public final class FFMPEGGUI
         final Button buttonFileChooser;
         final Button buttonDestChooser;
         final Scene  scene;
+
+        System.out.println(Terminal.FFmpegExists());
+
+        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
+                                     new File("./waow.m4a"));
 
         // Test label.
         label = new Label("Hello JavaFX!");
