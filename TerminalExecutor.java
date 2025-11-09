@@ -2,8 +2,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalTime;
 
-import static java.lang.System.exit;
-
 /**
  * Terminal wrapper class.
  *
@@ -61,19 +59,19 @@ public class TerminalExecutor
         {
             if(isGif(src))
             {
-                Terminal.runFFmpeg("ffmpeg -y -i " + src + " -movflags faststart -pix_fmt yuv420p -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" " + dst);
+                Terminal.runFFmpeg("ffmpeg -y -i " + src.getAbsolutePath() + " -movflags faststart -pix_fmt yuv420p -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" " + dst.getAbsolutePath());
             }
             else if(isGif(dst))
             {
-                Terminal.runFFmpeg("ffmpeg -y -ss 30 -t 3 -i " + src + " -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 " + dst);
+                Terminal.runFFmpeg("ffmpeg -y -ss 30 -t 3 -i " + src.getAbsolutePath() + " -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 " + dst.getAbsolutePath());
             }
             if(isVideo(src))
             {
-                Terminal.runFFmpeg("ffmpeg -y -i " + src + " -c copy " + dst);
+                Terminal.runFFmpeg("ffmpeg -y -i " + src.getAbsolutePath() + " -c copy " + dst.getAbsolutePath());
             }
             else
             {
-                Terminal.runFFmpeg("ffmpeg -y -i " + src + " " + dst);
+                Terminal.runFFmpeg("ffmpeg -y -i " + src.getAbsolutePath() + " -c:v copy -b:a 320k -ab 192k " + dst.getAbsolutePath());
             }
         }
         catch(Exception e)
@@ -112,7 +110,7 @@ public class TerminalExecutor
     IOException,
     InterruptedException
     {
-        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -v quiet -stats -i " + src + " -f null -");
+        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -v quiet -stats -i " + src.getAbsolutePath() + " -f null -");
 
         long bitrateKBPS = getBitrateKBPS(options,
                                           fileLengthVerbose);
@@ -131,7 +129,6 @@ public class TerminalExecutor
             compressAudio(src,
                           dst,
                           name,
-                          options,
                           bitrateKBPS);
         }
     }
@@ -139,10 +136,33 @@ public class TerminalExecutor
     private static void compressAudio(File src,
                                       File dst,
                                       String name,
-                                      String[] options,
                                       long bitrateKBPS)
     {
-        exit(0);
+        final StringBuilder sb;
+        sb = new StringBuilder();
+
+        sb.append("ffmpeg -y -i ");
+        sb.append(src.getAbsolutePath());
+        // Audio bitrate flag
+        sb.append(" -b:a ");
+        // Audio bitrate specified
+        sb.append(bitrateKBPS);
+        sb.append("k ");
+        // Specify mono
+        sb.append(" -ac 1 ");
+        sb.append(dst.toString());
+        sb.append(File.separator);
+        sb.append(name);
+        sb.append(Helper.getFileType(src.getName()));
+
+        try
+        {
+            Terminal.runFFmpeg(sb.toString());
+        }
+        catch(Exception e)
+        {
+            System.err.println(e.getMessage());
+        }
     }
 
     private static void compressVideo(File src,
