@@ -70,7 +70,7 @@ public final class FFMPEGGUI
     private static ScrollPane SCROLL_PANE_TERMINAL;
     private static Button     BUTTON_CONVERT_FILETYPES_VIDEO;
     private static Button     BUTTON_CONVERT_FILETYPES_AUDIO;
-
+    private static Button     BUTTON_COMPRESS_VIDEO;
 
     private static VBox LAYOUT_MAIN;
     private static VBox WHITE_BOX;   // the centered white card that holds buttons/controls
@@ -290,7 +290,6 @@ public final class FFMPEGGUI
 
     private static void setupVideo()
     {
-        final Button           buttonCompressVideo;
         final ComboBox<String> comboBoxFiletypesVideo;
 
         final GridPane gridPaneVideoCompress;
@@ -299,20 +298,21 @@ public final class FFMPEGGUI
         gridPaneVideoCompress.setAlignment(Pos.CENTER);
         NODES_VIDEO.add(gridPaneVideoCompress);
 
-        buttonCompressVideo = new Button("Start Compressing Video");
+        BUTTON_COMPRESS_VIDEO = new Button("Enter target MB");
 
 
         gridPaneVideoCompress.getChildren()
-                             .addFirst(buttonCompressVideo);
+                             .addFirst(BUTTON_COMPRESS_VIDEO);
 
-        GridPane.setRowIndex(buttonCompressVideo,
+        GridPane.setRowIndex(BUTTON_COMPRESS_VIDEO,
                              0);
-        GridPane.setColumnIndex(buttonCompressVideo,
+        GridPane.setColumnIndex(BUTTON_COMPRESS_VIDEO,
                                 1);
-        buttonCompressVideo.setOnAction(actionEvent -> compressFile());
+        BUTTON_COMPRESS_VIDEO.setOnAction(actionEvent -> compressFile());
 
-        buttonCompressVideo.getStyleClass()
-                           .add("compress-video");
+        BUTTON_COMPRESS_VIDEO.getStyleClass()
+                             .add("compress-video");
+        BUTTON_COMPRESS_VIDEO.setDisable(true);
 
 
         final List<String> fileTypesVideoTrimmed;
@@ -375,6 +375,19 @@ public final class FFMPEGGUI
                                                 textFieldNumberTargetMBVideo.setText(newValue.replaceAll("\\D",
                                                                                                          ""));
                                             }
+
+                                            if(newValue.isBlank() || newValue.equals("0"))
+                                            {
+                                                BUTTON_COMPRESS_VIDEO.setDisable(true);
+                                                BUTTON_COMPRESS_VIDEO.setText("Enter target MB");
+                                            }
+                                            else
+                                            {
+                                                BUTTON_COMPRESS_VIDEO.setDisable(false);
+                                                BUTTON_COMPRESS_VIDEO.setText("Start compress (aiming for " + textFieldNumberTargetMBVideo.getText() + "MB)");
+
+                                            }
+
 
                                             updateCompressionSize(textFieldNumberTargetMBVideo.getText());
                                         }
