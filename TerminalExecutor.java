@@ -25,14 +25,16 @@ public class TerminalExecutor
      * @param dst Destination of file
      */
     public static void convertFile(final File src,
-                                   final Path dst)
+                                   final File dst)
     {
         boolean isVideo = false;
 
-        for(String it : FFMPEGGUI.FILE_TYPES_VIDEO)
+        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
         {
-            if(src.toString()
-                  .matches(it))
+            final String fileExtension;
+            fileExtension = src.toString().substring(1);
+
+            if(it.endsWith(fileExtension))
             {
                 isVideo = true;
                 break;
@@ -43,11 +45,11 @@ public class TerminalExecutor
         {
             if(isVideo)
             {
-                Terminal.runCommand("ffmpeg -i " + src + " -c copy " + dst);
+                Terminal.runCommand("ffmpeg -v quiet -i " + src + " -c copy " + dst);
             }
             else
             {
-                Terminal.runCommand("ffmpeg -i " + src + " " + dst);
+                Terminal.runCommand("ffmpeg -v quiet -i " + src + " " + dst);
             }
         }
         catch(Exception e)
@@ -127,7 +129,7 @@ public class TerminalExecutor
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -i ");
+        sb.append("ffmpeg -v quiet -i ");
         sb.append(src.getAbsolutePath());
         sb.append(" -b ");
         sb.append(bitrateKBPS);

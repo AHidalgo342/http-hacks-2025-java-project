@@ -129,13 +129,15 @@ public class Terminal
     IOException
     {
         final String returnStr;
+        final InputStreamReader inputStreamReader;
+        inputStreamReader = new InputStreamReader(inputStream);
 
-        try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream)))
+        try(BufferedReader bufferedReader = new BufferedReader(inputStreamReader))
         {
             String line;
 
             line = bufferedReader.readLine();
-            System.out.println();
+            System.out.println("a");
             returnStr = line;
             while((line = bufferedReader.readLine()) != null)
             {
