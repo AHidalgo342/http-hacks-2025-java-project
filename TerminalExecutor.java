@@ -258,7 +258,7 @@ public class TerminalExecutor
     IOException,
     InterruptedException
     {
-        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i \"" + src.getAbsolutePath() + "\" -f null -");
+        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i \"" + src.getAbsolutePath() + "\" -f null -map_metadata -1 -");
         System.out.println(fileLengthVerbose);
 
         String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
