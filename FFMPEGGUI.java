@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -32,7 +33,6 @@ import java.util.Objects;
  * @author Alex Hidalgo
  * @author Daryan Worya
  * @author Marcy Ordinario
- *
  * @version 44
  */
 public final class FFMPEGGUI
@@ -67,7 +67,7 @@ public final class FFMPEGGUI
     private static final TextField        TEXT_FIELD_FILENAME_OUTPUT = new TextField();
     private static final ComboBox<String> COMBO_BOX_VIDEO_FILETYPES  = new ComboBox<>();
 
-    private static Label      LABEL_TITLE; // the animated neon title label
+    private static Label      LABEL_TITLE;
     private static Label      LABEL_TERMINAL_OUTPUT;
     private static ScrollPane SCROLL_PANE_TERMINAL;
     private static Button     BUTTON_CONVERT_FILETYPES_VIDEO;
@@ -103,6 +103,93 @@ public final class FFMPEGGUI
     IOException,
     InterruptedException
     {
+
+        if(Terminal.FFmpegExists())
+        {
+            startValidFFmpeg(mainStage);
+            return;
+        }
+
+        final Stage    stagePopup;
+        final VBox     vboxPopup;
+        final GridPane gridPanePopupButtons;
+        final Button   buttonPopupCheckAgain;
+        final Button   buttonPopupQuit;
+        final Label    labelPopupText;
+        final Scene    scenePopup;
+
+
+        stagePopup            = new Stage();
+        vboxPopup             = new VBox();
+        gridPanePopupButtons  = new GridPane();
+        buttonPopupCheckAgain = new Button("Check for FFmpeg again");
+        buttonPopupQuit       = new Button("Quit");
+        labelPopupText        = new Label("We couldn't find FFmpeg on your device.\nPlease install it and try again.");
+        scenePopup            = new Scene(vboxPopup,
+                                          400,
+                                          185);
+
+
+        gridPanePopupButtons.getChildren()
+                            .add(buttonPopupQuit);
+        GridPane.setRowIndex(buttonPopupQuit,
+                             0);
+        GridPane.setColumnIndex(buttonPopupQuit,
+                                0);
+
+
+        gridPanePopupButtons.getChildren()
+                            .add(buttonPopupCheckAgain);
+        GridPane.setRowIndex(buttonPopupCheckAgain,
+                             0);
+        GridPane.setColumnIndex(buttonPopupCheckAgain,
+                                1);
+
+        gridPanePopupButtons.setHgap(150);
+
+
+        gridPanePopupButtons.setPadding(new Insets(50,
+                                                   0,
+                                                   50,
+                                                   0));
+        vboxPopup.setAlignment(Pos.BASELINE_CENTER);
+        gridPanePopupButtons.setAlignment(Pos.BASELINE_CENTER);
+
+
+        vboxPopup.getChildren()
+                 .addAll(labelPopupText,
+                         gridPanePopupButtons);
+
+
+        buttonPopupQuit.setOnMouseClicked(onClick ->
+                                          {
+                                              System.exit(0);
+                                          });
+
+        buttonPopupCheckAgain.setOnMouseClicked(onClick ->
+                                                {
+                                                    if(Terminal.FFmpegExists())
+                                                    {
+                                                        stagePopup.hide();
+                                                        startValidFFmpeg(mainStage);
+                                                    }
+                                                });
+
+
+        stagePopup.setScene(scenePopup);
+        stagePopup.setResizable(false);
+        stagePopup.setMinWidth(400);
+        stagePopup.setMinHeight(300);
+
+        stagePopup.show();
+
+
+    }
+
+    public void startValidFFmpeg(final Stage mainStage)
+    {
+
+
         final Button buttonFileChooser;
         final Scene  scene;
 
@@ -249,9 +336,9 @@ public final class FFMPEGGUI
         LAYOUT_MAIN.getStyleClass()
                    .add("vbox");
 
-//        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
-//                                     new File("C:\\Users\\User\\Downloads"),
-//                                     ".gif");
+        //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
+        //                                     new File("C:\\Users\\User\\Downloads"),
+        //                                     ".gif");
 
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
@@ -638,5 +725,7 @@ public final class FFMPEGGUI
         SCROLL_PANE_TERMINAL.layout();
         // scroll to bottom of scroll pane to see live terminal
         SCROLL_PANE_TERMINAL.setVvalue(1.0);
+
+
     }
 }
