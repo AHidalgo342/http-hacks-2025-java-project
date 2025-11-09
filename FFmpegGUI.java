@@ -417,12 +417,19 @@ public final class FFmpegGUI
         final HBox         hBoxFiletypeVideo;
         final TextField    textFieldTargetMBVideo;
 
+        final Label compressionLabel;
+        final Label conversionLabel;
+
+        compressionLabel = new Label("\nCompression");
+        compressionLabel.getStyleClass().add("bg-label");
+        conversionLabel = new Label("\nConversion");
+        conversionLabel.getStyleClass().add("bg-label");
 
         // setup gird pane for video compression nodes
         gridPaneVideoCompress = new GridPane();
         gridPaneVideoCompress.setHgap(10);
         gridPaneVideoCompress.setAlignment(Pos.CENTER);
-        NODES_VIDEO.add(new Label("\nCompression"));
+        NODES_VIDEO.add(compressionLabel);
         NODES_VIDEO.add(gridPaneVideoCompress);
 
         // setup button to click to compress video
@@ -539,10 +546,8 @@ public final class FFmpegGUI
                                  BUTTON_CONVERT_FILETYPES_VIDEO);
 
         // add a label to avoid confusion of sections
-        NODES_VIDEO.add(new Label("\nConversion"));
+        NODES_VIDEO.add(conversionLabel);
         NODES_VIDEO.add(hBoxFiletypeVideo);
-
-
     }
 
     /**
@@ -555,10 +560,19 @@ public final class FFmpegGUI
         final List<String> fileTypesAudioTrimmed;
         final HBox         hBoxFiletypeAudio;
 
+        final Label compressionLabel;
+        final Label conversionLabel;
+
+        compressionLabel = new Label("\nCompression");
+        compressionLabel.getStyleClass().add("bg-label");
+        conversionLabel = new Label("\nConversion");
+        conversionLabel.getStyleClass().add("bg-label");
+
         // setup visual grid pane to organize audio compression next to each other
         gridPaneAudioCompress = new GridPane();
         gridPaneAudioCompress.setHgap(10);
         gridPaneAudioCompress.setAlignment(Pos.CENTER);
+        NODES_AUDIO.add(compressionLabel);
         NODES_AUDIO.add(gridPaneAudioCompress);
 
         // setup button to compress audio
@@ -679,6 +693,7 @@ public final class FFmpegGUI
         hBoxFiletypeAudio.getChildren()
                          .addAll(COMBO_BOX_AUDIO_FILETYPES,
                                  BUTTON_CONVERT_FILETYPES_AUDIO);
+        NODES_AUDIO.add(conversionLabel);
         NODES_AUDIO.add(hBoxFiletypeAudio);
     }
 
