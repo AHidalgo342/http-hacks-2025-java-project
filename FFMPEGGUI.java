@@ -274,6 +274,7 @@ public final class FFMPEGGUI
 
         mainStage.setTitle("JavaFX Test");
         mainStage.setScene(scene);
+        mainStage.setOpacity(0.7);
         mainStage.show();
     }
 
