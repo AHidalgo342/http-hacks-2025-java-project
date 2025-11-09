@@ -2,7 +2,6 @@ import javafx.concurrent.Task;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalTime;
 
 /**
  * Terminal wrapper class.
@@ -233,16 +232,14 @@ public class TerminalExecutor
     IOException,
     InterruptedException
     {
-        String fileLengthTimeStamp = getFileLengthTimeStamp(src);
+        String fileLength = getFileLength(src);
 
         int targetFileSizeMB = Integer.parseInt(options[0]);
 
         long targetSizeBits = targetFileSizeMB * PREFIX_MULTIPLIER_MEGA * BYTES_TO_BITS;
 
-        int fileLengthSeconds = LocalTime.parse(fileLengthTimeStamp)
-                                         .toSecondOfDay();
+        int fileLengthSeconds = (int) Math.ceil(Double.parseDouble(fileLength));
 
-        System.out.println("--------------------------------------------------------------");
         System.out.println("Target file size: " + targetSizeBits + " bits");
         System.out.println("File size: " + fileLengthSeconds + " seconds");
 
@@ -256,16 +253,14 @@ public class TerminalExecutor
      * @throws IOException if an IO exception occurs
      * @throws InterruptedException if the process is interrupted
      */
-    private static String getFileLengthTimeStamp(File src)
+    private static String getFileLength(File src)
     throws
     IOException,
     InterruptedException
     {
-        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i \"" + src.getAbsolutePath() + "\" -f null -map_metadata -1 -");
+        String fileLengthVerbose = Terminal.runCommand("ffprobe -v quiet -i \"" + src.getAbsolutePath() + "\" -show_entries format=duration -of csv=\"p=0\"");
         System.out.println(fileLengthVerbose);
-
-        String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
-        return fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
+        return fileLengthVerbose;
     }
 
     private static void callTerminal(StringBuilder sb)
