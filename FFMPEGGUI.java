@@ -1,10 +1,14 @@
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
@@ -12,7 +16,8 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,8 +47,8 @@ public final class FFMPEGGUI
                                                             "*.mp3",
                                                             "*.aac"};
 
-    private static final int STAGE_HEIGHT_PX = 400;
-    private static final int STAGE_WIDTH_PX  = 600;
+    private static final int STAGE_HEIGHT_PX = 500;
+    private static final int STAGE_WIDTH_PX  = 500;
     private static final int PADDING_PX      = 10;
 
     private static final int SKIP_FIRST = 1;
@@ -51,6 +56,10 @@ public final class FFMPEGGUI
     private static final List<Node> NODES_CONSTANT = new ArrayList<>();
     private static final List<Node> NODES_VIDEO    = new ArrayList<>();
     private static final List<Node> NODES_AUDIO    = new ArrayList<>();
+
+
+    private static final TextField TEXT_FIELD_FILENAME_OUTPUT = new TextField();
+
 
     private static VBox LAYOUT_MAIN;
 
@@ -121,6 +130,16 @@ public final class FFMPEGGUI
 
                                           updateChosenFile(selectedFile);
 
+
+                                          final String filenameNoFiletype = Helper.getBaseFileName(selectedFile.getName());
+
+                                          // update TEXT_FIELD_FILENAME_OUTPUT if blank
+                                          if(TEXT_FIELD_FILENAME_OUTPUT.getText().isBlank())
+                                          {
+                                              TEXT_FIELD_FILENAME_OUTPUT.setText(filenameNoFiletype);
+                                          }
+
+
                                           // update select button text
                                           buttonFileChooser.setText("Selected: " + selectedFile.getName());
 
@@ -138,6 +157,10 @@ public final class FFMPEGGUI
                                                       NODES_AUDIO);
                                           }
                                       });
+
+        // text field input for output name
+        TEXT_FIELD_FILENAME_OUTPUT.setPromptText("Output filename");
+        NODES_CONSTANT.add(TEXT_FIELD_FILENAME_OUTPUT);
 
         //Button for destination chooser
         buttonDestChooser = new Button("Select destination");
@@ -166,6 +189,8 @@ public final class FFMPEGGUI
                                buttonFileChooser,
                                buttonDestChooser);
 
+        LAYOUT_MAIN.setAlignment(Pos.CENTER);
+
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
                           STAGE_HEIGHT_PX,
@@ -184,8 +209,16 @@ public final class FFMPEGGUI
         final Button           buttonCompressVideo;
         final ComboBox<String> comboBoxFiletypesVideo;
 
-        buttonCompressVideo = new Button("Compress Video");
-        NODES_VIDEO.add(buttonCompressVideo);
+        final GridPane gridPaneVideoCompress;
+        gridPaneVideoCompress = new GridPane();
+        gridPaneVideoCompress.setHgap(10);
+        NODES_VIDEO.add(gridPaneVideoCompress);
+
+        buttonCompressVideo = new Button("Start Compressing Video");
+        gridPaneVideoCompress.getChildren().addFirst(buttonCompressVideo);
+
+        GridPane.setRowIndex(buttonCompressVideo, 0);
+        GridPane.setColumnIndex(buttonCompressVideo, 1);
         buttonCompressVideo.setOnAction(actionEvent -> compressFile());
 
         buttonCompressVideo.getStyleClass()
@@ -223,8 +256,12 @@ public final class FFMPEGGUI
                                    }
                                });
 
-        NODES_VIDEO.add(textFieldNumberTargetMB);
+
+        gridPaneVideoCompress.getChildren().addFirst(textFieldNumberTargetMB);
+        GridPane.setRowIndex(textFieldNumberTargetMB, 0);
+        GridPane.setColumnIndex(textFieldNumberTargetMB, 0);
         NODES_AUDIO.add(textFieldNumberTargetMB);
+
     }
 
     private static void setupAudio()

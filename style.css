@@ -13,10 +13,22 @@
 .button {
     -fx-background-color: #7BBD44;
     -fx-text-fill: white;
-    -fx-font-size: 14px;
+    -fx-font-size: 20px;
     -fx-padding: 10px 20px;
     -fx-background-radius: 5px;
     -fx-font-weight: bold;
+}
+
+.combo-box {
+    -fx-background-color: #7BBD44;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-font-weight: bold;
+}
+
+.grid-pane {
+
 }
 
 .text-field {
