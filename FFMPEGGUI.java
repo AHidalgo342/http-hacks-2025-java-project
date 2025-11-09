@@ -2,17 +2,20 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
-import java.io.*;
-import java.nio.file.Path;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +51,22 @@ public final class FFMPEGGUI
     private static final List<Node> NODES_AUDIO    = new ArrayList<Node>();
 
 
+    private static final TextField TEXT_FIELD_FILENAME_OUTPUT = new TextField();
+
+
     private static VBox LAYOUT_MAIN;
+
+    // Files chosen
+    private static File   fileToUse;
+    private static File   destDir;
+    // Compression size (if compressing)
+    private static String compressionSize;
+
+    {
+        fileToUse       = null;
+        destDir         = null;
+        compressionSize = null;
+    }
 
     /**
      * Initial setup of JavaFX GUI and static elements.
@@ -68,27 +86,18 @@ public final class FFMPEGGUI
 
         System.out.println(Terminal.FFmpegExists());
 
-        String[] options = {"100K", "10"};
+        final String[] options = {"1", "10"};
 
         //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
         //                                     new File("./meep.m4a"));
-//        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
-//                                      new File("./meep.mp4"),
-//                                      options);
+//                TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
+//                                              new File("."),
+//                                              options);
 
-//        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
-//                                     new File("./meep.m4a"));
-//        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
-//                                      new File("./meep.mp4"),
-//                                      options);
-//        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
-//                                      new File("./meep.mov"),
-//                                      options);
+        // Test label
+        label = new Label("FFmpeg GUI");
 
-        // Test label.
-        label = new Label("Hello JavaFX!");
-
-        // File Chooser Setup
+        // File/Directory Chooser Setup
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters()
@@ -96,6 +105,9 @@ public final class FFMPEGGUI
                                                            FILE_TYPES_VIDEO),
                            new FileChooser.ExtensionFilter(FILE_DESCRIPTION_AUDIO,
                                                            FILE_TYPES_AUDIO));
+
+        DirectoryChooser dirChooser = new DirectoryChooser();
+        dirChooser.setTitle("Open Resource File");
 
         // Button File Selector setup. Add button event to open file selection.
         buttonFileChooser = new Button("Select a file");
@@ -108,6 +120,19 @@ public final class FFMPEGGUI
                                           {
                                               return;
                                           }
+
+                                          updateChosenFile(selectedFile);
+
+
+                                          final String filenameNoFiletype = Helper.getBaseFileName(selectedFile.getName());
+
+                                          // update TEXT_FIELD_FILENAME_OUTPUT if blank
+                                          if(TEXT_FIELD_FILENAME_OUTPUT.getText().isBlank())
+                                          {
+                                              TEXT_FIELD_FILENAME_OUTPUT.setText(filenameNoFiletype);
+                                          }
+
+
                                           // update select button text
                                           buttonFileChooser.setText("Selected: " + selectedFile.getName());
 
@@ -126,12 +151,26 @@ public final class FFMPEGGUI
                                           }
                                       });
 
+        // text field input for output name
+        TEXT_FIELD_FILENAME_OUTPUT.setPromptText("Output filename");
+        NODES_CONSTANT.add(TEXT_FIELD_FILENAME_OUTPUT);
+
         //Button for destination chooser
-        buttonDestChooser = new Button("Select Destination");
+        buttonDestChooser = new Button("Select destination");
         NODES_CONSTANT.add(buttonDestChooser);
         buttonDestChooser.setOnAction(actionEvent ->
                                       {
-                                          /* To add later */
+                                          // Directory the user selected
+                                          final File selectedDir = dirChooser.showDialog(mainStage);
+                                          if(selectedDir == null)
+                                          {
+                                              return;
+                                          }
+
+                                          updateChosenDir(selectedDir);
+
+                                          // update select button text
+                                          buttonDestChooser.setText("Selected: " + selectedDir.getName());
                                       });
 
         setupVideo();
@@ -165,11 +204,21 @@ public final class FFMPEGGUI
         NODES_VIDEO.add(buttonCompressVideo);
         buttonCompressVideo.setOnAction(actionEvent ->
                                         {
-                                            // action when button clicked
-
+                                            String[] options = {compressionSize};
+                                            System.out.println(compressionSize);
+                                            try {
+                                                TerminalExecutor.compressFile(fileToUse,
+                                                                              destDir,
+                                                                              options);
+                                            }
+                                            catch(Exception e)
+                                            {
+                                                throw new RuntimeException(e);
+                                            }
                                         });
 
-        buttonCompressVideo.getStyleClass().add("compress-video");
+        buttonCompressVideo.getStyleClass()
+                           .add("compress-video");
 
 
         final List<String> fileTypesVideoTrimmed;
@@ -199,6 +248,8 @@ public final class FFMPEGGUI
                                            textFieldNumberTargetMB.setText(newValue.replaceAll("[^\\d]",
                                                                                                ""));
                                        }
+
+                                       updateCompressionSize(textFieldNumberTargetMB.getText());
                                    }
                                });
 
@@ -242,5 +293,21 @@ public final class FFMPEGGUI
             .addAll(NODES_CONSTANT);
         vBox.getChildren()
             .addAll(nodes);
+    }
+
+
+    private static void updateChosenFile(final File file)
+    {
+        fileToUse = file;
+    }
+
+    private static void updateChosenDir(final File dir)
+    {
+        destDir = dir;
+    }
+
+    private static void updateCompressionSize(final String size)
+    {
+        compressionSize = size;
     }
 }

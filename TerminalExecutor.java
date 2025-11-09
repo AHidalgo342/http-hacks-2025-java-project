@@ -45,11 +45,11 @@ public class TerminalExecutor
         {
             if(isVideo)
             {
-                Terminal.runCommand("ffmpeg -y -i " + src + " -c copy " + dst);
+                Terminal.runCommand("ffmpeg -i " + src + " -c copy -y " + dst);
             }
             else
             {
-                Terminal.runCommand("ffmpeg -y -i " + src + " " + dst);
+                Terminal.runCommand("ffmpeg -i " + src + " -y " + dst);
             }
         }
         catch(Exception e)
@@ -94,30 +94,10 @@ public class TerminalExecutor
         // bitrate = target size / duration
         char targetSizePrefix = options[0].charAt(options[0].length() - 1);
 
-        int prefixMultiplier = 1;
-
-        // I do NOT expect anyone to pass in a terabyte
-        // file and if they do it's their fault
-        switch(targetSizePrefix)
-        {
-            case 'K':
-                prefixMultiplier = PREFIX_MULTIPLIER_KILO;
-                break;
-            case 'M':
-                prefixMultiplier = PREFIX_MULTIPLIER_MEGA;
-                break;
-            case 'G':
-                prefixMultiplier = PREFIX_MULTIPLIER_GIGA;
-                break;
-            default:
-                System.err.println("Invalid target file size");
-        }
-
         // get the first option and convert it to an integer, remove last character (SI prefix)
-        int targetFileSize = Integer.parseInt(options[0].substring(0,
-                                                                   options[0].length() - 1));
+        int targetFileSize = Integer.parseInt(options[0]);
 
-        long targetBitRate = targetFileSize * prefixMultiplier * BYTES_TO_BITS;
+        long targetBitRate = targetFileSize * PREFIX_MULTIPLIER_MEGA * BYTES_TO_BITS;
 
         int fileLengthSeconds = LocalTime.parse(fileLengthTimeStamp)
                                          .toSecondOfDay();
@@ -127,18 +107,24 @@ public class TerminalExecutor
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -y -i ");
+        sb.append("ffmpeg -y -v quiet -i ");
         sb.append(src.getAbsolutePath());
+        // Audio bitrate 48k
         sb.append(" -b:a 48k -b:v ");
+        // Video bitrate specified
         sb.append(bitrateKBPS);
         sb.append("k ");
         if(options.length > 1)
         {
+            // Specify frame rate
             sb.append("-r ");
             sb.append(options[1]);
+            // Specify mono
             sb.append(" -ac 1 ");
         }
         sb.append(dst.toString());
+        sb.append(Terminal.directoryCharacter);
+        sb.append(src.getName());
 
         // no idea if this works, regardless we ball.
 

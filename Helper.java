@@ -49,4 +49,18 @@ public final class Helper
                                      stringInputList);
 
     }
+
+    public static String getBaseFileName(final String filename)
+    {
+        final int index = filename.lastIndexOf('.');
+        if(index == -1)
+        {
+            return filename; // Filename without extension
+        }
+        else
+        {
+            return filename.substring(0,
+                                      index);
+        }
+    }
 }

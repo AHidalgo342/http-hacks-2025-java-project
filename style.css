@@ -19,6 +19,14 @@
     -fx-font-weight: bold;
 }
 
+.combo-box {
+    -fx-background-color: #7BBD44;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-font-weight: bold;
+}
+
 .text-field {
     -fx-background-color: #7BBD44;
     -fx-text-fill: white;

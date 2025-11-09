@@ -14,6 +14,11 @@ public class Terminal
                                                    .toLowerCase()
                                                    .startsWith("windows");
 
+
+    public static final char directoryCharacter = isWindows ?
+                                                    '\\' :
+                                                    '/';
+
     /**
      * Runs a command on the terminal. Also returns the
      * first line of output from the terminal.
@@ -128,7 +133,7 @@ public class Terminal
     throws
     IOException
     {
-        final String returnStr;
+        final String            returnStr;
         final InputStreamReader inputStreamReader;
         inputStreamReader = new InputStreamReader(inputStream);
 
@@ -136,8 +141,7 @@ public class Terminal
         {
             String line;
 
-            line = bufferedReader.readLine();
-            System.out.println("a");
+            line      = bufferedReader.readLine();
             returnStr = line;
             while((line = bufferedReader.readLine()) != null)
             {
