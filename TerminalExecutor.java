@@ -151,11 +151,9 @@ public class TerminalExecutor
     IOException,
     InterruptedException
     {
-        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -flush_packets 1 -i \"" + src.getAbsolutePath() + "\" -f null -");
-        System.out.println(fileLengthVerbose);
+        long bitrateKBPS = getBitrateKBPS(src, options);
+        System.out.println(bitrateKBPS);
 
-        long bitrateKBPS = getBitrateKBPS(options,
-                                          fileLengthVerbose);
         if(isVideo(src))
         {
             System.out.println("Video");
@@ -188,7 +186,7 @@ public class TerminalExecutor
         // Audio bitrate flag
         sb.append("\" -b:a ");
         // Audio bitrate specified
-        sb.append(bitrateKBPS);
+        sb.append(bitrateKBPS / 2); // todo this sucks
         sb.append("k ");
         // Specify mono
         sb.append(" -ac 1 ");
@@ -238,21 +236,33 @@ public class TerminalExecutor
         callTerminal(sb);
     }
 
-    private static long getBitrateKBPS(String[] options,
-                                       String fileLengthVerbose)
+    private static long getBitrateKBPS(File src, String[] options)
+    throws
+    IOException,
+    InterruptedException
     {
-        String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
-        String   fileLengthTimeStamp        = fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
+        String fileLengthTimeStamp = getFileLengthTimeStamp(src);
 
-        int targetFileSize = Integer.parseInt(options[0]);
+        int targetFileSizeMB = Integer.parseInt(options[0]);
 
-        long targetSizeBits = targetFileSize * PREFIX_MULTIPLIER_MEGA * BYTES_TO_BITS;
+        long targetSizeBits = targetFileSizeMB * PREFIX_MULTIPLIER_MEGA * BYTES_TO_BITS;
 
         int fileLengthSeconds = LocalTime.parse(fileLengthTimeStamp)
                                          .toSecondOfDay();
 
-        // bitrate = target size / duration
         return targetSizeBits / fileLengthSeconds / PREFIX_MULTIPLIER_KILO;
+    }
+
+    private static String getFileLengthTimeStamp(File src)
+    throws
+    IOException,
+    InterruptedException
+    {
+        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i \"" + src.getAbsolutePath() + "\" -f null -");
+        System.out.println(fileLengthVerbose);
+
+        String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
+        return fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
     }
 
     private static void callTerminal(StringBuilder sb)
