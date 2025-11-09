@@ -308,6 +308,8 @@ public final class FFmpegGUI
 
                                                         // update select button text
                                                         BUTTON_FILE_DESTINATION_CHOOSER.setText("Selected: " + selectedDir.getName());
+                                                        BUTTON_FILE_DESTINATION_CHOOSER.setStyle("-fx-background-color: #FFF");
+
                                                     });
 
         // call file-type-group-specific GUI setup methods
@@ -784,8 +786,7 @@ public final class FFmpegGUI
         if(fileDestinationDirectory == null)
         {
             BUTTON_FILE_DESTINATION_CHOOSER.setText("Choose destination directory!");
-            BUTTON_FILE_DESTINATION_CHOOSER.setStyle("-fx-fill-color: FF0000;");
-            return;
+            BUTTON_FILE_DESTINATION_CHOOSER.setStyle("-fx-background-color: #FFAAAA");
         }
 
         // setup options
@@ -821,6 +822,8 @@ public final class FFmpegGUI
         if(fileDestinationDirectory == null)
         {
             BUTTON_FILE_DESTINATION_CHOOSER.setText("Choose destination directory!");
+            BUTTON_FILE_DESTINATION_CHOOSER.setStyle("-fx-background-color: #FFAAAA");
+
             return;
         }
 
