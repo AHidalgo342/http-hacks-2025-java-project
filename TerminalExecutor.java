@@ -45,11 +45,11 @@ public class TerminalExecutor
         {
             if(isVideo)
             {
-                Terminal.runCommand("ffmpeg -v quiet -i " + src + " -c copy " + dst);
+                Terminal.runCommand("ffmpeg -y -i " + src + " -c copy " + dst);
             }
             else
             {
-                Terminal.runCommand("ffmpeg -v quiet -i " + src + " " + dst);
+                Terminal.runCommand("ffmpeg -y -i " + src + " " + dst);
             }
         }
         catch(Exception e)
@@ -91,7 +91,7 @@ public class TerminalExecutor
         String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
         String fileLengthTimeStamp = fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
 
-        //        bitrate = target size / duration
+        // bitrate = target size / duration
         char targetSizePrefix = options[0].charAt(options[0].length() - 1);
 
         int prefixMultiplier = 1;
@@ -127,16 +127,16 @@ public class TerminalExecutor
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -v quiet -i ");
+        sb.append("ffmpeg -y -i ");
         sb.append(src.getAbsolutePath());
-        sb.append(" -b ");
+        sb.append(" -b:a 48k -b:v ");
         sb.append(bitrateKBPS);
         sb.append("k ");
         if(options.length > 1)
         {
             sb.append("-r ");
             sb.append(options[1]);
-            sb.append(" ");
+            sb.append(" -ac 1 ");
         }
         sb.append(dst.toString());
 

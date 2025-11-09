@@ -70,10 +70,19 @@ public final class FFMPEGGUI
 
         String[] options = {"100K", "10"};
 
-//        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
-//                                     new File("./meep.m4a"));
+        //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
+        //                                     new File("./meep.m4a"));
 //        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
 //                                      new File("./meep.mp4"),
+//                                      options);
+
+//        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
+//                                     new File("./meep.m4a"));
+//        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
+//                                      new File("./meep.mp4"),
+//                                      options);
+//        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
+//                                      new File("./meep.mov"),
 //                                      options);
 
         // Test label.
