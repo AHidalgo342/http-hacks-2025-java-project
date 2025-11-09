@@ -45,8 +45,7 @@
 
 
     /* increase scale globally */
-    -fx-scale-x: 1.5;
-    -fx-scale-y: 1.5;
+    -fx-scale: 1.5;
 
 }
 
@@ -626,6 +625,10 @@
     -fx-background-insets: 0, 1,2;
     -fx-background-radius: 3,2,1;
     -fx-text-fill: -fx-text-base-color;
+
+    /* set scale to 1.0 to show whole combo box selection */
+    -fx-scale-x: 1.0 !important;
+    -fx-scale-y: 1.0 !important;
 }
 
 .combo-box > .arrow-button {
@@ -633,6 +636,10 @@
     -fx-background-color: transparent;
     -fx-padding: 4 4 3 3;
     -fx-text-fill: -fx-text-base-color;
+
+    /* set scale to 1.0 to show whole combo box selection */
+    -fx-scale-x: 1.0 !important;
+    -fx-scale-y: 1.0 !important;
 }
 
 .combo-box > .arrow-button > .arrow{
@@ -640,6 +647,10 @@
     -fx-background-insets: 0 0 -1 0, 0;
     -fx-padding: 0.166667em 0.333333em 0.166667em 0.333333em; /* 2 4 2 4 */
     -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+
+    /* set scale to 1.0 to show whole combo box selection */
+    -fx-scale-x: 1.0 !important;
+    -fx-scale-y: 1.0 !important;
 }
 
 .combo-box > .list-cell {
@@ -648,12 +659,20 @@
     -fx-text-fill: -fx-text-base-color;
     -fx-padding: 0.333333em 0.666667em 0.416667em 0.666667em; /* 4 8 5 8 */
     -fx-border-width: 0;
+
+    /* set scale to 1.0 to show whole combo box selection */
+    -fx-scale-x: 1.0 !important;
+    -fx-scale-y: 1.0 !important;
 }
 
 .combo-box > .arrow-button  {
     -fx-background-radius: 0 5 5 0, 0 4 4 0, 0 3 3 0;
     -fx-padding: 0.5em 0.833333em 0.5em 0.833333em; /* 6 10 6 10 */
     -fx-background-insets: 1 1 1 0, 1, 2;
+
+    /* set scale to 1.0 to show whole combo box selection */
+    -fx-scale-x: 1.0 !important;
+    -fx-scale-y: 1.0 !important;
 }
 
 .combo-box:hover {
@@ -661,6 +680,7 @@
     rgb(60,127,177),
     linear-gradient(rgb(250,253,254),rgb(250,253,254)),
     linear-gradient(rgb(234, 246, 253) 0%, rgb(217, 240, 252) 49%, rgb(190, 230, 253) 50%, rgb(167, 217, 245) 100%);
+
 }
 
 .combo-box:focused {
@@ -674,6 +694,7 @@
     -fx-background-color: rgb(100,100,100), rgb(255,255,255);
     -fx-background-insets: 0, 1;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 8, 0.0, 0, 0);
+
 }
 
 .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {

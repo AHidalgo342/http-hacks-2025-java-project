@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -283,9 +284,16 @@ public final class FFMPEGGUI
              .add(Objects.requireNonNull(getClass().getResource("style.css"))
                          .toExternalForm());
 
+
+        // scale all elements inside main layout without scaling elements like combo box popup (making it unscrollable)
+        LAYOUT_MAIN.setScaleX(1.5);
+        LAYOUT_MAIN.setScaleY(1.5);
+
+
         mainStage.setTitle("JavaFX Test");
         mainStage.setScene(scene);
         mainStage.setOpacity(1.0);
+
         mainStage.show();
     }
 
