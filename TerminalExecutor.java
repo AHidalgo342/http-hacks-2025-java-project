@@ -1,3 +1,6 @@
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalTime;
@@ -37,6 +40,26 @@ public class TerminalExecutor
         return video;
     }
 
+    private static boolean isVideo(String str)
+    {
+        boolean video = false;
+
+        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
+        {
+            final String fileExtension;
+            fileExtension = it.substring(1);
+
+            System.out.println("File extension: " + fileExtension);
+
+            if(str.endsWith(fileExtension))
+            {
+                video = true;
+                break;
+            }
+        }
+        return video;
+    }
+
     private static boolean isGif(File file)
     {
         final String fileExtension;
@@ -46,6 +69,14 @@ public class TerminalExecutor
                    .endsWith(fileExtension);
     }
 
+    private static boolean isGif(String str)
+    {
+        final String fileExtension;
+        fileExtension = FFMPEGGUI.FILE_TYPES_VIDEO[6].substring(1);
+
+        return str.endsWith(fileExtension);
+    }
+
     /**
      * Converts a file from one type to another.
      *
@@ -53,31 +84,39 @@ public class TerminalExecutor
      * @param dst Destination of file
      */
     public static void convertFile(final File src,
-                                   final File dst)
+                                   final File dst,
+                                   final String fileType)
     {
-        try
+        final StringBuilder sb;
+        sb = new StringBuilder();
+
+        sb.append("ffmpeg -y ");
+        if(isGif(fileType))
         {
-            if(isGif(src))
-            {
-                Terminal.runFFmpeg("ffmpeg -y -i " + src.getAbsolutePath() + " -movflags faststart -pix_fmt yuv420p -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" " + dst.getAbsolutePath());
-            }
-            else if(isGif(dst))
-            {
-                Terminal.runFFmpeg("ffmpeg -y -ss 30 -t 3 -i " + src.getAbsolutePath() + " -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 " + dst.getAbsolutePath());
-            }
-            if(isVideo(src))
-            {
-                Terminal.runFFmpeg("ffmpeg -y -i " + src.getAbsolutePath() + " -c copy " + dst.getAbsolutePath());
-            }
-            else
-            {
-                Terminal.runFFmpeg("ffmpeg -y -i " + src.getAbsolutePath() + " -c:v copy -b:a 320k -ab 192k " + dst.getAbsolutePath());
-            }
+            sb.append("-ss 30 -t 3 ");
         }
-        catch(Exception e)
+        sb.append("-i ");
+        sb.append(src.getAbsolutePath());
+
+        if(isGif(src) && isVideo(fileType))
         {
-            System.err.println(e.getMessage());
+            sb.append(" -movflags faststart -pix_fmt yuv420p -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" ");
         }
+        else if(isVideo(src) && isGif(fileType))
+        {
+            sb.append(" -vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 ");
+        }
+        else
+        {
+            sb.append(" -c:v copy -b:a 320k -ab 192k ");
+        }
+
+        sb.append(dst);
+        sb.append(File.separator);
+        sb.append(Helper.getBaseFileName(src.getName()));
+        sb.append(fileType);
+
+        callTerminal(sb);
     }
 
     /**
@@ -157,14 +196,7 @@ public class TerminalExecutor
         sb.append(name);
         sb.append(Helper.getFileType(src.getName()));
 
-        try
-        {
-            Terminal.runFFmpeg(sb.toString());
-        }
-        catch(Exception e)
-        {
-            System.err.println(e.getMessage());
-        }
+        callTerminal(sb);
     }
 
     private static void compressVideo(File src,
@@ -196,16 +228,7 @@ public class TerminalExecutor
         sb.append(name);
         sb.append(Helper.getFileType(src.getName()));
 
-        // no idea if this works, regardless we ball.
-
-        try
-        {
-            Terminal.runFFmpeg(sb.toString());
-        }
-        catch(Exception e)
-        {
-            System.err.println(e.getMessage());
-        }
+        callTerminal(sb);
     }
 
     private static long getBitrateKBPS(String[] options,
@@ -223,5 +246,30 @@ public class TerminalExecutor
 
         // bitrate = target size / duration
         return targetSizeBits / fileLengthSeconds / PREFIX_MULTIPLIER_KILO;
+    }
+
+    private static void callTerminal(StringBuilder sb)
+    {
+        Task<Void> task = new Task<>()
+        {
+            @Override
+            public Void call()
+            {
+                Platform.runLater(() -> {
+                    try
+                    {
+                        Terminal.runFFmpeg(sb.toString());
+                    }
+                    catch(Exception e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                return null;
+            }
+        };
+
+        new Thread(task).start();
     }
 }

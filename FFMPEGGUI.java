@@ -63,7 +63,8 @@ public final class FFMPEGGUI
     private static final List<Node> NODES_AUDIO           = new ArrayList<>();
 
 
-    private static final TextField TEXT_FIELD_FILENAME_OUTPUT = new TextField();
+    private static final TextField        TEXT_FIELD_FILENAME_OUTPUT = new TextField();
+    private static final ComboBox<String> COMBO_BOX_VIDEO_FILETYPES  = new ComboBox<>();
 
     private static Label      LABEL_TITLE; // the animated neon title label
     private static Label      LABEL_TERMINAL_OUTPUT;
@@ -72,6 +73,7 @@ public final class FFMPEGGUI
     private static Button     BUTTON_CONVERT_FILETYPES_AUDIO;
     private static Button     BUTTON_COMPRESS_VIDEO;
     private static Button     BUTTON_COMPRESS_AUDIO;
+    private static Button     BUTTON_DEST_CHOOSER;
 
     private static VBox LAYOUT_MAIN;
     private static VBox WHITE_BOX;   // the centered white card that holds buttons/controls
@@ -100,38 +102,10 @@ public final class FFMPEGGUI
     IOException,
     InterruptedException
     {
-        final Label  label;
         final Button buttonFileChooser;
-        final Button buttonDestChooser;
         final Scene  scene;
 
         System.out.println(Terminal.FFmpegExists());
-
-        //        final String[] options = {"1", "10"};
-        //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),//                                     new File("./meep.m4a"));
-        //                        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
-        //                                                      new File("."),
-        //                                                      options);
-        //                TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
-        //                                              new File("."),
-        //                                              options);
-        //        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
-        //                                      new File("./meep.mp4"),
-        //                                      options);
-        //        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Downloads/knower.gif"),
-        //                                     new File("./knower.m4a"));
-        //        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Videos/deltarune.mp4"),
-        //                                     new File("./splosion.gif"));
-        //
-        //        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
-        //                                     new File("./meep.m4a"));
-        //        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
-        //                                      new File("./meep.mp4"),
-        //                                      options);
-        //        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
-        //                                      new File("./meep.mov"),
-        //                                      options);
-
 
         // File/Directory Chooser Setup
         FileChooser fileChooser = new FileChooser();
@@ -208,14 +182,14 @@ public final class FFMPEGGUI
                                 0);
 
         //Button for destination chooser
-        buttonDestChooser = new Button("Select destination");
+        BUTTON_DEST_CHOOSER = new Button("Select destination");
         gridPaneFileOutput.getChildren()
-                          .addFirst(buttonDestChooser);
-        GridPane.setRowIndex(buttonDestChooser,
+                          .addFirst(BUTTON_DEST_CHOOSER);
+        GridPane.setRowIndex(BUTTON_DEST_CHOOSER,
                              0);
-        GridPane.setColumnIndex(buttonDestChooser,
+        GridPane.setColumnIndex(BUTTON_DEST_CHOOSER,
                                 1);
-        buttonDestChooser.setOnAction(actionEvent ->
+        BUTTON_DEST_CHOOSER.setOnAction(actionEvent ->
                                       {
                                           // Directory the user selected
                                           final File selectedDir = dirChooser.showDialog(mainStage);
@@ -227,7 +201,7 @@ public final class FFMPEGGUI
                                           updateChosenDir(selectedDir);
 
                                           // update select button text
-                                          buttonDestChooser.setText("Selected: " + selectedDir.getName());
+                                          BUTTON_DEST_CHOOSER.setText("Selected: " + selectedDir.getName());
                                       });
 
         setupVideo();
@@ -274,6 +248,9 @@ public final class FFMPEGGUI
         LAYOUT_MAIN.getStyleClass()
                    .add("vbox");
 
+//        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
+//                                     new File("C:\\Users\\User\\Downloads"),
+//                                     ".gif");
 
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
@@ -298,8 +275,6 @@ public final class FFMPEGGUI
 
     private static void setupVideo()
     {
-        final ComboBox<String> comboBoxFiletypesVideo;
-
         final GridPane gridPaneVideoCompress;
         gridPaneVideoCompress = new GridPane();
         gridPaneVideoCompress.setHgap(10);
@@ -327,40 +302,35 @@ public final class FFMPEGGUI
         fileTypesVideoTrimmed = Helper.removeFirstCharacters(SKIP_FIRST,
                                                              FILE_TYPES_VIDEO);
 
-        comboBoxFiletypesVideo = new ComboBox<>();
-        comboBoxFiletypesVideo.getItems()
-                              .addAll(fileTypesVideoTrimmed);
-        comboBoxFiletypesVideo.setPromptText("Select output video filetype");
+        COMBO_BOX_VIDEO_FILETYPES.getItems()
+                                 .addAll(fileTypesVideoTrimmed);
+        COMBO_BOX_VIDEO_FILETYPES.setPromptText("Select output video filetype");
 
-        comboBoxFiletypesVideo.setMaxWidth(200);
-        comboBoxFiletypesVideo.setPrefWidth(200);
+        COMBO_BOX_VIDEO_FILETYPES.setMaxWidth(200);
+        COMBO_BOX_VIDEO_FILETYPES.setPrefWidth(200);
 
-        comboBoxFiletypesVideo.getSelectionModel()
+        COMBO_BOX_VIDEO_FILETYPES.getSelectionModel()
                               .selectedItemProperty()
                               .addListener(event ->
                                            {
                                                BUTTON_CONVERT_FILETYPES_VIDEO.setDisable(false);
 
                                                // set the convert text to "Convert to {filetype to convert to}
-                                               BUTTON_CONVERT_FILETYPES_VIDEO.setText("Convert to " + comboBoxFiletypesVideo.getSelectionModel()
+                                               BUTTON_CONVERT_FILETYPES_VIDEO.setText("Convert to " + COMBO_BOX_VIDEO_FILETYPES.getSelectionModel()
                                                                                                                             .selectedItemProperty()
                                                                                                                             .get());
                                            });
 
 
         BUTTON_CONVERT_FILETYPES_VIDEO = new Button("Select Converting Filetype");
-        BUTTON_CONVERT_FILETYPES_VIDEO.setOnAction(actionEvent ->
-                                                   {
-                                                       // on pressed button convert filetypes
-                                                   });
+        BUTTON_CONVERT_FILETYPES_VIDEO.setOnAction(actionEvent -> convertFile());
         BUTTON_CONVERT_FILETYPES_VIDEO.setDisable(true);
 
         // Create HBox to hold combobox and button side by side
         HBox hBoxFiletypeVideo = new HBox(10); // 10px spacing
         hBoxFiletypeVideo.setAlignment(Pos.CENTER);
-        hBoxFiletypeVideo.getChildren()
-                         .addAll(comboBoxFiletypesVideo,
-                                 BUTTON_CONVERT_FILETYPES_VIDEO);
+        hBoxFiletypeVideo.getChildren().addAll(COMBO_BOX_VIDEO_FILETYPES,
+                                               BUTTON_CONVERT_FILETYPES_VIDEO);
 
         NODES_VIDEO.add(hBoxFiletypeVideo);
 
@@ -584,6 +554,12 @@ public final class FFMPEGGUI
 
     private static void compressFile()
     {
+        if(destDir == null)
+        {
+            BUTTON_DEST_CHOOSER.setText("Choose destination directory!");
+            return;
+        }
+
         String[] options = {compressionSize};
         System.out.println(compressionSize);
         try
@@ -596,6 +572,32 @@ public final class FFMPEGGUI
                                           destDir,
                                           outputFileName,
                                           options);
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void convertFile()
+    {
+        if(destDir == null)
+        {
+            BUTTON_DEST_CHOOSER.setText("Choose destination directory!");
+            return;
+        }
+
+        String fileType = COMBO_BOX_VIDEO_FILETYPES.getValue();
+        System.out.println(compressionSize);
+        try
+        {
+            final String outputFileName;
+            outputFileName = TEXT_FIELD_FILENAME_OUTPUT.getText();
+            Helper.getBaseFileName(outputFileName);
+
+            TerminalExecutor.convertFile(fileToUse,
+                                         destDir,
+                                         fileType);
         }
         catch(Exception e)
         {
