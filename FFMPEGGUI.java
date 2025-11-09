@@ -158,10 +158,7 @@ public final class FFMPEGGUI
                          gridPanePopupButtons);
 
 
-        buttonPopupQuit.setOnMouseClicked(onClick ->
-                                          {
-                                              System.exit(0);
-                                          });
+        buttonPopupQuit.setOnMouseClicked(onClick -> System.exit(0));
 
         buttonPopupCheckAgain.setOnMouseClicked(onClick ->
                                                 {
@@ -236,13 +233,11 @@ public final class FFMPEGGUI
                                                                                             .getDescription();
                                           if(selectedFileDescription.equals(FILE_DESCRIPTION_VIDEO))
                                           {
-                                              SetVBox(LAYOUT_MAIN,
-                                                      NODES_VIDEO);
+                                              SetVBox(NODES_VIDEO);
                                           }
                                           else if(selectedFileDescription.equals(FILE_DESCRIPTION_AUDIO))
                                           {
-                                              SetVBox(LAYOUT_MAIN,
-                                                      NODES_AUDIO);
+                                              SetVBox(NODES_AUDIO);
                                           }
                                       });
 
@@ -366,12 +361,16 @@ public final class FFMPEGGUI
         SCROLL_PANE_TERMINAL.setVvalue(1.0);
     }
 
+    /**
+     * Sets up video compression/conversion options.
+     */
     private static void setupVideo()
     {
         final GridPane gridPaneVideoCompress;
         gridPaneVideoCompress = new GridPane();
         gridPaneVideoCompress.setHgap(10);
         gridPaneVideoCompress.setAlignment(Pos.CENTER);
+        NODES_VIDEO.add(new Label("Compression"));
         NODES_VIDEO.add(gridPaneVideoCompress);
 
         BUTTON_COMPRESS_VIDEO = new Button("Enter target MB");
@@ -426,6 +425,7 @@ public final class FFMPEGGUI
                          .addAll(COMBO_BOX_VIDEO_FILETYPES,
                                  BUTTON_CONVERT_FILETYPES_VIDEO);
 
+        NODES_VIDEO.add(new Label("Conversion"));
         NODES_VIDEO.add(hBoxFiletypeVideo);
 
         // force the field to be numeric only
@@ -475,6 +475,9 @@ public final class FFMPEGGUI
                                 0);
     }
 
+    /**
+     * Sets up audio compression/conversion options.
+     */
     private static void setupAudio()
     {
         final GridPane gridPaneAudioCompress;
@@ -579,8 +582,12 @@ public final class FFMPEGGUI
         NODES_AUDIO.add(hBoxFiletypeAudio); // Add the HBox instead of individual combobox
     }
 
-    private static void SetVBox(VBox layoutMain,
-                                final List<Node> nodes)
+    /**
+     * Sets up VBox of nodes.
+     *
+     * @param nodes List of nodes to put in VBox
+     */
+    private static void SetVBox(final List<Node> nodes)
     {
         WHITE_BOX.getChildren()
                  .clear();
@@ -594,6 +601,11 @@ public final class FFMPEGGUI
                  .addAll(NODES_CONSTANT_BOTTOM);
     }
 
+    /**
+     * Applies neon animation to title label.
+     *
+     * @param label Label to make neon
+     */
     private static void applyNeonAnimation(final Label label)
     {
         // create an initial glow DropShadow
@@ -617,21 +629,39 @@ public final class FFMPEGGUI
         timeline.play();
     }
 
+    /**
+     * Updates the chosen file to compress/convert.
+     *
+     * @param file File to compress/convert
+     */
     private static void updateChosenFile(final File file)
     {
         fileToUse = file;
     }
 
+    /**
+     * Updates the chosen directory.
+     *
+     * @param dir File directory to store result in
+     */
     private static void updateChosenDir(final File dir)
     {
         dstDir = dir;
     }
 
+    /**
+     * Updates the targeted compression size.
+     *
+     * @param size String file size to aim for
+     */
     private static void updateCompressionSize(final String size)
     {
         compressionSizeMb = size;
     }
 
+    /**
+     * Compresses a file.
+     */
     private static void compressFile()
     {
         if(dstDir == null)
@@ -659,6 +689,11 @@ public final class FFMPEGGUI
         }
     }
 
+    /**
+     * Converts a file to a given file type.
+     *
+     * @param fileType String file extension to change to
+     */
     private static void convertFile(final String fileType)
     {
         if(dstDir == null)

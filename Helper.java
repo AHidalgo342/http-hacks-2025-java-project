@@ -6,6 +6,7 @@ import java.util.List;
  * General helper methods.
  *
  * @author Szymon Zemojtel
+ * @author Marcy Ordinario
  * @version 1
  */
 public final class Helper

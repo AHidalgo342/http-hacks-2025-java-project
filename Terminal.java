@@ -12,7 +12,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class Terminal
 {
-    private enum streamType {INPUT, ERROR}
+    private enum streamType
+    {
+        INPUT,
+        ERROR
+    }
+
     private static final boolean isWindows = System.getProperty("os.name")
                                                    .toLowerCase()
                                                    .startsWith("windows");
@@ -49,6 +54,14 @@ public class Terminal
         }
     }
 
+    /**
+     * Runs an FFmpeg command on the terminal.
+     *
+     * @param command String command to run
+     * @return String last line of terminal output
+     * @throws IOException          if an IO exception occurs
+     * @throws InterruptedException if the process is interrupted
+     */
     public static String runFFmpeg(final String command)
     throws
     IOException,
@@ -58,6 +71,14 @@ public class Terminal
                           streamType.ERROR);
     }
 
+    /**
+     * Runs a command on the terminal.
+     *
+     * @param command String command to run
+     * @return String last line of terminal output
+     * @throws IOException          if an IO exception occurs
+     * @throws InterruptedException if the process is interrupted
+     */
     public static String runCommand(final String command)
     throws
     IOException,
@@ -111,6 +132,8 @@ public class Terminal
 
         outputStream = process.getOutputStream();
 
+        // If NOT ffmpeg, read from input stream
+        // If ffmpeg, read from stderr
         if(streamType == Terminal.streamType.INPUT)
         {
             inputStream = process.getInputStream();
@@ -159,7 +182,7 @@ public class Terminal
     throws
     IOException
     {
-        final String            returnStr;
+        final String returnStr;
         final InputStreamReader inputStreamReader;
         inputStreamReader = new InputStreamReader(inputStream);
 
