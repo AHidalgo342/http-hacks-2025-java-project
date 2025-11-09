@@ -367,10 +367,19 @@ public final class FFMPEGGUI
     private static void setupVideo()
     {
         final GridPane gridPaneVideoCompress;
+        final Label compressionLabel;
+        final Label conversionLabel;
+
         gridPaneVideoCompress = new GridPane();
         gridPaneVideoCompress.setHgap(10);
         gridPaneVideoCompress.setAlignment(Pos.CENTER);
-        NODES_VIDEO.add(new Label("Compression"));
+
+        compressionLabel = new Label("Compression");
+        compressionLabel.getStyleClass().add("bg-label");
+        conversionLabel = new Label("Conversion");
+        conversionLabel.getStyleClass().add("bg-label");
+
+        NODES_VIDEO.add(compressionLabel);
         NODES_VIDEO.add(gridPaneVideoCompress);
 
         BUTTON_COMPRESS_VIDEO = new Button("Enter target MB");
@@ -425,7 +434,7 @@ public final class FFMPEGGUI
                          .addAll(COMBO_BOX_VIDEO_FILETYPES,
                                  BUTTON_CONVERT_FILETYPES_VIDEO);
 
-        NODES_VIDEO.add(new Label("Conversion"));
+        NODES_VIDEO.add(conversionLabel);
         NODES_VIDEO.add(hBoxFiletypeVideo);
 
         // force the field to be numeric only
