@@ -1,3 +1,6 @@
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalTime;
@@ -11,7 +14,6 @@ import java.time.LocalTime;
  */
 public class TerminalExecutor
 {
-
     public static final int  PREFIX_MULTIPLIER_KILO = 1000;
     public static final int  PREFIX_MULTIPLIER_MEGA = 1000000;
     public static final long BYTES_TO_BITS          = 8L;
@@ -37,6 +39,26 @@ public class TerminalExecutor
         return video;
     }
 
+    private static boolean isVideo(String str)
+    {
+        boolean video = false;
+
+        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
+        {
+            final String fileExtension;
+            fileExtension = it.substring(1);
+
+            System.out.println("File extension: " + fileExtension);
+
+            if(str.endsWith(fileExtension))
+            {
+                video = true;
+                break;
+            }
+        }
+        return video;
+    }
+
     private static boolean isGif(File file)
     {
         final String fileExtension;
@@ -46,6 +68,14 @@ public class TerminalExecutor
                    .endsWith(fileExtension);
     }
 
+    private static boolean isGif(String str)
+    {
+        final String fileExtension;
+        fileExtension = FFMPEGGUI.FILE_TYPES_VIDEO[6].substring(1);
+
+        return str.endsWith(fileExtension);
+    }
+
     /**
      * Converts a file from one type to another.
      *
@@ -53,31 +83,42 @@ public class TerminalExecutor
      * @param dst Destination of file
      */
     public static void convertFile(final File src,
-                                   final File dst)
+                                   final File dst,
+                                   final String fileType)
     {
-        try
+        final StringBuilder sb;
+        sb = new StringBuilder();
+
+        sb.append("ffmpeg -y ");
+        if(isGif(fileType))
         {
-            if(isGif(src))
-            {
-                Terminal.runFFmpeg("ffmpeg -y -i " + src.getAbsolutePath() + " -movflags faststart -pix_fmt yuv420p -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" " + dst.getAbsolutePath());
-            }
-            else if(isGif(dst))
-            {
-                Terminal.runFFmpeg("ffmpeg -y -ss 30 -t 3 -i " + src.getAbsolutePath() + " -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 " + dst.getAbsolutePath());
-            }
-            if(isVideo(src))
-            {
-                Terminal.runFFmpeg("ffmpeg -y -i " + src.getAbsolutePath() + " -c copy " + dst.getAbsolutePath());
-            }
-            else
-            {
-                Terminal.runFFmpeg("ffmpeg -y -i " + src.getAbsolutePath() + " -c:v copy -b:a 320k -ab 192k " + dst.getAbsolutePath());
-            }
+            sb.append("-ss 30 -t 3 ");
         }
-        catch(Exception e)
+        sb.append("-i \"");
+        sb.append(src.getAbsolutePath());
+        sb.append("\"");
+
+        if(isGif(src) && isVideo(fileType))
         {
-            System.err.println(e.getMessage());
+            sb.append(" -movflags faststart -pix_fmt yuv420p -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" ");
         }
+        else if(isVideo(src) && isGif(fileType))
+        {
+            sb.append(" -vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 ");
+        }
+        else
+        {
+            sb.append(" -c:v copy -b:a 320k -ab 192k ");
+        }
+
+        sb.append("\"");
+        sb.append(dst.getAbsolutePath());
+        sb.append(File.separator);
+        sb.append(Helper.getBaseFileName(src.getName()));
+        sb.append(fileType);
+        sb.append("\"");
+
+        callTerminal(sb);
     }
 
     /**
@@ -110,12 +151,9 @@ public class TerminalExecutor
     IOException,
     InterruptedException
     {
-        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i " + src.getAbsolutePath() + " -f null -",
-                                                      true);
-        System.out.println(fileLengthVerbose);
+        long bitrateKBPS = getBitrateKBPS(src, options);
+        System.out.println(bitrateKBPS);
 
-        long bitrateKBPS = getBitrateKBPS(options,
-                                          fileLengthVerbose);
         if(isVideo(src))
         {
             System.out.println("Video");
@@ -143,28 +181,24 @@ public class TerminalExecutor
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -y -i ");
+        sb.append("ffmpeg -y -flush_packets 1 -i \"");
         sb.append(src.getAbsolutePath());
         // Audio bitrate flag
-        sb.append(" -b:a ");
+        sb.append("\" -b:a ");
         // Audio bitrate specified
-        sb.append(bitrateKBPS);
+        sb.append(bitrateKBPS / 2); // todo this sucks
         sb.append("k ");
         // Specify mono
         sb.append(" -ac 1 ");
-        sb.append(dst.toString());
+
+        sb.append("\"");
+        sb.append(dst.getAbsolutePath());
         sb.append(File.separator);
         sb.append(name);
         sb.append(Helper.getFileType(src.getName()));
+        sb.append("\"");
 
-        try
-        {
-            Terminal.runFFmpeg(sb.toString());
-        }
-        catch(Exception e)
-        {
-            System.err.println(e.getMessage());
-        }
+        callTerminal(sb);
     }
 
     private static void compressVideo(File src,
@@ -176,10 +210,10 @@ public class TerminalExecutor
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -y -i ");
+        sb.append("ffmpeg -y -flush_packets 1 -i \"");
         sb.append(src.getAbsolutePath());
         // Audio bitrate 48k
-        sb.append(" -b:a 48k -b:v ");
+        sb.append("\" -b:a 48k -b:v ");
         // Video bitrate specified
         sb.append(bitrateKBPS);
         sb.append("k ");
@@ -191,37 +225,66 @@ public class TerminalExecutor
             // Specify mono
             sb.append(" -ac 1 ");
         }
-        sb.append(dst.toString());
+
+        sb.append("\"");
+        sb.append(dst.getAbsolutePath());
         sb.append(File.separator);
         sb.append(name);
         sb.append(Helper.getFileType(src.getName()));
+        sb.append("\"");
 
-        // no idea if this works, regardless we ball.
-
-        try
-        {
-            Terminal.runFFmpeg(sb.toString());
-        }
-        catch(Exception e)
-        {
-            System.err.println(e.getMessage());
-        }
+        callTerminal(sb);
     }
 
-    private static long getBitrateKBPS(String[] options,
-                                       String fileLengthVerbose)
+    private static long getBitrateKBPS(File src, String[] options)
+    throws
+    IOException,
+    InterruptedException
     {
-        String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
-        String   fileLengthTimeStamp        = fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
+        String fileLengthTimeStamp = getFileLengthTimeStamp(src);
 
-        int targetFileSize = Integer.parseInt(options[0]);
+        int targetFileSizeMB = Integer.parseInt(options[0]);
 
-        long targetSizeBits = targetFileSize * PREFIX_MULTIPLIER_MEGA * BYTES_TO_BITS;
+        long targetSizeBits = targetFileSizeMB * PREFIX_MULTIPLIER_MEGA * BYTES_TO_BITS;
 
         int fileLengthSeconds = LocalTime.parse(fileLengthTimeStamp)
                                          .toSecondOfDay();
 
-        // bitrate = target size / duration
         return targetSizeBits / fileLengthSeconds / PREFIX_MULTIPLIER_KILO;
+    }
+
+    private static String getFileLengthTimeStamp(File src)
+    throws
+    IOException,
+    InterruptedException
+    {
+        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i \"" + src.getAbsolutePath() + "\" -f null -");
+        System.out.println(fileLengthVerbose);
+
+        String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
+        return fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
+    }
+
+    private static void callTerminal(StringBuilder sb)
+    {
+        Task<Void> task = new Task<>()
+        {
+            @Override
+            public Void call()
+            {
+                try
+                {
+                    Terminal.runFFmpeg(sb.toString());
+                }
+                catch(Exception e)
+                {
+                    throw new RuntimeException(e);
+                }
+
+                return null;
+            }
+        };
+
+        new Thread(task).start();
     }
 }

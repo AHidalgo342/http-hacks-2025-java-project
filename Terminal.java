@@ -1,3 +1,5 @@
+import javafx.application.Platform;
+
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
@@ -53,29 +55,16 @@ public class Terminal
     InterruptedException
     {
         return runCommand(command,
-                          streamType.ERROR,
-                          false);
+                          streamType.ERROR);
     }
 
-    public static String runFFmpeg(final String command,
-                                   final boolean last)
+    public static String runCommand(final String command)
     throws
     IOException,
     InterruptedException
     {
         return runCommand(command,
-                          streamType.ERROR,
-                          last);
-    }
-
-    private static String runCommand(final String command)
-    throws
-    IOException,
-    InterruptedException
-    {
-        return runCommand(command,
-                          streamType.INPUT,
-                          false);
+                          streamType.INPUT);
     }
 
     /**
@@ -88,8 +77,7 @@ public class Terminal
      * @throws InterruptedException If the process is interrupted
      */
     private static String runCommand(final String command,
-                                     final streamType streamType,
-                                     final boolean last)
+                                     final streamType streamType)
     throws
     IOException,
     InterruptedException
@@ -132,13 +120,19 @@ public class Terminal
             inputStream = process.getErrorStream();
         }
 
-        final String firstLnOutput;
-
+        final String lastLnOutput;
         final String inputStreamStr;
-        inputStreamStr = printStream(inputStream,
-                                     last);
 
-        firstLnOutput = inputStreamStr;
+        try
+        {
+            inputStreamStr = printStream(inputStream);
+        }
+        catch(IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        lastLnOutput = inputStreamStr;
 
         boolean isFinished = process.waitFor(30,
                                              TimeUnit.SECONDS);
@@ -150,7 +144,7 @@ public class Terminal
             process.destroyForcibly();
         }
 
-        return firstLnOutput;
+        return lastLnOutput;
     }
 
     /**
@@ -161,8 +155,7 @@ public class Terminal
      * @return String first line of output; null if no output
      * @throws IOException If an IO exception occurs
      */
-    private static String printStream(InputStream inputStream,
-                                      boolean last)
+    private static String printStream(InputStream inputStream)
     throws
     IOException
     {
@@ -173,28 +166,19 @@ public class Terminal
         try(BufferedReader bufferedReader = new BufferedReader(inputStreamReader))
         {
             String line;
+            String lastNonNullLine;
 
-            line      = bufferedReader.readLine();
-            if(!last)
+            lastNonNullLine = null;
+
+            while((line = bufferedReader.readLine()) != null)
             {
-                returnStr = line;
-                while((line = bufferedReader.readLine()) != null)
-                {
-                    FFMPEGGUI.addTerminalOutput(line + "\n");
-                    System.out.println(line);
-                }
+                lastNonNullLine = line;
+                String finalLine = line;
+                Platform.runLater(() -> FFMPEGGUI.addTerminalOutput(finalLine + "\n"));
+                System.out.println(lastNonNullLine);
             }
-            else
-            {
-                String lastNonNullLine = null;
-                while((line = bufferedReader.readLine()) != null)
-                {
-                    lastNonNullLine = line;
-                    FFMPEGGUI.addTerminalOutput(line + "\n");
-                    System.out.println(line);
-                }
-                returnStr = lastNonNullLine;
-            }
+            returnStr = lastNonNullLine;
+
             return returnStr;
         }
     }
