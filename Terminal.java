@@ -162,6 +162,7 @@ public class Terminal
             returnStr = line;
             while((line = bufferedReader.readLine()) != null)
             {
+                FFMPEGGUI.setTerminalOutput(line);
                 System.out.println(line);
             }
         }
