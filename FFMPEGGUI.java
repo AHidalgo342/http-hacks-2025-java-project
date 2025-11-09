@@ -68,6 +68,8 @@ public final class FFMPEGGUI
     private static Label      LABEL_TITLE; // the animated neon title label
     private static Label      LABEL_TERMINAL_OUTPUT;
     private static ScrollPane SCROLL_PANE_TERMINAL;
+    private static Button     BUTTON_CONVERT_FILETYPES_VIDEO;
+    private static Button     BUTTON_CONVERT_FILETYPES_AUDIO;
 
 
     private static VBox LAYOUT_MAIN;
@@ -290,7 +292,6 @@ public final class FFMPEGGUI
     {
         final Button           buttonCompressVideo;
         final ComboBox<String> comboBoxFiletypesVideo;
-        final Button           placeholderButton;
 
         final GridPane gridPaneVideoCompress;
         gridPaneVideoCompress = new GridPane();
@@ -326,18 +327,32 @@ public final class FFMPEGGUI
         comboBoxFiletypesVideo.setMaxWidth(200);
         comboBoxFiletypesVideo.setPrefWidth(200);
 
-        placeholderButton = new Button("Placeholder");
-        placeholderButton.setOnAction(actionEvent ->
-                                      {
-                                          System.out.println("Video placeholder button clicked");
-                                      });
+        comboBoxFiletypesVideo.getSelectionModel()
+                              .selectedItemProperty()
+                              .addListener(event ->
+                                           {
+                                               BUTTON_CONVERT_FILETYPES_VIDEO.setDisable(false);
+
+                                               // set the convert text to "Convert to {filetype to convert to}
+                                               BUTTON_CONVERT_FILETYPES_VIDEO.setText("Convert to " + comboBoxFiletypesVideo.getSelectionModel()
+                                                                                                                            .selectedItemProperty()
+                                                                                                                            .get());
+                                           });
+
+
+        BUTTON_CONVERT_FILETYPES_VIDEO = new Button("Select Converting Filetype");
+        BUTTON_CONVERT_FILETYPES_VIDEO.setOnAction(actionEvent ->
+                                                   {
+                                                       // on pressed button convert filetypes
+                                                   });
+        BUTTON_CONVERT_FILETYPES_VIDEO.setDisable(true);
 
         // Create HBox to hold combobox and button side by side
         HBox hBoxFiletypeVideo = new HBox(10); // 10px spacing
         hBoxFiletypeVideo.setAlignment(Pos.CENTER);
         hBoxFiletypeVideo.getChildren()
                          .addAll(comboBoxFiletypesVideo,
-                                 placeholderButton);
+                                 BUTTON_CONVERT_FILETYPES_VIDEO);
 
         NODES_VIDEO.add(hBoxFiletypeVideo);
 
@@ -379,7 +394,6 @@ public final class FFMPEGGUI
     {
         final Button           buttonCompressAudio;
         final ComboBox<String> comboBoxFiletypesAudio;
-        final Button           placeholderButton;
 
 
         final GridPane gridPaneAudioCompress;
@@ -446,19 +460,33 @@ public final class FFMPEGGUI
         comboBoxFiletypesAudio.setMaxWidth(200);
         comboBoxFiletypesAudio.setPrefWidth(200);
 
-        placeholderButton = new Button("Placeholder");
-        placeholderButton.setMaxWidth(150);
-        placeholderButton.setPrefWidth(150);
-        placeholderButton.setOnAction(actionEvent ->
-                                      {
-                                          System.out.println("Audio placeholder button clicked");
-                                      });
+
+        comboBoxFiletypesAudio.getSelectionModel()
+                              .selectedItemProperty()
+                              .addListener(event ->
+                                           {
+                                               BUTTON_CONVERT_FILETYPES_AUDIO.setDisable(false);
+
+                                               // set the convert text to "Convert to {filetype to convert to}
+                                               BUTTON_CONVERT_FILETYPES_AUDIO.setText("Convert to " + comboBoxFiletypesAudio.getSelectionModel()
+                                                                                                                            .selectedItemProperty()
+                                                                                                                            .get());
+                                           });
+
+        BUTTON_CONVERT_FILETYPES_AUDIO = new Button("Select Converting Filetype");
+        BUTTON_CONVERT_FILETYPES_AUDIO.setMaxWidth(150);
+        BUTTON_CONVERT_FILETYPES_AUDIO.setPrefWidth(150);
+        BUTTON_CONVERT_FILETYPES_AUDIO.setOnAction(actionEvent ->
+                                                   {
+                                                       // on convert filetypes audio button clicked
+                                                   });
+        BUTTON_CONVERT_FILETYPES_AUDIO.setDisable(true);
 
         HBox hBoxFiletypeAudio = new HBox(10);
         hBoxFiletypeAudio.setAlignment(Pos.CENTER);
         hBoxFiletypeAudio.getChildren()
                          .addAll(comboBoxFiletypesAudio,
-                                 placeholderButton);
+                                 BUTTON_CONVERT_FILETYPES_AUDIO);
 
         NODES_AUDIO.add(hBoxFiletypeAudio); // Add the HBox instead of individual combobox
     }
