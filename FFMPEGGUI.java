@@ -179,6 +179,7 @@ public final class FFMPEGGUI
         final GridPane gridPaneFileOutput;
         gridPaneFileOutput = new GridPane();
         gridPaneFileOutput.setHgap(10);
+        gridPaneFileOutput.setAlignment(Pos.CENTER);
         NODES_CONSTANT.add(gridPaneFileOutput);
 
         // text field input for output name
@@ -239,6 +240,7 @@ public final class FFMPEGGUI
         final GridPane gridPaneVideoCompress;
         gridPaneVideoCompress = new GridPane();
         gridPaneVideoCompress.setHgap(10);
+        gridPaneVideoCompress.setAlignment(Pos.CENTER);
         NODES_VIDEO.add(gridPaneVideoCompress);
 
         buttonCompressVideo = new Button("Start Compressing Video");
