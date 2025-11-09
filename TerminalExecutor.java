@@ -59,19 +59,20 @@ public class TerminalExecutor
     /**
      * Compresses a file.
      * <p>
-     * Possible options:
-     * - Target File size
-     * Examples: 30M, 10K, 50G
-     * - Target Framerate:
+     * Possible options:<br>
+     * - Target File size<br>
+     * Examples: 30M, 10K, 50G<br>
+     * - Target Framerate:<br>
      * Example: 24, 10, 5
      * <p>
      * Full Example:
-     * input.webm compressed.mp4 15M 24
+     * {@code input.webm compressed.mp4 15M 24}
      * <p>
      * Outputs an mp4 with file size 15 Mb and a framerate of 24fps,
      * Converts the input file to the output format on the fly.
      * <p>
      * We should always have at least one option, that being the target size.
+     * Framerate is optional.
      *
      * @param src     File to convert
      * @param dst     Destination of file
