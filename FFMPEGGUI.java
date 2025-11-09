@@ -13,6 +13,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -58,8 +66,13 @@ public final class FFMPEGGUI
 
     private static final TextField TEXT_FIELD_FILENAME_OUTPUT = new TextField();
 
+    private static Label TITLE_LABEL; // the animated neon title label
+
+
 
     private static VBox LAYOUT_MAIN;
+    private static VBox WHITE_BOX;   // the centered white card that holds buttons/controls
+
 
     // Files chosen
     private static File   fileToUse;
@@ -92,9 +105,7 @@ public final class FFMPEGGUI
         System.out.println(Terminal.FFmpegExists());
 
 //        final String[] options = {"1", "10"};
-
-        //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
-        //                                     new File("./meep.m4a"));
+//        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),//                                     new File("./meep.m4a"));
 //                        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
 //                                                      new File("."),
 //                                                      options);
@@ -117,7 +128,7 @@ public final class FFMPEGGUI
 //        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
 //                                      new File("./meep.mov"),
 //                                      options);
- 
+
 
         // File/Directory Chooser Setup
         FileChooser fileChooser = new FileChooser();
@@ -210,18 +221,25 @@ public final class FFMPEGGUI
         setupVideo();
         setupAudio();
 
-        label = new Label("FFmpeg GUI");
+        // create title label
+        TITLE_LABEL = new Label("FFmpeg GUI");
+        TITLE_LABEL.getStyleClass().add("neon-text");
 
-        VBox buttonContainer = new VBox(12, label);
-        buttonContainer.setAlignment(Pos.CENTER);
+// start the neon glow animation
+        applyNeonAnimation(TITLE_LABEL);
 
-        buttonContainer.getChildren().addAll(NODES_CONSTANT);
 
-        buttonContainer.getStyleClass().add("white-box");
+        WHITE_BOX = new VBox(12);
+        WHITE_BOX.setAlignment(Pos.CENTER);
+        WHITE_BOX.getStyleClass().add("white-box");
 
-        LAYOUT_MAIN = new VBox(PADDING_PX, label, buttonContainer);
-        LAYOUT_MAIN.getStyleClass().add("vbox"); // optional: keep your existing vbox styles
+        WHITE_BOX.getChildren().add(TITLE_LABEL);
+        WHITE_BOX.getChildren().addAll(NODES_CONSTANT);
+
+        LAYOUT_MAIN = new VBox(PADDING_PX, WHITE_BOX);
         LAYOUT_MAIN.setAlignment(Pos.CENTER);
+        LAYOUT_MAIN.getStyleClass().add("vbox");
+
 
 
         // Setup scene
@@ -320,16 +338,40 @@ public final class FFMPEGGUI
         NODES_AUDIO.add(comboBoxFiletypesAudio);
     }
 
-    private static void SetVBox(final VBox vBox,
-                                final List<Node> nodes)
+    private static void SetVBox(VBox layoutMain, final List<Node> nodes)
     {
-        vBox.getChildren()
-            .removeAll(vBox.getChildren());
-        vBox.getChildren()
-            .addAll(NODES_CONSTANT);
-        vBox.getChildren()
-            .addAll(nodes);
+        WHITE_BOX.getChildren().clear();
+        WHITE_BOX.getChildren().add(TITLE_LABEL);
+        WHITE_BOX.getChildren().addAll(NODES_CONSTANT);
+        WHITE_BOX.getChildren().addAll(nodes);
+
     }
+
+    private static void applyNeonAnimation(final Label label) {
+        // create an initial glow DropShadow
+        final DropShadow glow = new DropShadow();
+        glow.setRadius(30);            // blur radius
+        glow.setSpread(0.6);          // how much the glow spreads
+        glow.setColor(Color.web("#ff005e")); // start color (pink)
+
+        label.setEffect(glow);
+        label.setTextFill(Color.WHITE); // keep text readable
+
+        // Timeline to animate the glow color between pink and blue
+        Timeline timeline = new Timeline(
+            new KeyFrame(Duration.ZERO,
+                new KeyValue(glow.colorProperty(), Color.web("#ff005e"))),
+            new KeyFrame(Duration.seconds(1.5),
+                new KeyValue(glow.colorProperty(), Color.web("#00d4ff")))
+        );
+        timeline.setAutoReverse(true);
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+
+
+
 
     private static void updateChosenFile(final File file)
     {

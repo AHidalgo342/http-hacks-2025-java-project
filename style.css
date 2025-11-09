@@ -48,14 +48,11 @@
     -fx-font-size: 20px;
     -fx-padding: 10px 20px;
     -fx-font-weight: bold;
-    -fx-text-fill: #FFF;
-
 }
 
 /* current selection */
 .combo-box .list-cell {
     -fx-text-fill: #FFF;
-
 }
 
 /* popout list of all selections */
@@ -96,20 +93,23 @@
     -fx-background-color: #1A4727;
 }
 
-/* white rounded card that holds the buttons/controls */
+
 .white-box {
     -fx-background-color: white;
-    -fx-background-radius: 10;
-    -fx-border-color: rgba(0,0,0,0.08);
-    -fx-border-radius: 10;
-    -fx-border-width: 1;
-    -fx-padding: 25;            /* inner spacing */
-    -fx-spacing: 15;            /* spacing between children */
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2); /* subtle shadow */
-    -fx-max-width: 550px;       /* control how wide the card can grow */
-    -fx-min-width: 500px;       /* ensures a decent minimum size */
+    -fx-padding: 30px 40px;
+    -fx-alignment: center;
+    -fx-spacing: 20px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 20, 0.2, 0, 8);
+    -fx-max-width: 700px;
 }
 
 
-
+.neon-text {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+}
 
