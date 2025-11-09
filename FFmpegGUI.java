@@ -784,6 +784,7 @@ public final class FFmpegGUI
         if(fileDestinationDirectory == null)
         {
             BUTTON_FILE_DESTINATION_CHOOSER.setText("Choose destination directory!");
+            BUTTON_FILE_DESTINATION_CHOOSER.setStyle("-fx-fill-color: FF0000;");
             return;
         }
 
