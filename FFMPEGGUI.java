@@ -59,15 +59,16 @@ public final class FFMPEGGUI
 
     private static final int SKIP_FIRST = 1;
 
-    private static final List<Node> NODES_CONSTANT = new ArrayList<>();
-    private static final List<Node> NODES_VIDEO    = new ArrayList<>();
-    private static final List<Node> NODES_AUDIO    = new ArrayList<>();
+    private static final List<Node> NODES_CONSTANT_TOP    = new ArrayList<>();
+    private static final List<Node> NODES_CONSTANT_BOTTOM = new ArrayList<>();
+    private static final List<Node> NODES_VIDEO           = new ArrayList<>();
+    private static final List<Node> NODES_AUDIO           = new ArrayList<>();
 
 
     private static final TextField TEXT_FIELD_FILENAME_OUTPUT = new TextField();
 
-    private static Label TITLE_LABEL; // the animated neon title label
-
+    private static Label LABEL_TITLE; // the animated neon title label
+    private static Label LABEL_TERMINAL_OUTPUT;
 
 
     private static VBox LAYOUT_MAIN;
@@ -104,30 +105,30 @@ public final class FFMPEGGUI
 
         System.out.println(Terminal.FFmpegExists());
 
-//        final String[] options = {"1", "10"};
-//        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),//                                     new File("./meep.m4a"));
-//                        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
-//                                                      new File("."),
-//                                                      options);
-//                TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
-//                                              new File("."),
-//                                              options);
-//        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
-//                                      new File("./meep.mp4"),
-//                                      options);
-//        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Downloads/knower.gif"),
-//                                     new File("./knower.m4a"));
-//        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Videos/deltarune.mp4"),
-//                                     new File("./splosion.gif"));
-//
-//        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
-//                                     new File("./meep.m4a"));
-//        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
-//                                      new File("./meep.mp4"),
-//                                      options);
-//        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
-//                                      new File("./meep.mov"),
-//                                      options);
+        //        final String[] options = {"1", "10"};
+        //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),//                                     new File("./meep.m4a"));
+        //                        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
+        //                                                      new File("."),
+        //                                                      options);
+        //                TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
+        //                                              new File("."),
+        //                                              options);
+        //        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
+        //                                      new File("./meep.mp4"),
+        //                                      options);
+        //        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Downloads/knower.gif"),
+        //                                     new File("./knower.m4a"));
+        //        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Videos/deltarune.mp4"),
+        //                                     new File("./splosion.gif"));
+        //
+        //        TerminalExecutor.convertFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
+        //                                     new File("./meep.m4a"));
+        //        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
+        //                                      new File("./meep.mp4"),
+        //                                      options);
+        //        TerminalExecutor.compressFile(new File("/home/alex-hidalgo/Videos/meep.mp4"),
+        //                                      new File("./meep.mov"),
+        //                                      options);
 
 
         // File/Directory Chooser Setup
@@ -144,8 +145,10 @@ public final class FFMPEGGUI
 
         // Button File Selector setup. Add button event to open file selection.
         buttonFileChooser = new Button("Select a file");
-        buttonFileChooser.getStyleClass().addAll("button", "selected-file");
-        NODES_CONSTANT.add(buttonFileChooser);
+        buttonFileChooser.getStyleClass()
+                         .addAll("button",
+                                 "selected-file");
+        NODES_CONSTANT_TOP.add(buttonFileChooser);
         buttonFileChooser.setOnAction(actionEvent ->
                                       {
                                           // file the user selected
@@ -161,7 +164,8 @@ public final class FFMPEGGUI
                                           final String filenameNoFiletype = Helper.getBaseFileName(selectedFile.getName());
 
                                           // update TEXT_FIELD_FILENAME_OUTPUT if blank
-                                          if(TEXT_FIELD_FILENAME_OUTPUT.getText().isBlank())
+                                          if(TEXT_FIELD_FILENAME_OUTPUT.getText()
+                                                                       .isBlank())
                                           {
                                               TEXT_FIELD_FILENAME_OUTPUT.setText(filenameNoFiletype);
                                           }
@@ -189,20 +193,26 @@ public final class FFMPEGGUI
         gridPaneFileOutput = new GridPane();
         gridPaneFileOutput.setHgap(10);
         gridPaneFileOutput.setAlignment(Pos.CENTER);
-        NODES_CONSTANT.add(gridPaneFileOutput);
+        NODES_CONSTANT_TOP.add(gridPaneFileOutput);
 
         // text field input for output name
         TEXT_FIELD_FILENAME_OUTPUT.setPromptText("Output filename");
 
-        gridPaneFileOutput.getChildren().addFirst(TEXT_FIELD_FILENAME_OUTPUT);
-        GridPane.setRowIndex(TEXT_FIELD_FILENAME_OUTPUT, 0);
-        GridPane.setColumnIndex(TEXT_FIELD_FILENAME_OUTPUT, 0);
+        gridPaneFileOutput.getChildren()
+                          .addFirst(TEXT_FIELD_FILENAME_OUTPUT);
+        GridPane.setRowIndex(TEXT_FIELD_FILENAME_OUTPUT,
+                             0);
+        GridPane.setColumnIndex(TEXT_FIELD_FILENAME_OUTPUT,
+                                0);
 
         //Button for destination chooser
         buttonDestChooser = new Button("Select destination");
-        gridPaneFileOutput.getChildren().addFirst(buttonDestChooser);
-        GridPane.setRowIndex(buttonDestChooser, 0);
-        GridPane.setColumnIndex(buttonDestChooser, 1);
+        gridPaneFileOutput.getChildren()
+                          .addFirst(buttonDestChooser);
+        GridPane.setRowIndex(buttonDestChooser,
+                             0);
+        GridPane.setColumnIndex(buttonDestChooser,
+                                1);
         buttonDestChooser.setOnAction(actionEvent ->
                                       {
                                           // Directory the user selected
@@ -222,24 +232,35 @@ public final class FFMPEGGUI
         setupAudio();
 
         // create title label
-        TITLE_LABEL = new Label("FFmpeg GUI");
-        TITLE_LABEL.getStyleClass().add("neon-text");
+        LABEL_TITLE = new Label("FFmpeg GUI");
+        LABEL_TITLE.getStyleClass()
+                   .add("neon-text");
 
-// start the neon glow animation
-        applyNeonAnimation(TITLE_LABEL);
+        LABEL_TERMINAL_OUTPUT = new Label("Terminal output will appear here");
+        NODES_CONSTANT_BOTTOM.add(LABEL_TERMINAL_OUTPUT);
+
+        // start the neon glow animation
+        applyNeonAnimation(LABEL_TITLE);
 
 
         WHITE_BOX = new VBox(12);
         WHITE_BOX.setAlignment(Pos.CENTER);
-        WHITE_BOX.getStyleClass().add("white-box");
+        WHITE_BOX.getStyleClass()
+                 .add("white-box");
 
-        WHITE_BOX.getChildren().add(TITLE_LABEL);
-        WHITE_BOX.getChildren().addAll(NODES_CONSTANT);
+        WHITE_BOX.getChildren()
+                 .add(LABEL_TITLE);
+        WHITE_BOX.getChildren()
+                 .addAll(NODES_CONSTANT_TOP);
+        WHITE_BOX.getChildren()
+                 .addAll(NODES_CONSTANT_BOTTOM);
 
-        LAYOUT_MAIN = new VBox(PADDING_PX, WHITE_BOX);
+
+        LAYOUT_MAIN = new VBox(PADDING_PX,
+                               WHITE_BOX);
         LAYOUT_MAIN.setAlignment(Pos.CENTER);
-        LAYOUT_MAIN.getStyleClass().add("vbox");
-
+        LAYOUT_MAIN.getStyleClass()
+                   .add("vbox");
 
 
         // Setup scene
@@ -267,10 +288,13 @@ public final class FFMPEGGUI
         NODES_VIDEO.add(gridPaneVideoCompress);
 
         buttonCompressVideo = new Button("Start Compressing Video");
-        gridPaneVideoCompress.getChildren().addFirst(buttonCompressVideo);
+        gridPaneVideoCompress.getChildren()
+                             .addFirst(buttonCompressVideo);
 
-        GridPane.setRowIndex(buttonCompressVideo, 0);
-        GridPane.setColumnIndex(buttonCompressVideo, 1);
+        GridPane.setRowIndex(buttonCompressVideo,
+                             0);
+        GridPane.setColumnIndex(buttonCompressVideo,
+                                1);
         buttonCompressVideo.setOnAction(actionEvent -> compressFile());
 
         buttonCompressVideo.getStyleClass()
@@ -291,29 +315,33 @@ public final class FFMPEGGUI
         final TextField textFieldNumberTargetMBVideo;
         textFieldNumberTargetMBVideo = new TextField("");
         textFieldNumberTargetMBVideo.setPromptText("Target MB video");
-        textFieldNumberTargetMBVideo.getStyleClass().add("text-field");
+        textFieldNumberTargetMBVideo.getStyleClass()
+                                    .add("text-field");
         textFieldNumberTargetMBVideo.textProperty()
-                               .addListener(new ChangeListener<>()
-                               {
-                                   @Override
-                                   public void changed(final ObservableValue<? extends String> observable,
-                                                       final String oldValue,
-                                                       String newValue)
-                                   {
-                                       if(!newValue.matches("\\d*"))
-                                       {
-                                           textFieldNumberTargetMBVideo.setText(newValue.replaceAll("\\D",
-                                                                                               ""));
-                                       }
+                                    .addListener(new ChangeListener<>()
+                                    {
+                                        @Override
+                                        public void changed(final ObservableValue<? extends String> observable,
+                                                            final String oldValue,
+                                                            String newValue)
+                                        {
+                                            if(!newValue.matches("\\d*"))
+                                            {
+                                                textFieldNumberTargetMBVideo.setText(newValue.replaceAll("\\D",
+                                                                                                         ""));
+                                            }
 
-                                       updateCompressionSize(textFieldNumberTargetMBVideo.getText());
-                                   }
-                               });
+                                            updateCompressionSize(textFieldNumberTargetMBVideo.getText());
+                                        }
+                                    });
 
 
-        gridPaneVideoCompress.getChildren().addFirst(textFieldNumberTargetMBVideo);
-        GridPane.setRowIndex(textFieldNumberTargetMBVideo, 0);
-        GridPane.setColumnIndex(textFieldNumberTargetMBVideo, 0);
+        gridPaneVideoCompress.getChildren()
+                             .addFirst(textFieldNumberTargetMBVideo);
+        GridPane.setRowIndex(textFieldNumberTargetMBVideo,
+                             0);
+        GridPane.setColumnIndex(textFieldNumberTargetMBVideo,
+                                0);
 
     }
 
@@ -334,41 +362,45 @@ public final class FFMPEGGUI
         buttonCompressAudio.setOnAction(actionEvent -> compressFile());
 
 
-
-        gridPaneAudioCompress.getChildren().addFirst(buttonCompressAudio);
-        GridPane.setRowIndex(buttonCompressAudio, 0);
-        GridPane.setColumnIndex(buttonCompressAudio, 1);
+        gridPaneAudioCompress.getChildren()
+                             .addFirst(buttonCompressAudio);
+        GridPane.setRowIndex(buttonCompressAudio,
+                             0);
+        GridPane.setColumnIndex(buttonCompressAudio,
+                                1);
 
 
         // force the field to be numeric only
         final TextField textFieldNumberTargetMBAudio;
         textFieldNumberTargetMBAudio = new TextField("");
         textFieldNumberTargetMBAudio.setPromptText("Target MB audio");
-        textFieldNumberTargetMBAudio.getStyleClass().add("text-field");
+        textFieldNumberTargetMBAudio.getStyleClass()
+                                    .add("text-field");
         textFieldNumberTargetMBAudio.textProperty()
-                               .addListener(new ChangeListener<>()
-                               {
-                                   @Override
-                                   public void changed(final ObservableValue<? extends String> observable,
-                                                       final String oldValue,
-                                                       String newValue)
-                                   {
-                                       if(!newValue.matches("\\d*"))
-                                       {
-                                           textFieldNumberTargetMBAudio.setText(newValue.replaceAll("\\D",
-                                                                                               ""));
-                                       }
+                                    .addListener(new ChangeListener<>()
+                                    {
+                                        @Override
+                                        public void changed(final ObservableValue<? extends String> observable,
+                                                            final String oldValue,
+                                                            String newValue)
+                                        {
+                                            if(!newValue.matches("\\d*"))
+                                            {
+                                                textFieldNumberTargetMBAudio.setText(newValue.replaceAll("\\D",
+                                                                                                         ""));
+                                            }
 
-                                       updateCompressionSize(textFieldNumberTargetMBAudio.getText());
-                                   }
-                               });
-
-
-        gridPaneAudioCompress.getChildren().addFirst(textFieldNumberTargetMBAudio);
-        GridPane.setRowIndex(textFieldNumberTargetMBAudio, 0);
-        GridPane.setColumnIndex(textFieldNumberTargetMBAudio, 0);
+                                            updateCompressionSize(textFieldNumberTargetMBAudio.getText());
+                                        }
+                                    });
 
 
+        gridPaneAudioCompress.getChildren()
+                             .addFirst(textFieldNumberTargetMBAudio);
+        GridPane.setRowIndex(textFieldNumberTargetMBAudio,
+                             0);
+        GridPane.setColumnIndex(textFieldNumberTargetMBAudio,
+                                0);
 
 
         final List<String> fileTypesAudioTrimmed;
@@ -381,16 +413,25 @@ public final class FFMPEGGUI
         NODES_AUDIO.add(comboBoxFiletypesAudio);
     }
 
-    private static void SetVBox(VBox layoutMain, final List<Node> nodes)
+    private static void SetVBox(VBox layoutMain,
+                                final List<Node> nodes)
     {
-        WHITE_BOX.getChildren().clear();
-        WHITE_BOX.getChildren().add(TITLE_LABEL);
-        WHITE_BOX.getChildren().addAll(NODES_CONSTANT);
-        WHITE_BOX.getChildren().addAll(nodes);
+
+        WHITE_BOX.getChildren()
+                 .clear();
+        WHITE_BOX.getChildren()
+                 .add(LABEL_TITLE);
+        WHITE_BOX.getChildren()
+                 .addAll(NODES_CONSTANT_TOP);
+        WHITE_BOX.getChildren()
+                 .addAll(nodes);
+        WHITE_BOX.getChildren()
+                 .addAll(NODES_CONSTANT_BOTTOM);
 
     }
 
-    private static void applyNeonAnimation(final Label label) {
+    private static void applyNeonAnimation(final Label label)
+    {
         // create an initial glow DropShadow
         final DropShadow glow = new DropShadow();
         glow.setRadius(30);            // blur radius
@@ -401,19 +442,16 @@ public final class FFMPEGGUI
         label.setTextFill(Color.WHITE); // keep text readable
 
         // Timeline to animate the glow color between pink and blue
-        Timeline timeline = new Timeline(
-            new KeyFrame(Duration.ZERO,
-                new KeyValue(glow.colorProperty(), Color.web("#ff005e"))),
-            new KeyFrame(Duration.seconds(1.5),
-                new KeyValue(glow.colorProperty(), Color.web("#00d4ff")))
-        );
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO,
+                                                      new KeyValue(glow.colorProperty(),
+                                                                   Color.web("#ff005e"))),
+                                         new KeyFrame(Duration.seconds(1.5),
+                                                      new KeyValue(glow.colorProperty(),
+                                                                   Color.web("#00d4ff"))));
         timeline.setAutoReverse(true);
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
-
-
-
 
 
     private static void updateChosenFile(final File file)
@@ -450,5 +488,20 @@ public final class FFMPEGGUI
         {
             throw new RuntimeException(e);
         }
+    }
+
+
+    public static void setTerminalOutput(final String terminalOutputToSet)
+    {
+        LABEL_TERMINAL_OUTPUT.setText(terminalOutputToSet);
+
+    }
+
+    public static void addTerminalOutput(final String terminalOutputToAdd)
+    {
+        final String originalLabelTerminalOutputText;
+        originalLabelTerminalOutputText = LABEL_TERMINAL_OUTPUT.getText();
+        LABEL_TERMINAL_OUTPUT.setText(originalLabelTerminalOutputText + terminalOutputToAddz);
+
     }
 }
