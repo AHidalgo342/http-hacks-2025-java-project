@@ -45,8 +45,7 @@ public final class FFMPEGGUI
                                                             "*.mov",
                                                             "*.avi",
                                                             "*.wmv",
-                                                            "*.webm",
-                                                            "*.gif"};
+                                                            "*.webm"};
     private static final String[] FILE_TYPES_AUDIO       = {"*.wav",
                                                             "*.mp3",
                                                             "*.aac"};
@@ -64,6 +63,7 @@ public final class FFMPEGGUI
 
     private static final TextField        TEXT_FIELD_FILENAME_OUTPUT = new TextField();
     private static final ComboBox<String> COMBO_BOX_VIDEO_FILETYPES  = new ComboBox<>();
+    private static final ComboBox<String> COMBO_BOX_AUDIO_FILETYPES  = new ComboBox<>();
 
     private static Label      LABEL_TITLE;
     private static Label      LABEL_TERMINAL_OUTPUT;
@@ -407,8 +407,8 @@ public final class FFMPEGGUI
                                                   BUTTON_CONVERT_FILETYPES_VIDEO.setDisable(false);
                                                   final String newFileType;
                                                   newFileType = COMBO_BOX_VIDEO_FILETYPES.getSelectionModel()
-                                                                                      .selectedItemProperty()
-                                                                                      .get();
+                                                                                         .selectedItemProperty()
+                                                                                         .get();
 
                                                   // set the convert text to "Convert to {filetype to convert to}
                                                   BUTTON_CONVERT_FILETYPES_VIDEO.setText("Convert to " + newFileType);
@@ -416,7 +416,7 @@ public final class FFMPEGGUI
 
 
         BUTTON_CONVERT_FILETYPES_VIDEO = new Button("Select Converting Filetype");
-        BUTTON_CONVERT_FILETYPES_VIDEO.setOnAction(actionEvent -> convertFile());
+        BUTTON_CONVERT_FILETYPES_VIDEO.setOnAction(actionEvent -> convertFile(COMBO_BOX_VIDEO_FILETYPES.getValue()));
         BUTTON_CONVERT_FILETYPES_VIDEO.setDisable(true);
 
         // Create HBox to hold combobox and button side by side
@@ -477,8 +477,6 @@ public final class FFMPEGGUI
 
     private static void setupAudio()
     {
-        final ComboBox<String> comboBoxFiletypesAudio;
-
         final GridPane gridPaneAudioCompress;
         gridPaneAudioCompress = new GridPane();
         gridPaneAudioCompress.setHgap(10);
@@ -546,37 +544,36 @@ public final class FFMPEGGUI
         fileTypesAudioTrimmed = Helper.removeFirstCharacters(SKIP_FIRST,
                                                              FILE_TYPES_AUDIO);
 
-        comboBoxFiletypesAudio = new ComboBox<>();
-        comboBoxFiletypesAudio.getItems()
-                              .addAll(fileTypesAudioTrimmed);
+        COMBO_BOX_AUDIO_FILETYPES.getItems()
+                                 .addAll(fileTypesAudioTrimmed);
 
-        comboBoxFiletypesAudio.setMaxWidth(200);
-        comboBoxFiletypesAudio.setPrefWidth(200);
+        COMBO_BOX_AUDIO_FILETYPES.setMaxWidth(200);
+        COMBO_BOX_AUDIO_FILETYPES.setPrefWidth(200);
 
-        comboBoxFiletypesAudio.getSelectionModel()
-                              .selectedItemProperty()
-                              .addListener(event ->
-                                           {
-                                               BUTTON_CONVERT_FILETYPES_AUDIO.setDisable(false);
-                                               final String convertType;
-                                               convertType = comboBoxFiletypesAudio.getSelectionModel()
-                                                                                   .selectedItemProperty()
-                                                                                   .get();
+        COMBO_BOX_AUDIO_FILETYPES.getSelectionModel()
+                                 .selectedItemProperty()
+                                 .addListener(event ->
+                                              {
+                                                  BUTTON_CONVERT_FILETYPES_AUDIO.setDisable(false);
+                                                  final String convertType;
+                                                  convertType = COMBO_BOX_AUDIO_FILETYPES.getSelectionModel()
+                                                                                         .selectedItemProperty()
+                                                                                         .get();
 
-                                               // set the convert text to "Convert to {filetype to convert to}
-                                               BUTTON_CONVERT_FILETYPES_AUDIO.setText("Convert to " + convertType);
-                                           });
+                                                  // set the convert text to "Convert to {filetype to convert to}
+                                                  BUTTON_CONVERT_FILETYPES_AUDIO.setText("Convert to " + convertType);
+                                              });
 
         BUTTON_CONVERT_FILETYPES_AUDIO = new Button("Select Converting Filetype");
         BUTTON_CONVERT_FILETYPES_AUDIO.setMaxWidth(150);
         BUTTON_CONVERT_FILETYPES_AUDIO.setPrefWidth(150);
-        BUTTON_CONVERT_FILETYPES_AUDIO.setOnAction(actionEvent -> convertFile());
+        BUTTON_CONVERT_FILETYPES_AUDIO.setOnAction(actionEvent -> convertFile(COMBO_BOX_AUDIO_FILETYPES.getValue()));
         BUTTON_CONVERT_FILETYPES_AUDIO.setDisable(true);
 
         HBox hBoxFiletypeAudio = new HBox(10);
         hBoxFiletypeAudio.setAlignment(Pos.CENTER);
         hBoxFiletypeAudio.getChildren()
-                         .addAll(comboBoxFiletypesAudio,
+                         .addAll(COMBO_BOX_AUDIO_FILETYPES,
                                  BUTTON_CONVERT_FILETYPES_AUDIO);
 
         NODES_AUDIO.add(hBoxFiletypeAudio); // Add the HBox instead of individual combobox
@@ -662,7 +659,7 @@ public final class FFMPEGGUI
         }
     }
 
-    private static void convertFile()
+    private static void convertFile(final String fileType)
     {
         if(dstDir == null)
         {
@@ -670,7 +667,6 @@ public final class FFMPEGGUI
             return;
         }
 
-        String fileType = COMBO_BOX_VIDEO_FILETYPES.getValue();
         System.out.println(compressionSizeMb);
         try
         {

@@ -59,23 +59,6 @@ public class TerminalExecutor
         return video;
     }
 
-    private static boolean isGif(File file)
-    {
-        final String fileExtension;
-        fileExtension = FFMPEGGUI.FILE_TYPES_VIDEO[6].substring(1);
-
-        return file.toString()
-                   .endsWith(fileExtension);
-    }
-
-    private static boolean isGif(String str)
-    {
-        final String fileExtension;
-        fileExtension = FFMPEGGUI.FILE_TYPES_VIDEO[6].substring(1);
-
-        return str.endsWith(fileExtension);
-    }
-
     /**
      * Converts a file from one type to another.
      *
@@ -90,27 +73,10 @@ public class TerminalExecutor
         sb = new StringBuilder();
 
         sb.append("ffmpeg -y ");
-        if(isGif(fileType))
-        {
-            sb.append("-ss 30 -t 3 ");
-        }
         sb.append("-i \"");
         sb.append(src.getAbsolutePath());
         sb.append("\"");
-
-        if(isGif(src) && isVideo(fileType))
-        {
-            sb.append(" -movflags faststart -pix_fmt yuv420p -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" ");
-        }
-        else if(isVideo(src) && isGif(fileType))
-        {
-            sb.append(" -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 ");
-        }
-        else
-        {
-            sb.append(" -c:v copy -b:a 320k -ab 192k ");
-        }
-
+        sb.append(" -c:v copy -b:a 320k -ab 192k ");
         sb.append("\"");
         sb.append(dst.getAbsolutePath());
         sb.append(File.separator);
