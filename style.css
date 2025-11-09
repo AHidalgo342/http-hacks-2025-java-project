@@ -52,9 +52,24 @@
     -fx-font-size: 20px;
     -fx-padding: 10px 20px;
     -fx-font-weight: bold;
+    -fx-text-fill: #FFF;
+
+}
+
+/* current selection */
+.combo-box .list-cell {
+    -fx-text-fill: #FFF;
+
+}
+
+/* popout list of all selections */
+.combo-box .list-view .list-cell {
+    -fx-text-fill: #000 ;
+
 }
 
 .grid-pane {
+    -fx-prompt-text-fill: #EEE;
 
 }
 
