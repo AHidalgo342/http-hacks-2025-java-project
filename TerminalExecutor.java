@@ -115,7 +115,7 @@ public class TerminalExecutor
             return false;
         }
 
-        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
+        for(final String it : FFmpegGUI.FILE_TYPES_VIDEO)
         {
             final String fileExtension;
             fileExtension = it.substring(1);

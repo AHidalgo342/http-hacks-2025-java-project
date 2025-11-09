@@ -197,7 +197,7 @@ public class Terminal
             {
                 lastNonNullLine = line;
                 String finalLine = line;
-                Platform.runLater(() -> FFMPEGGUI.addTerminalOutput("\n" + finalLine));
+                Platform.runLater(() -> FFmpegGUI.addTerminalOutput("\n" + finalLine));
                 System.out.println(lastNonNullLine);
             }
             returnStr = lastNonNullLine;
