@@ -50,6 +50,13 @@ public final class Helper
 
     }
 
+    /**
+     * Get the base file name of a file, without the file type.
+     *
+     * @param filename String filename
+     * @return String name without file type;
+     *         if no file type, returns input string
+     */
     public static String getBaseFileName(final String filename)
     {
         final int index = filename.lastIndexOf('.');
@@ -61,6 +68,25 @@ public final class Helper
         {
             return filename.substring(0,
                                       index);
+        }
+    }
+
+    /**
+     * Gets the file type of file.
+     *
+     * @param fileName String file name
+     * @return String file type
+     */
+    public static String getFileType(final String fileName)
+    {
+        final int index = fileName.lastIndexOf('.');
+        if(index != -1)
+        {
+            return fileName.substring(index);
+        }
+        else
+        {
+            return "";
         }
     }
 }
