@@ -41,12 +41,16 @@
     -fx-disabled-opacity: 0.6;
 
     /* frutiger aero background for Alex */
-    /* -fx-background-image: url("liam_28.jpg"); */
+    -fx-background-image: url("liam_28.jpg");
 
 
     /* increase scale globally */
     -fx-scale: 1.5;
 
+}
+
+.bg-label {
+    -fx-text-fill: #EEE;
 }
 
 .neon-text {

@@ -1,9 +1,7 @@
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalTime;
 
 /**
  * Terminal wrapper class.
@@ -17,64 +15,6 @@ public class TerminalExecutor
     public static final int  PREFIX_MULTIPLIER_KILO = 1000;
     public static final int  PREFIX_MULTIPLIER_MEGA = 1000000;
     public static final long BYTES_TO_BITS          = 8L;
-
-    private static boolean isVideo(File src)
-    {
-        boolean video = false;
-
-        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
-        {
-            final String fileExtension;
-            fileExtension = it.substring(1);
-
-            System.out.println("File extension: " + fileExtension);
-
-            if(src.toString()
-                  .endsWith(fileExtension))
-            {
-                video = true;
-                break;
-            }
-        }
-        return video;
-    }
-
-    private static boolean isVideo(String str)
-    {
-        boolean video = false;
-
-        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
-        {
-            final String fileExtension;
-            fileExtension = it.substring(1);
-
-            System.out.println("File extension: " + fileExtension);
-
-            if(str.endsWith(fileExtension))
-            {
-                video = true;
-                break;
-            }
-        }
-        return video;
-    }
-
-    private static boolean isGif(File file)
-    {
-        final String fileExtension;
-        fileExtension = FFMPEGGUI.FILE_TYPES_VIDEO[6].substring(1);
-
-        return file.toString()
-                   .endsWith(fileExtension);
-    }
-
-    private static boolean isGif(String str)
-    {
-        final String fileExtension;
-        fileExtension = FFMPEGGUI.FILE_TYPES_VIDEO[6].substring(1);
-
-        return str.endsWith(fileExtension);
-    }
 
     /**
      * Converts a file from one type to another.
@@ -90,27 +30,10 @@ public class TerminalExecutor
         sb = new StringBuilder();
 
         sb.append("ffmpeg -y ");
-        if(isGif(fileType))
-        {
-            sb.append("-ss 30 -t 3 ");
-        }
         sb.append("-i \"");
         sb.append(src.getAbsolutePath());
         sb.append("\"");
-
-        if(isGif(src) && isVideo(fileType))
-        {
-            sb.append(" -movflags faststart -pix_fmt yuv420p -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" ");
-        }
-        else if(isVideo(src) && isGif(fileType))
-        {
-            sb.append(" -vf \"split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 ");
-        }
-        else
-        {
-            sb.append(" -c:v copy -b:a 320k -ab 192k ");
-        }
-
+        sb.append(" -c:v copy -b:a 320k -ab 192k ");
         sb.append("\"");
         sb.append(dst.getAbsolutePath());
         sb.append(File.separator);
@@ -127,8 +50,6 @@ public class TerminalExecutor
      * Possible options:<br>
      * - Target File size<br>
      * Examples: 30M, 10K, 50G<br>
-     * - Target Framerate:<br>
-     * Example: 24, 10, 5
      * <p>
      * Full Example:
      * {@code input.webm compressed.mp4 15M 24}
@@ -141,7 +62,10 @@ public class TerminalExecutor
      *
      * @param src     File to convert
      * @param dst     Destination of file
+     * @param name    name of the output file
      * @param options Optional arguments
+     * @throws IOException          If an IO exception happens
+     * @throws InterruptedException If the process is interupted
      */
     public static void compressFile(final File src,
                                     final File dst,
@@ -151,7 +75,8 @@ public class TerminalExecutor
     IOException,
     InterruptedException
     {
-        long bitrateKBPS = getBitrateKBPS(src, options);
+        long bitrateKBPS = getBitrateKBPS(src,
+                                          options);
         System.out.println(bitrateKBPS);
 
         if(isVideo(src))
@@ -173,6 +98,48 @@ public class TerminalExecutor
         }
     }
 
+    /**
+     * Returns true if the given file is in a supported
+     * video format, else false.
+     *
+     * @param src File to check extension type of
+     * @return true if file is in a supported video format,
+     * else false
+     */
+    private static boolean isVideo(File src)
+    {
+        boolean video = false;
+
+        if(src == null)
+        {
+            return false;
+        }
+
+        for(final String it : FFMPEGGUI.FILE_TYPES_VIDEO)
+        {
+            final String fileExtension;
+            fileExtension = it.substring(1);
+
+            System.out.println("File extension: " + fileExtension);
+
+            if(src.toString()
+                  .endsWith(fileExtension))
+            {
+                video = true;
+                break;
+            }
+        }
+        return video;
+    }
+
+    /**
+     * Generate the FFMPEG command to compress an audio file.
+     *
+     * @param src         Source file
+     * @param dst         Destination Path
+     * @param name        output file name
+     * @param bitrateKBPS file target compression bitrate
+     */
     private static void compressAudio(File src,
                                       File dst,
                                       String name,
@@ -186,10 +153,14 @@ public class TerminalExecutor
         // Audio bitrate flag
         sb.append("\" -b:a ");
         // Audio bitrate specified
-        sb.append(bitrateKBPS / 2); // todo this sucks
+        sb.append(bitrateKBPS);
+        sb.append("k -maxrate ");
+        sb.append(bitrateKBPS);
+        sb.append("k -bufsize ");
+        sb.append(bitrateKBPS);
         sb.append("k ");
         // Specify mono
-        sb.append(" -ac 1 ");
+        sb.append("-ac 1 ");
 
         sb.append("\"");
         sb.append(dst.getAbsolutePath());
@@ -201,6 +172,15 @@ public class TerminalExecutor
         callTerminal(sb);
     }
 
+    /**
+     * Generate the FFMPEG command to compress an audio file.
+     *
+     * @param src         Source file
+     * @param dst         Destination Path
+     * @param name        output file name
+     * @param options     optional arguments
+     * @param bitrateKBPS file target compression bitrate
+     */
     private static void compressVideo(File src,
                                       File dst,
                                       String name,
@@ -217,6 +197,7 @@ public class TerminalExecutor
         // Video bitrate specified
         sb.append(bitrateKBPS);
         sb.append("k ");
+        // UNUSED, CODE DOES NOT ALLOW FOR FRAME RATE ANYMORE
         if(options.length > 1)
         {
             // Specify frame rate
@@ -236,33 +217,50 @@ public class TerminalExecutor
         callTerminal(sb);
     }
 
-    private static long getBitrateKBPS(File src, String[] options)
+    /**
+     * Get the Bitrate of the given file (src) in kbps.
+     *
+     * @param src     source file
+     * @param options optional arguments
+     * @return a target compression bitrate as long
+     * @throws IOException          if an IO exception occurs
+     * @throws InterruptedException if the process is interrupted
+     */
+    private static long getBitrateKBPS(File src,
+                                       String[] options)
     throws
     IOException,
     InterruptedException
     {
-        String fileLengthTimeStamp = getFileLengthTimeStamp(src);
+        String fileLength = getFileLength(src);
 
         int targetFileSizeMB = Integer.parseInt(options[0]);
 
         long targetSizeBits = targetFileSizeMB * PREFIX_MULTIPLIER_MEGA * BYTES_TO_BITS;
 
-        int fileLengthSeconds = LocalTime.parse(fileLengthTimeStamp)
-                                         .toSecondOfDay();
+        int fileLengthSeconds = (int) Math.ceil(Double.parseDouble(fileLength));
+
+        System.out.println("Target file size: " + targetSizeBits + " bits");
+        System.out.println("File size: " + fileLengthSeconds + " seconds");
 
         return targetSizeBits / fileLengthSeconds / PREFIX_MULTIPLIER_KILO;
     }
 
-    private static String getFileLengthTimeStamp(File src)
+    /**
+     * Get the file length as a {@code HH:MM:SS:mmm} formatted timestamp.
+     * @param src source file
+     * @return {@code HH:MM:SS:mmm} timestamp
+     * @throws IOException if an IO exception occurs
+     * @throws InterruptedException if the process is interrupted
+     */
+    private static String getFileLength(File src)
     throws
     IOException,
     InterruptedException
     {
-        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i \"" + src.getAbsolutePath() + "\" -f null -");
+        String fileLengthVerbose = Terminal.runCommand("ffprobe -v quiet -i \"" + src.getAbsolutePath() + "\" -show_entries format=duration -of csv=\"p=0\"");
         System.out.println(fileLengthVerbose);
-
-        String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
-        return fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
+        return fileLengthVerbose;
     }
 
     private static void callTerminal(StringBuilder sb)
