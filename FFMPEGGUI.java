@@ -10,7 +10,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -290,7 +289,7 @@ public final class FFMPEGGUI
         LAYOUT_MAIN.setScaleY(1.5);
 
 
-        mainStage.setTitle("JavaFX Test");
+        mainStage.setTitle("FFmpeg GUI");
         mainStage.setScene(scene);
         mainStage.setOpacity(1.0);
 
