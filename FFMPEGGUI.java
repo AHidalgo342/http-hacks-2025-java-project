@@ -26,7 +26,7 @@ import java.util.Objects;
  * @author Szymon Zemojtel
  * @author Alex Hidalgo
  * @author Daryan Worya
- * @version 22
+ * @version 32
  */
 public final class FFMPEGGUI
         extends Application
@@ -157,13 +157,23 @@ public final class FFMPEGGUI
                                           }
                                       });
 
+        final GridPane gridPaneFileOutput;
+        gridPaneFileOutput = new GridPane();
+        gridPaneFileOutput.setHgap(10);
+        NODES_CONSTANT.add(gridPaneFileOutput);
+
         // text field input for output name
         TEXT_FIELD_FILENAME_OUTPUT.setPromptText("Output filename");
-        NODES_CONSTANT.add(TEXT_FIELD_FILENAME_OUTPUT);
+
+        gridPaneFileOutput.getChildren().addFirst(TEXT_FIELD_FILENAME_OUTPUT);
+        GridPane.setRowIndex(TEXT_FIELD_FILENAME_OUTPUT, 0);
+        GridPane.setColumnIndex(TEXT_FIELD_FILENAME_OUTPUT, 0);
 
         //Button for destination chooser
         buttonDestChooser = new Button("Select destination");
-        NODES_CONSTANT.add(buttonDestChooser);
+        gridPaneFileOutput.getChildren().addFirst(buttonDestChooser);
+        GridPane.setRowIndex(buttonDestChooser, 0);
+        GridPane.setColumnIndex(buttonDestChooser, 1);
         buttonDestChooser.setOnAction(actionEvent ->
                                       {
                                           // Directory the user selected
@@ -184,9 +194,8 @@ public final class FFMPEGGUI
 
         // Setup VBox layout. Pass elements that will be displayed on it.
         LAYOUT_MAIN = new VBox(PADDING_PX,
-                               label,
-                               buttonFileChooser,
-                               buttonDestChooser);
+                               label);
+        LAYOUT_MAIN.getChildren().addAll(NODES_CONSTANT);
 
         LAYOUT_MAIN.setAlignment(Pos.CENTER);
 
