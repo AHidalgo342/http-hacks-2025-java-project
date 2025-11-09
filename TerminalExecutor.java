@@ -51,8 +51,6 @@ public class TerminalExecutor
      * Possible options:<br>
      * - Target File size<br>
      * Examples: 30M, 10K, 50G<br>
-     * - Target Framerate:<br>
-     * Example: 24, 10, 5
      * <p>
      * Full Example:
      * {@code input.webm compressed.mp4 15M 24}
@@ -65,7 +63,10 @@ public class TerminalExecutor
      *
      * @param src     File to convert
      * @param dst     Destination of file
+     * @param name    name of the output file
      * @param options Optional arguments
+     * @throws IOException          If an IO exception happens
+     * @throws InterruptedException If the process is interupted
      */
     public static void compressFile(final File src,
                                     final File dst,
@@ -75,7 +76,8 @@ public class TerminalExecutor
     IOException,
     InterruptedException
     {
-        long bitrateKBPS = getBitrateKBPS(src, options);
+        long bitrateKBPS = getBitrateKBPS(src,
+                                          options);
         System.out.println(bitrateKBPS);
 
         if(isVideo(src))
@@ -103,7 +105,7 @@ public class TerminalExecutor
      *
      * @param src File to check extension type of
      * @return true if file is in a supported video format,
-     *         else false
+     * else false
      */
     private static boolean isVideo(File src)
     {
@@ -131,6 +133,14 @@ public class TerminalExecutor
         return video;
     }
 
+    /**
+     * Generate the FFMPEG command to compress an audio file.
+     *
+     * @param src         Source file
+     * @param dst         Destination Path
+     * @param name        output file name
+     * @param bitrateKBPS file target compression bitrate
+     */
     private static void compressAudio(File src,
                                       File dst,
                                       String name,
@@ -163,6 +173,15 @@ public class TerminalExecutor
         callTerminal(sb);
     }
 
+    /**
+     * Generate the FFMPEG command to compress an audio file.
+     *
+     * @param src         Source file
+     * @param dst         Destination Path
+     * @param name        output file name
+     * @param options     optional arguments
+     * @param bitrateKBPS file target compression bitrate
+     */
     private static void compressVideo(File src,
                                       File dst,
                                       String name,
@@ -179,6 +198,7 @@ public class TerminalExecutor
         // Video bitrate specified
         sb.append(bitrateKBPS);
         sb.append("k ");
+        // UNUSED, CODE DOES NOT ALLOW FOR FRAME RATE ANYMORE
         if(options.length > 1)
         {
             // Specify frame rate
@@ -198,7 +218,17 @@ public class TerminalExecutor
         callTerminal(sb);
     }
 
-    private static long getBitrateKBPS(File src, String[] options)
+    /**
+     * Get the Bitrate of the given file (src) in kbps.
+     *
+     * @param src     source file
+     * @param options optional arguments
+     * @return a target compression bitrate as long
+     * @throws IOException          if an IO exception occurs
+     * @throws InterruptedException if the process is interrupted
+     */
+    private static long getBitrateKBPS(File src,
+                                       String[] options)
     throws
     IOException,
     InterruptedException
@@ -219,6 +249,13 @@ public class TerminalExecutor
         return targetSizeBits / fileLengthSeconds / PREFIX_MULTIPLIER_KILO;
     }
 
+    /**
+     * Get the file length as a {@code HH:MM:SS:mmm} formatted timestamp.
+     * @param src source file
+     * @return {@code HH:MM:SS:mmm} timestamp
+     * @throws IOException if an IO exception occurs
+     * @throws InterruptedException if the process is interrupted
+     */
     private static String getFileLengthTimeStamp(File src)
     throws
     IOException,

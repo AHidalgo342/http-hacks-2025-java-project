@@ -8,11 +8,16 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Alex Hidalgo
  * @author Marcy Ordinario
- * @version 1.0
+ * @version twenty billion.0
  */
 public class Terminal
 {
-    private enum streamType {INPUT, ERROR}
+    private enum streamType
+    {
+        INPUT,
+        ERROR
+    }
+
     private static final boolean isWindows = System.getProperty("os.name")
                                                    .toLowerCase()
                                                    .startsWith("windows");
@@ -49,6 +54,14 @@ public class Terminal
         }
     }
 
+    /**
+     * Run an FFmpeg command.
+     *
+     * @param command The FFMPEG command to be run
+     * @return the last string in the terminal output
+     * @throws IOException          if an IO exception occurs
+     * @throws InterruptedException If the process is interupted
+     */
     public static String runFFmpeg(final String command)
     throws
     IOException,
@@ -58,6 +71,14 @@ public class Terminal
                           streamType.ERROR);
     }
 
+    /**
+     * Run any command.
+     *
+     * @param command The command to be run
+     * @return the last string in the terminal output
+     * @throws IOException          If an IO exception occurs
+     * @throws InterruptedException if the process is interupted
+     */
     public static String runCommand(final String command)
     throws
     IOException,
