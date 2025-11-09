@@ -13,8 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
 
 import java.io.File;
 import java.io.IOException;
