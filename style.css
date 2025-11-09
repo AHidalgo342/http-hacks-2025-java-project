@@ -54,7 +54,9 @@
     -fx-font-weight: bold;
     -fx-text-fill: #EEE;
     -fx-alignment: center;
-    }
+    -fx-font-size: 32px;
+
+}
 
 .text{
     -fx-font-smoothing-type: lcd;
