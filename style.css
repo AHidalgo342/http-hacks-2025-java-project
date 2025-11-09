@@ -42,7 +42,7 @@
 
     /* frutiger aero background for Alex */
     -fx-background-image: url("liam_28.jpg");
-
+    -fx-background-size: cover;
 
     /* increase scale globally */
     -fx-scale: 1.5;
