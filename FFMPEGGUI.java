@@ -266,6 +266,7 @@ public final class FFMPEGGUI
         comboBoxFiletypesVideo = new ComboBox<>();
         comboBoxFiletypesVideo.getItems()
                               .addAll(fileTypesVideoTrimmed);
+        comboBoxFiletypesVideo.setPromptText("Select output video filetype");
         NODES_VIDEO.add(comboBoxFiletypesVideo);
 
         // force the field to be numeric only
