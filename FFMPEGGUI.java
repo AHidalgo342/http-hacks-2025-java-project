@@ -2,8 +2,10 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -12,8 +14,8 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
-import java.io.*;
-import java.nio.file.Path;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +49,10 @@ public final class FFMPEGGUI
     private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();
     private static final List<Node> NODES_VIDEO    = new ArrayList<Node>();
     private static final List<Node> NODES_AUDIO    = new ArrayList<Node>();
+
+
+    private static final TextField TEXT_FIELD_FILENAME_OUTPUT = new TextField();
+
 
     private static VBox LAYOUT_MAIN;
 
@@ -117,6 +123,16 @@ public final class FFMPEGGUI
 
                                           updateChosenFile(selectedFile);
 
+
+                                          final String filenameNoFiletype = Helper.getBaseFileName(selectedFile.getName());
+
+                                          // update TEXT_FIELD_FILENAME_OUTPUT if blank
+                                          if(TEXT_FIELD_FILENAME_OUTPUT.getText().isBlank())
+                                          {
+                                              TEXT_FIELD_FILENAME_OUTPUT.setText(filenameNoFiletype);
+                                          }
+
+
                                           // update select button text
                                           buttonFileChooser.setText("Selected: " + selectedFile.getName());
 
@@ -134,6 +150,10 @@ public final class FFMPEGGUI
                                                       NODES_AUDIO);
                                           }
                                       });
+
+        // text field input for output name
+        TEXT_FIELD_FILENAME_OUTPUT.setPromptText("Output filename");
+        NODES_CONSTANT.add(TEXT_FIELD_FILENAME_OUTPUT);
 
         //Button for destination chooser
         buttonDestChooser = new Button("Select destination");
@@ -210,6 +230,7 @@ public final class FFMPEGGUI
                               .addAll(fileTypesVideoTrimmed);
         NODES_VIDEO.add(comboBoxFiletypesVideo);
 
+
         // force the field to be numeric only
         final TextField textFieldNumberTargetMB;
         textFieldNumberTargetMB = new TextField("");
@@ -237,6 +258,7 @@ public final class FFMPEGGUI
 
     }
 
+
     private static void setupAudio()
     {
         final Button           buttonCompressAudio;
@@ -259,6 +281,7 @@ public final class FFMPEGGUI
         comboBoxFiletypesAudio.getItems()
                               .addAll(fileTypesAudioTrimmed);
         NODES_AUDIO.add(comboBoxFiletypesAudio);
+
     }
 
     private static void SetVBox(final VBox vBox,
@@ -271,6 +294,7 @@ public final class FFMPEGGUI
         vBox.getChildren()
             .addAll(nodes);
     }
+
 
     private static void updateChosenFile(final File file)
     {
