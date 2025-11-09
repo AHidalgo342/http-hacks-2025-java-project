@@ -429,7 +429,7 @@ public final class FFMPEGGUI
 
         comboBoxFiletypesAudio = new ComboBox<>();
         comboBoxFiletypesAudio.getItems()
-                              .addAll(fileTypesAudioTrimmed); 
+                              .addAll(fileTypesAudioTrimmed);
 
 
         comboBoxFiletypesAudio.setMaxWidth(200);
