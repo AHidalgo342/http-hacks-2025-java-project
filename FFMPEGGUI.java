@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
@@ -280,6 +281,7 @@ public final class FFMPEGGUI
     {
         final Button           buttonCompressVideo;
         final ComboBox<String> comboBoxFiletypesVideo;
+        final Button           placeholderButton;
 
         final GridPane gridPaneVideoCompress;
         gridPaneVideoCompress = new GridPane();
@@ -288,6 +290,9 @@ public final class FFMPEGGUI
         NODES_VIDEO.add(gridPaneVideoCompress);
 
         buttonCompressVideo = new Button("Start Compressing Video");
+
+
+
         gridPaneVideoCompress.getChildren()
                              .addFirst(buttonCompressVideo);
 
@@ -309,7 +314,21 @@ public final class FFMPEGGUI
         comboBoxFiletypesVideo.getItems()
                               .addAll(fileTypesVideoTrimmed);
         comboBoxFiletypesVideo.setPromptText("Select output video filetype");
-        NODES_VIDEO.add(comboBoxFiletypesVideo);
+
+        comboBoxFiletypesVideo.setMaxWidth(200);
+        comboBoxFiletypesVideo.setPrefWidth(200);
+
+        placeholderButton = new Button("Placeholder");
+        placeholderButton.setOnAction(actionEvent -> {
+            System.out.println("Video placeholder button clicked");
+        });
+
+        // Create HBox to hold combobox and button side by side
+        HBox hBoxFiletypeVideo = new HBox(10); // 10px spacing
+        hBoxFiletypeVideo.setAlignment(Pos.CENTER);
+        hBoxFiletypeVideo.getChildren().addAll(comboBoxFiletypesVideo, placeholderButton);
+
+        NODES_VIDEO.add(hBoxFiletypeVideo);
 
         // force the field to be numeric only
         final TextField textFieldNumberTargetMBVideo;
@@ -349,6 +368,7 @@ public final class FFMPEGGUI
     {
         final Button           buttonCompressAudio;
         final ComboBox<String> comboBoxFiletypesAudio;
+        final Button           placeholderButton;
 
 
         final GridPane gridPaneAudioCompress;
@@ -409,8 +429,24 @@ public final class FFMPEGGUI
 
         comboBoxFiletypesAudio = new ComboBox<>();
         comboBoxFiletypesAudio.getItems()
-                              .addAll(fileTypesAudioTrimmed);
-        NODES_AUDIO.add(comboBoxFiletypesAudio);
+                              .addAll(fileTypesAudioTrimmed); 
+
+
+        comboBoxFiletypesAudio.setMaxWidth(200);
+        comboBoxFiletypesAudio.setPrefWidth(200);
+
+        placeholderButton = new Button("Placeholder");
+        placeholderButton.setMaxWidth(150);
+        placeholderButton.setPrefWidth(150);
+        placeholderButton.setOnAction(actionEvent -> {
+            System.out.println("Audio placeholder button clicked");
+        });
+
+        HBox hBoxFiletypeAudio = new HBox(10);
+        hBoxFiletypeAudio.setAlignment(Pos.CENTER);
+        hBoxFiletypeAudio.getChildren().addAll(comboBoxFiletypesAudio, placeholderButton);
+
+        NODES_AUDIO.add(hBoxFiletypeAudio); // Add the HBox instead of individual combobox
     }
 
     private static void SetVBox(VBox layoutMain,
