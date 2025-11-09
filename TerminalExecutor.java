@@ -81,16 +81,14 @@ public class TerminalExecutor
      * @param options Optional arguments
      */
     public static void compressFile(final File src,
-                                    final Path dst,
+                                    final File dst,
                                     final String[] options)
     throws
     IOException,
     InterruptedException
     {
         String fileLengthVerbose = Terminal.runCommand("ffmpeg -v quiet -stats -i " + src + " -f null -");
-
         String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
-
         String fileLengthTimeStamp = fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
 
         //        bitrate = target size / duration
@@ -134,10 +132,11 @@ public class TerminalExecutor
         sb.append(" -b ");
         sb.append(bitrateKBPS);
         sb.append("k ");
-        if(options[1] != null)
+        if(options.length > 1)
         {
-            sb.append("-r");
+            sb.append("-r ");
             sb.append(options[1]);
+            sb.append(" ");
         }
         sb.append(dst.toString());
 

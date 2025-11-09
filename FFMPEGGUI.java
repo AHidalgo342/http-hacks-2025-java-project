@@ -68,8 +68,13 @@ public final class FFMPEGGUI
 
         System.out.println(Terminal.FFmpegExists());
 
-        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
-                                     new File("./waow.m4a"));
+        String[] options = {"100K", "10"};
+
+//        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
+//                                     new File("./meep.m4a"));
+        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
+                                      new File("./meep.mp4"),
+                                      options);
 
         // Test label.
         label = new Label("Hello JavaFX!");
@@ -117,8 +122,7 @@ public final class FFMPEGGUI
         NODES_CONSTANT.add(buttonDestChooser);
         buttonDestChooser.setOnAction(actionEvent ->
                                       {
-                                          //add functionality later
-                                          System.out.println("Button clicked");
+                                          /* To add later */
                                       });
 
         setupVideo();
