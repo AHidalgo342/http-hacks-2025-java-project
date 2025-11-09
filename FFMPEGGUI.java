@@ -71,6 +71,7 @@ public final class FFMPEGGUI
     private static Button     BUTTON_CONVERT_FILETYPES_VIDEO;
     private static Button     BUTTON_CONVERT_FILETYPES_AUDIO;
     private static Button     BUTTON_COMPRESS_VIDEO;
+    private static Button     BUTTON_COMPRESS_AUDIO;
 
     private static VBox LAYOUT_MAIN;
     private static VBox WHITE_BOX;   // the centered white card that holds buttons/controls
@@ -405,7 +406,6 @@ public final class FFMPEGGUI
 
     private static void setupAudio()
     {
-        final Button           buttonCompressAudio;
         final ComboBox<String> comboBoxFiletypesAudio;
 
 
@@ -416,15 +416,16 @@ public final class FFMPEGGUI
         NODES_AUDIO.add(gridPaneAudioCompress);
 
 
-        buttonCompressAudio = new Button("Compress Audio");
-        buttonCompressAudio.setOnAction(actionEvent -> compressFile());
+        BUTTON_COMPRESS_AUDIO = new Button("Enter target MB");
+        BUTTON_COMPRESS_AUDIO.setDisable(true);
+        BUTTON_COMPRESS_AUDIO.setOnAction(actionEvent -> compressFile());
 
 
         gridPaneAudioCompress.getChildren()
-                             .addFirst(buttonCompressAudio);
-        GridPane.setRowIndex(buttonCompressAudio,
+                             .addFirst(BUTTON_COMPRESS_AUDIO);
+        GridPane.setRowIndex(BUTTON_COMPRESS_AUDIO,
                              0);
-        GridPane.setColumnIndex(buttonCompressAudio,
+        GridPane.setColumnIndex(BUTTON_COMPRESS_AUDIO,
                                 1);
 
 
@@ -447,6 +448,20 @@ public final class FFMPEGGUI
                                                 textFieldNumberTargetMBAudio.setText(newValue.replaceAll("\\D",
                                                                                                          ""));
                                             }
+
+
+                                            if(newValue.isBlank() || newValue.equals("0"))
+                                            {
+                                                BUTTON_COMPRESS_AUDIO.setDisable(true);
+                                                BUTTON_COMPRESS_AUDIO.setText("Enter target MB");
+                                            }
+                                            else
+                                            {
+                                                BUTTON_COMPRESS_AUDIO.setDisable(false);
+                                                BUTTON_COMPRESS_AUDIO.setText("Start compress (aiming for " + textFieldNumberTargetMBAudio.getText() + "MB)");
+
+                                            }
+
 
                                             updateCompressionSize(textFieldNumberTargetMBAudio.getText());
                                         }
