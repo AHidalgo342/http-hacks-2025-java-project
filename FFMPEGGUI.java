@@ -39,7 +39,9 @@ public final class FFMPEGGUI
 
 
     private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();
-    private static final List<Node> NODES_VIDEO    = new ArrayList<Node>();
+    private static final List<Node> NODES_VIDEO = new ArrayList<Node>();
+    private static final List<Node> NODES_AUDIO = new ArrayList<Node>();
+
 
     private static VBox LAYOUT_MAIN;
 
@@ -90,9 +92,13 @@ public final class FFMPEGGUI
                                                                                             .getDescription();
                                           if(selectedFileDescription.equals(FILE_DESCRIPTION_VIDEO))
                                           {
-                                              System.out.println("this shit is a video");
                                               SetVBox(LAYOUT_MAIN,
                                                       NODES_VIDEO);
+                                          }
+                                          else if(selectedFileDescription.equals(FILE_DESCRIPTION_AUDIO))
+                                          {
+                                              SetVBox(LAYOUT_MAIN,
+                                                      NODES_AUDIO);
                                           }
                                       });
 
@@ -106,6 +112,7 @@ public final class FFMPEGGUI
                                       });
 
         setupVideo();
+        setupAudio();
 
         // Setup VBox layout. Pass elements that will be displayed on it.
         LAYOUT_MAIN = new VBox(10,
@@ -129,7 +136,7 @@ public final class FFMPEGGUI
     private static void setupVideo()
     {
         final Button           buttonCompressVideo;
-        final ComboBox<String> comboBoxFiletypesViceo;
+        final ComboBox<String> comboBoxFiletypesVideo;
 
         buttonCompressVideo = new Button("Compress Video");
         NODES_VIDEO.add(buttonCompressVideo);
@@ -143,10 +150,36 @@ public final class FFMPEGGUI
         final List<String> fileTypesVideoTrimmed;
         fileTypesVideoTrimmed = Helper.removeFirstCharacters(1, FILE_TYPES_VIDEO);
 
-        comboBoxFiletypesViceo = new ComboBox<String>();
-        comboBoxFiletypesViceo.getItems()
+        comboBoxFiletypesVideo = new ComboBox<String>();
+        comboBoxFiletypesVideo.getItems()
                               .addAll(fileTypesVideoTrimmed);
-        NODES_VIDEO.add(comboBoxFiletypesViceo);
+        NODES_VIDEO.add(comboBoxFiletypesVideo);
+
+    }
+
+
+
+    private static void setupAudio()
+    {
+        final Button           buttonCompressAudio;
+        final ComboBox<String> comboBoxFiletypesAudio;
+
+        buttonCompressAudio = new Button("Compress Audio");
+        NODES_AUDIO.add(buttonCompressAudio);
+        buttonCompressAudio.setOnAction(actionEvent ->
+                                        {
+                                            // action when button clicked
+
+                                        });
+
+
+        final List<String> fileTypesAudioTrimmed;
+        fileTypesAudioTrimmed = Helper.removeFirstCharacters(1, FILE_TYPES_AUDIO);
+
+        comboBoxFiletypesAudio = new ComboBox<String>();
+        comboBoxFiletypesAudio.getItems()
+                              .addAll(fileTypesAudioTrimmed);
+        NODES_AUDIO.add(comboBoxFiletypesAudio);
 
     }
 
