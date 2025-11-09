@@ -58,23 +58,14 @@ public class Terminal
         Process process = builder.start();
 
         OutputStream outputStream = process.getOutputStream();
-        InputStream  inputStream  = process.getInputStream();
         InputStream  errorStream  = process.getErrorStream();
 
         final String firstLnOutput;
-        final String inputStreamStr;
+
         final String errorStreamStr;
-        inputStreamStr = printStream(inputStream);
         errorStreamStr = printStream(errorStream);
 
-        if(errorStreamStr != null)
-        {
-            firstLnOutput = errorStreamStr;
-        }
-        else
-        {
-            firstLnOutput = inputStreamStr;
-        }
+        firstLnOutput = errorStreamStr;
 
         boolean isFinished = process.waitFor(30,
                                              TimeUnit.SECONDS);

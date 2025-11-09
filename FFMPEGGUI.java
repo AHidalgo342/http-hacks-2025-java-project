@@ -13,7 +13,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,10 +42,15 @@ public final class FFMPEGGUI
                                                             "*.mp3",
                                                             "*.aac"};
 
+    private static final int STAGE_HEIGHT_PX = 400;
+    private static final int STAGE_WIDTH_PX  = 600;
+    private static final int PADDING_PX      = 10;
 
-    private static final List<Node> NODES_CONSTANT = new ArrayList<Node>();
-    private static final List<Node> NODES_VIDEO    = new ArrayList<Node>();
-    private static final List<Node> NODES_AUDIO    = new ArrayList<Node>();
+    private static final int SKIP_FIRST = 1;
+
+    private static final List<Node> NODES_CONSTANT = new ArrayList<>();
+    private static final List<Node> NODES_VIDEO    = new ArrayList<>();
+    private static final List<Node> NODES_AUDIO    = new ArrayList<>();
 
     private static VBox LAYOUT_MAIN;
 
@@ -80,13 +84,13 @@ public final class FFMPEGGUI
 
         System.out.println(Terminal.FFmpegExists());
 
-        final String[] options = {"1", "10"};
+//                final String[] options = {"1"};
 
         //        TerminalExecutor.convertFile(new File("C:\\Users\\User\\Downloads\\meep.mp4"),
         //                                     new File("./meep.m4a"));
-//                TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
-//                                              new File("."),
-//                                              options);
+//                        TerminalExecutor.compressFile(new File("C:\\Users\\User\\Downloads\\waow.mp4"),
+//                                                      new File("."),
+//                                                      options);
 
         // Test label
         label = new Label("FFmpeg GUI");
@@ -157,15 +161,15 @@ public final class FFMPEGGUI
         setupAudio();
 
         // Setup VBox layout. Pass elements that will be displayed on it.
-        LAYOUT_MAIN = new VBox(10,
+        LAYOUT_MAIN = new VBox(PADDING_PX,
                                label,
                                buttonFileChooser,
                                buttonDestChooser);
 
         // Setup scene
         scene = new Scene(LAYOUT_MAIN,
-                          300,
-                          200);
+                          STAGE_HEIGHT_PX,
+                          STAGE_WIDTH_PX);
         scene.getStylesheets()
              .add(Objects.requireNonNull(getClass().getResource("style.css"))
                          .toExternalForm());
@@ -182,30 +186,17 @@ public final class FFMPEGGUI
 
         buttonCompressVideo = new Button("Compress Video");
         NODES_VIDEO.add(buttonCompressVideo);
-        buttonCompressVideo.setOnAction(actionEvent ->
-                                        {
-                                            String[] options = {compressionSize};
-                                            System.out.println(compressionSize);
-                                            try {
-                                                TerminalExecutor.compressFile(fileToUse,
-                                                                              destDir,
-                                                                              options);
-                                            }
-                                            catch(Exception e)
-                                            {
-                                                throw new RuntimeException(e);
-                                            }
-                                        });
+        buttonCompressVideo.setOnAction(actionEvent -> compressFile());
 
         buttonCompressVideo.getStyleClass()
                            .add("compress-video");
 
 
         final List<String> fileTypesVideoTrimmed;
-        fileTypesVideoTrimmed = Helper.removeFirstCharacters(1,
+        fileTypesVideoTrimmed = Helper.removeFirstCharacters(SKIP_FIRST,
                                                              FILE_TYPES_VIDEO);
 
-        comboBoxFiletypesVideo = new ComboBox<String>();
+        comboBoxFiletypesVideo = new ComboBox<>();
         comboBoxFiletypesVideo.getItems()
                               .addAll(fileTypesVideoTrimmed);
         NODES_VIDEO.add(comboBoxFiletypesVideo);
@@ -215,7 +206,7 @@ public final class FFMPEGGUI
         textFieldNumberTargetMB = new TextField("");
         textFieldNumberTargetMB.setPromptText("Target MB");
         textFieldNumberTargetMB.textProperty()
-                               .addListener(new ChangeListener<String>()
+                               .addListener(new ChangeListener<>()
                                {
                                    @Override
                                    public void changed(final ObservableValue<? extends String> observable,
@@ -224,7 +215,7 @@ public final class FFMPEGGUI
                                    {
                                        if(!newValue.matches("\\d*"))
                                        {
-                                           textFieldNumberTargetMB.setText(newValue.replaceAll("[^\\d]",
+                                           textFieldNumberTargetMB.setText(newValue.replaceAll("\\D",
                                                                                                ""));
                                        }
 
@@ -233,8 +224,7 @@ public final class FFMPEGGUI
                                });
 
         NODES_VIDEO.add(textFieldNumberTargetMB);
-
-
+        NODES_AUDIO.add(textFieldNumberTargetMB);
     }
 
     private static void setupAudio()
@@ -244,18 +234,14 @@ public final class FFMPEGGUI
 
         buttonCompressAudio = new Button("Compress Audio");
         NODES_AUDIO.add(buttonCompressAudio);
-        buttonCompressAudio.setOnAction(actionEvent ->
-                                        {
-                                            // action when button clicked
-
-                                        });
+        buttonCompressAudio.setOnAction(actionEvent -> compressFile());
 
 
         final List<String> fileTypesAudioTrimmed;
-        fileTypesAudioTrimmed = Helper.removeFirstCharacters(1,
+        fileTypesAudioTrimmed = Helper.removeFirstCharacters(SKIP_FIRST,
                                                              FILE_TYPES_AUDIO);
 
-        comboBoxFiletypesAudio = new ComboBox<String>();
+        comboBoxFiletypesAudio = new ComboBox<>();
         comboBoxFiletypesAudio.getItems()
                               .addAll(fileTypesAudioTrimmed);
         NODES_AUDIO.add(comboBoxFiletypesAudio);
@@ -285,5 +271,21 @@ public final class FFMPEGGUI
     private static void updateCompressionSize(final String size)
     {
         compressionSize = size;
+    }
+
+    private static void compressFile()
+    {
+        String[] options = {compressionSize};
+        System.out.println(compressionSize);
+        try
+        {
+            TerminalExecutor.compressFile(fileToUse,
+                                          destDir,
+                                          options);
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }
