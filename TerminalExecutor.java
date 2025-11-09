@@ -45,11 +45,11 @@ public class TerminalExecutor
         {
             if(isVideo)
             {
-                Terminal.runCommand("ffmpeg -i " + src + " -c copy -y " + dst);
+                Terminal.runCommand("ffmpeg -flush_packets 1 -i " + src + " -c copy -y " + dst);
             }
             else
             {
-                Terminal.runCommand("ffmpeg -i " + src + " -y " + dst);
+                Terminal.runCommand("ffmpeg -flush_packets 1 -i " + src + " -y " + dst);
             }
         }
         catch(Exception e)
@@ -107,7 +107,7 @@ public class TerminalExecutor
         final StringBuilder sb;
         sb = new StringBuilder();
 
-        sb.append("ffmpeg -y -v quiet -i ");
+        sb.append("ffmpeg -avioflags direct -y -i ");
         sb.append(src.getAbsolutePath());
         // Audio bitrate 48k
         sb.append(" -b:a 48k -b:v ");
