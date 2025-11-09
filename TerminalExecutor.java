@@ -110,7 +110,9 @@ public class TerminalExecutor
     IOException,
     InterruptedException
     {
-        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -v quiet -stats -i " + src.getAbsolutePath() + " -f null -");
+        String fileLengthVerbose = Terminal.runFFmpeg("ffmpeg -stats -i " + src.getAbsolutePath() + " -f null -",
+                                                      true);
+        System.out.println(fileLengthVerbose);
 
         long bitrateKBPS = getBitrateKBPS(options,
                                           fileLengthVerbose);
@@ -211,7 +213,6 @@ public class TerminalExecutor
     {
         String[] fileLengthRemovedFirstHalf = fileLengthVerbose.split("time=");
         String   fileLengthTimeStamp        = fileLengthRemovedFirstHalf[1].split(" bitrate")[0];
-
 
         int targetFileSize = Integer.parseInt(options[0]);
 

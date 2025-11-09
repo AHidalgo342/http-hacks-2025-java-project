@@ -53,7 +53,19 @@ public class Terminal
     InterruptedException
     {
         return runCommand(command,
-                          streamType.ERROR);
+                          streamType.ERROR,
+                          false);
+    }
+
+    public static String runFFmpeg(final String command,
+                                   final boolean last)
+    throws
+    IOException,
+    InterruptedException
+    {
+        return runCommand(command,
+                          streamType.ERROR,
+                          last);
     }
 
     private static String runCommand(final String command)
@@ -62,7 +74,8 @@ public class Terminal
     InterruptedException
     {
         return runCommand(command,
-                          streamType.INPUT);
+                          streamType.INPUT,
+                          false);
     }
 
     /**
@@ -75,7 +88,8 @@ public class Terminal
      * @throws InterruptedException If the process is interrupted
      */
     private static String runCommand(final String command,
-                                    final streamType streamType)
+                                     final streamType streamType,
+                                     final boolean last)
     throws
     IOException,
     InterruptedException
@@ -121,7 +135,8 @@ public class Terminal
         final String firstLnOutput;
 
         final String inputStreamStr;
-        inputStreamStr = printStream(inputStream);
+        inputStreamStr = printStream(inputStream,
+                                     last);
 
         firstLnOutput = inputStreamStr;
 
@@ -146,7 +161,8 @@ public class Terminal
      * @return String first line of output; null if no output
      * @throws IOException If an IO exception occurs
      */
-    private static String printStream(InputStream inputStream)
+    private static String printStream(InputStream inputStream,
+                                      boolean last)
     throws
     IOException
     {
@@ -159,14 +175,27 @@ public class Terminal
             String line;
 
             line      = bufferedReader.readLine();
-            returnStr = line;
-            while((line = bufferedReader.readLine()) != null)
+            if(!last)
             {
-                FFMPEGGUI.setTerminalOutput(line);
-                System.out.println(line);
+                returnStr = line;
+                while((line = bufferedReader.readLine()) != null)
+                {
+                    FFMPEGGUI.setTerminalOutput(line);
+                    System.out.println(line);
+                }
             }
+            else
+            {
+                String lastNonNullLine = null;
+                while((line = bufferedReader.readLine()) != null)
+                {
+                    lastNonNullLine = line;
+                    FFMPEGGUI.setTerminalOutput(line);
+                    System.out.println(line);
+                }
+                returnStr = lastNonNullLine;
+            }
+            return returnStr;
         }
-
-        return returnStr;
     }
 }
