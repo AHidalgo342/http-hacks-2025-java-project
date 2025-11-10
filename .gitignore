@@ -1,4 +1,5 @@
 /javafx-sdk-21
 /out
 /.idea
-/javafx-sdk-21.0.9
+/javafx*
+/openjfx*
