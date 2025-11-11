@@ -55,7 +55,7 @@ In the same project structure screen, select Project and make sure the SDK versi
 Run > Edit Configurations.
 Select "Modify Options" and check "Add VM options."
 Paste this in the VM options section: `--module-path ./javafx-sdk-21/lib --add-modules javafx.controls,javafx.fxml `.
-Also make sure the Main class is selected as `FFmpegGUI`
+Also make sure the Launcher class is selected as `FFmpegGUI`
 
 Save and exit. JavaFX should work now.
 
