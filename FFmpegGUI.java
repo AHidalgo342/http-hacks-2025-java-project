@@ -33,7 +33,7 @@ import java.util.Objects;
  * @author Alex Hidalgo
  * @author Daryan Worya
  * @author Marcy Ordinario
- * @version 45
+ * @version 46
  */
 public final class FFmpegGUI
         extends Application
@@ -96,6 +96,18 @@ public final class FFmpegGUI
             return;
         }
 
+        popupNoFFmpegFound(mainStage);
+
+    }
+
+
+    /**
+     * Popup to tell user FFmpeg installation wasn't found.
+     *
+     * @param mainStage the main stage the GUI is drawn on.
+     */
+    private static void popupNoFFmpegFound(final Stage mainStage)
+    {
         final Stage    stagePopup;
         final VBox     vboxPopup;
         final GridPane gridPanePopupButtons;
@@ -103,7 +115,6 @@ public final class FFmpegGUI
         final Button   buttonPopupQuit;
         final Label    labelPopupText;
         final Scene    scenePopup;
-
 
         stagePopup            = new Stage();
         vboxPopup             = new VBox();
@@ -115,7 +126,6 @@ public final class FFmpegGUI
                                           400,
                                           185);
 
-
         // add quit button to the bottom left
         gridPanePopupButtons.getChildren()
                             .add(buttonPopupQuit);
@@ -123,7 +133,6 @@ public final class FFmpegGUI
                              0);
         GridPane.setColumnIndex(buttonPopupQuit,
                                 0);
-
 
         // add try again button to the bottom right
         gridPanePopupButtons.getChildren()
@@ -133,7 +142,6 @@ public final class FFmpegGUI
         GridPane.setColumnIndex(buttonPopupCheckAgain,
                                 1);
 
-
         // spacing and alignment for quit and try again buttons
         gridPanePopupButtons.setHgap(150);
         gridPanePopupButtons.setPadding(new Insets(50,
@@ -142,7 +150,6 @@ public final class FFmpegGUI
                                                    0));
         vboxPopup.setAlignment(Pos.BASELINE_CENTER);
         gridPanePopupButtons.setAlignment(Pos.BASELINE_CENTER);
-
 
         // add nodes to the vBox to display
         vboxPopup.getChildren()
@@ -172,17 +179,65 @@ public final class FFmpegGUI
         stagePopup.show();
     }
 
+
+    private static void onButtonFileSelectorClicked(final FileChooser fileChooser,
+                                                    final Button buttonFileChooser,
+                                                    final Stage mainStage)
+
+    {
+        final File selectedFile;
+
+        // open dialog for user to select file
+        selectedFile = fileChooser.showOpenDialog(mainStage);
+
+        if(selectedFile == null)
+        {
+            return;
+        }
+
+        final String baseFileName;
+        final String selectedFileDescription;
+
+        baseFileName = Helper.getBaseFileName(selectedFile.getName());
+
+        updateChosenFile(selectedFile);
+
+        // update TEXT_FIELD_FILENAME_OUTPUT if blank
+        if(TEXT_FIELD_FILENAME_OUTPUT.getText()
+                                     .isBlank())
+        {
+            TEXT_FIELD_FILENAME_OUTPUT.setText(baseFileName);
+        }
+
+        // update select button text
+        buttonFileChooser.setText("Selected: " + selectedFile.getName());
+
+        // get the name of the description of the file type
+        selectedFileDescription = fileChooser.getSelectedExtensionFilter()
+                                             .getDescription();
+
+        // toggle different GUI groups depending on which filetype group was selected
+        if(selectedFileDescription.equals(Constants.FILE_DESCRIPTION_VIDEO))
+        {
+            SetVBox(NODES_VIDEO);
+        }
+        else if(selectedFileDescription.equals(Constants.FILE_DESCRIPTION_AUDIO))
+        {
+            SetVBox(NODES_AUDIO);
+        }
+    }
+
     /**
      * May only enter if user has valid FFmpeg installation.
      * Initial setup of JavaFX GUI and static elements.
      *
      * @param mainStage the main stage the GUI is drawn on.
      */
-    public void startValidFFmpeg(final Stage mainStage)
+    public static void startValidFFmpeg(final Stage mainStage)
     {
         final FileChooser      fileChooser;
         final DirectoryChooser dirChooser;
-        final Button           buttonFileChooser;
+        final Button           buttonInputFileChooser;
         final Scene            scene;
         final GridPane         gridPaneFileOutput;
         final VBox             layoutMain;
@@ -202,57 +257,16 @@ public final class FFmpegGUI
         dirChooser.setTitle("JEFFmpeg Select File");
 
         // Button File Selector setup. Add button event to open file selection
-        buttonFileChooser = new Button("Select a file");
-        buttonFileChooser.getStyleClass()
-                         .addAll("button",
-                                 "selected-file");
-        NODES_CONSTANT_TOP.add(buttonFileChooser);
+        buttonInputFileChooser = new Button("Select a file");
+        buttonInputFileChooser.getStyleClass()
+                              .addAll("button",
+                                      "selected-file");
+        NODES_CONSTANT_TOP.add(buttonInputFileChooser);
 
         // called after file is chosen
-        buttonFileChooser.setOnAction(actionEvent ->
-                                      {
-
-                                          final File selectedFile;
-
-                                          // file the user selected
-                                          selectedFile = fileChooser.showOpenDialog(mainStage);
-
-                                          if(selectedFile == null)
-                                          {
-                                              return;
-                                          }
-
-                                          final String baseFileName;
-                                          final String selectedFileDescription;
-
-                                          baseFileName = Helper.getBaseFileName(selectedFile.getName());
-
-                                          updateChosenFile(selectedFile);
-
-                                          // update TEXT_FIELD_FILENAME_OUTPUT if blank
-                                          if(TEXT_FIELD_FILENAME_OUTPUT.getText()
-                                                                       .isBlank())
-                                          {
-                                              TEXT_FIELD_FILENAME_OUTPUT.setText(baseFileName);
-                                          }
-
-                                          // update select button text
-                                          buttonFileChooser.setText("Selected: " + selectedFile.getName());
-
-                                          // get the name of the description of the file type
-                                          selectedFileDescription = fileChooser.getSelectedExtensionFilter()
-                                                                               .getDescription();
-
-                                          // toggle different GUI groups depending on which filetype group was selected
-                                          if(selectedFileDescription.equals(Constants.FILE_DESCRIPTION_VIDEO))
-                                          {
-                                              SetVBox(NODES_VIDEO);
-                                          }
-                                          else if(selectedFileDescription.equals(Constants.FILE_DESCRIPTION_AUDIO))
-                                          {
-                                              SetVBox(NODES_AUDIO);
-                                          }
-                                      });
+        buttonInputFileChooser.setOnAction(actionEvent -> onButtonFileSelectorClicked(fileChooser,
+                                                                                      buttonInputFileChooser,
+                                                                                      mainStage));
 
         // setup grid pane for file output nodes
         gridPaneFileOutput = new GridPane();
@@ -280,24 +294,10 @@ public final class FFmpegGUI
                                 1);
 
         // handle logic when clicking the file destination chooser button
-        BUTTON_FILE_DESTINATION_CHOOSER.setOnAction(actionEvent ->
-                                                    {
-                                                        // Directory the user selected
-                                                        final File selectedDir;
-                                                        selectedDir = dirChooser.showDialog(mainStage);
+        BUTTON_FILE_DESTINATION_CHOOSER.setOnAction(actionEvent -> onButtonDirectoryChooserClicked(dirChooser,
+                                                                                                   mainStage)
 
-                                                        if(selectedDir == null)
-                                                        {
-                                                            return;
-                                                        }
-
-                                                        updateChosenDir(selectedDir);
-
-                                                        // update select button text
-                                                        BUTTON_FILE_DESTINATION_CHOOSER.setText("Selected: " + selectedDir.getName());
-                                                        BUTTON_FILE_DESTINATION_CHOOSER.setStyle("-fx-background-color: #FFF");
-
-                                                    });
+                                                   );
 
         // call file-type-group-specific GUI setup methods
         setupVideo();
@@ -352,7 +352,7 @@ public final class FFmpegGUI
 
         // use custom  CSS
         scene.getStylesheets()
-             .add(Objects.requireNonNull(getClass().getResource("style.css"))
+             .add(Objects.requireNonNull(FFmpegGUI.class.getResource("style.css"))
                          .toExternalForm());
 
         // scale all elements inside main layout without scaling
@@ -369,6 +369,25 @@ public final class FFmpegGUI
         mainStage.setScene(scene);
         mainStage.setOpacity(1.0);
         mainStage.show();
+    }
+
+    private static void onButtonDirectoryChooserClicked(final DirectoryChooser dirChooser,
+                                                        final Stage mainStage)
+    {
+        // Directory the user selected
+        final File selectedDir;
+        selectedDir = dirChooser.showDialog(mainStage);
+
+        if(selectedDir == null)
+        {
+            return;
+        }
+
+        updateChosenDir(selectedDir);
+
+        // update select button text
+        BUTTON_FILE_DESTINATION_CHOOSER.setText("Selected: " + selectedDir.getName());
+        BUTTON_FILE_DESTINATION_CHOOSER.setStyle("-fx-background-color: #FFF");
     }
 
     /**
