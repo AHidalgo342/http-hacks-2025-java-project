@@ -23,6 +23,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -97,7 +98,6 @@ public final class FFmpegGUI
         }
 
         popupNoFFmpegFound(mainStage);
-
     }
 
 
@@ -179,6 +179,13 @@ public final class FFmpegGUI
     }
 
 
+    /**
+     * Handles logic when file selector button is clicked.
+     *
+     * @param fileChooser       FileChooser to open.
+     * @param buttonFileChooser Button that opened the FileChooser.
+     * @param mainStage         Main stage of the  GUI.
+     */
     private static void onButtonFileSelectorClicked(final FileChooser fileChooser,
                                                     final Button buttonFileChooser,
                                                     final Stage mainStage)
@@ -195,7 +202,7 @@ public final class FFmpegGUI
         }
 
         final String baseFileName;
-        final String selectedFileDescription;
+        final String selectedFileType;
 
         baseFileName = Helper.getBaseFileName(selectedFile.getName());
 
@@ -211,16 +218,19 @@ public final class FFmpegGUI
         // update select button text
         buttonFileChooser.setText("Selected: " + selectedFile.getName());
 
-        // get the name of the description of the file type
-        selectedFileDescription = fileChooser.getSelectedExtensionFilter()
-                                             .getDescription();
-
-        // toggle different GUI groups depending on which filetype group was selected
-        if(selectedFileDescription.equals(Constants.FILE_DESCRIPTION_VIDEO))
+        // get the name of the description of the file type. Add * to match file type format
+        selectedFileType = '*' + selectedFile.getName()
+                                             .substring(selectedFile.getName()
+                                                                    .lastIndexOf('.'));
+        
+        // toggle different GUI groups depending on which filetype  was selected
+        if(Arrays.asList(Constants.FILE_TYPES_VIDEO)
+                 .contains(selectedFileType))
         {
             SetVBox(NODES_VIDEO);
         }
-        else if(selectedFileDescription.equals(Constants.FILE_DESCRIPTION_AUDIO))
+        else if(Arrays.asList(Constants.FILE_TYPES_AUDIO)
+                      .contains(selectedFileType))
         {
             SetVBox(NODES_AUDIO);
         }
@@ -235,6 +245,7 @@ public final class FFmpegGUI
     public static void startValidFFmpeg(final Stage mainStage)
     {
         final FileChooser      fileChooser;
+        final String[]         fileTypesVideoAndAudio;
         final DirectoryChooser dirChooser;
         final Button           buttonInputFileChooser;
         final Scene            scene;
@@ -246,8 +257,12 @@ public final class FFmpegGUI
         fileChooser.setTitle("JEFFmpeg Select File");
 
         // add file chooser Video and Audio filetypes to dropdown
+        fileTypesVideoAndAudio = Helper.concatenateStringArrays(Constants.FILE_TYPES_VIDEO,
+                                                                Constants.FILE_TYPES_AUDIO);
         fileChooser.getExtensionFilters()
-                   .addAll(new FileChooser.ExtensionFilter(Constants.FILE_DESCRIPTION_VIDEO,
+                   .addAll(new FileChooser.ExtensionFilter(Constants.FILE_DESCRIPTION_ALL,
+                                                           fileTypesVideoAndAudio),
+                           new FileChooser.ExtensionFilter(Constants.FILE_DESCRIPTION_VIDEO,
                                                            Constants.FILE_TYPES_VIDEO),
                            new FileChooser.ExtensionFilter(Constants.FILE_DESCRIPTION_AUDIO,
                                                            Constants.FILE_TYPES_AUDIO));
@@ -369,6 +384,12 @@ public final class FFmpegGUI
         mainStage.show();
     }
 
+    /**
+     * Handles logic when file destination chooser button is clicked.
+     *
+     * @param dirChooser DirectoryChooser to open.
+     * @param mainStage  Main stage of the GUI.
+     */
     private static void onButtonDirectoryChooserClicked(final DirectoryChooser dirChooser,
                                                         final Stage mainStage)
     {
@@ -391,7 +412,7 @@ public final class FFmpegGUI
     /**
      * Adds a line to the terminal output in the GUI.
      *
-     * @param terminalOutputToAdd String terminal output to add
+     * @param terminalOutputToAdd String terminal output to add.
      */
     public static void addTerminalOutput(final String terminalOutputToAdd)
     {
@@ -831,7 +852,7 @@ public final class FFmpegGUI
     /**
      * Converts a file to a given file type.
      *
-     * @param fileType String file extension to change to
+     * @param fileType String file extension to change to.
      */
     private static void convertFile(final String fileType)
     {
@@ -864,7 +885,7 @@ public final class FFmpegGUI
     /**
      * Entry point for the program.
      *
-     * @param args unused
+     * @param args unused.
      */
     public static void main(final String[] args)
     {

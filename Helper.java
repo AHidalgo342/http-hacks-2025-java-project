@@ -56,7 +56,7 @@ public final class Helper
      *
      * @param filename String filename
      * @return String name without file type;
-     *         if no file type, returns input string
+     * if no file type, returns input string
      */
     public static String getBaseFileName(final String filename)
     {
@@ -89,5 +89,24 @@ public final class Helper
         {
             return "";
         }
+    }
+
+    /**
+     * Concatenates two string arrays.
+     *
+     * @return all string arrays concatenated into one array.
+     */
+    public static String[] concatenateStringArrays(final String[]... strings)
+    {
+
+        final List<String> resultList;
+        resultList = new ArrayList<>();
+
+        for(final String[] curStringArray : strings)
+        {
+            resultList.addAll(Arrays.asList(curStringArray));
+        }
+
+        return resultList.toArray(new String[0]);
     }
 }
