@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Utility class used to hold application-wide constants.
  *
@@ -17,6 +19,7 @@ public final class Constants
     public static final String[] FILE_TYPES_AUDIO       = {"*.wav",
                                                            "*.mp3",
                                                            "*.aac"};
+
 
     public static final int SKIP_FIRST = 1;
 
