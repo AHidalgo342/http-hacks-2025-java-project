@@ -33,7 +33,7 @@ import java.util.Objects;
  * @author Alex Hidalgo
  * @author Daryan Worya
  * @author Marcy Ordinario
- * @version 46
+ * @version 48
  */
 public final class FFmpegGUI
         extends Application
@@ -159,10 +159,9 @@ public final class FFmpegGUI
         // when user clicks quit, exit the program
         buttonPopupQuit.setOnMouseClicked(onClick -> System.exit(0));
 
-        // when user clicks try again, check to see if they have a valid FFmpeeg installation.
+        // when user clicks try again, check to see if they have a valid FFmpeg installation.
         buttonPopupCheckAgain.setOnMouseClicked(onClick ->
                                                 {
-
                                                     // if user has valid FFmpeg installation, let them continue.
                                                     if(Terminal.FFmpegExists())
                                                     {
@@ -303,7 +302,6 @@ public final class FFmpegGUI
         setupVideo();
         setupAudio();
 
-
         // initialize title label
         LABEL_TITLE.getStyleClass()
                    .add("neon-text");
@@ -418,9 +416,8 @@ public final class FFmpegGUI
         final List<String> fileTypesVideoTrimmed;
         final HBox         hBoxFiletypeVideo;
         final TextField    textFieldTargetMBVideo;
-
-        final Label compressionLabel;
-        final Label conversionLabel;
+        final Label        compressionLabel;
+        final Label        conversionLabel;
 
         compressionLabel = new Label("\nCompression");
         compressionLabel.getStyleClass()
@@ -463,6 +460,10 @@ public final class FFmpegGUI
         textFieldTargetMBVideo.textProperty()
                               .addListener(new ChangeListener<>()
                               {
+                                  /**
+                                   * Called when the text in the target MB text  field changes.
+                                   * Enforces only numeric input.
+                                   */
                                   @Override
                                   public void changed(final ObservableValue<? extends String> observable,
                                                       final String oldValue,
@@ -560,9 +561,8 @@ public final class FFmpegGUI
         final TextField    textFieldTargetMBAudio;
         final List<String> fileTypesAudioTrimmed;
         final HBox         hBoxFiletypeAudio;
-
-        final Label compressionLabel;
-        final Label conversionLabel;
+        final Label        compressionLabel;
+        final Label        conversionLabel;
 
         compressionLabel = new Label("\nCompression");
         compressionLabel.getStyleClass()
@@ -604,6 +604,10 @@ public final class FFmpegGUI
         textFieldTargetMBAudio.textProperty()
                               .addListener(new ChangeListener<>()
                               {
+                                  /**
+                                   * Called when the text in the target MB text  field changes.
+                                   * Enforces only numeric input.
+                                   */
                                   @Override
                                   public void changed(final ObservableValue<? extends String> observable,
                                                       final String oldValue,
@@ -760,7 +764,7 @@ public final class FFmpegGUI
     }
 
     /**
-     * Updates the chosen file to compress/convert.
+     * Updates the currently selected file to compress/convert.
      *
      * @param file File to compress/convert.
      */
@@ -770,7 +774,7 @@ public final class FFmpegGUI
     }
 
     /**
-     * Updates the chosen directory.
+     * Updates the currently selected directory.
      *
      * @param dir File directory to store result in.
      */
@@ -794,6 +798,8 @@ public final class FFmpegGUI
      */
     private static void compressFile()
     {
+        final String[] options;
+
         // if the user tried to compress a file without selecting an output directory, let them know and return.
         if(fileDestinationDirectory == null)
         {
@@ -802,7 +808,6 @@ public final class FFmpegGUI
         }
 
         // setup options
-        final String[] options;
         options = new String[] {compressionSizeMB};
 
         // try to compress
