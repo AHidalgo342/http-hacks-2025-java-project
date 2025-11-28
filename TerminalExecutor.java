@@ -192,29 +192,38 @@ public class TerminalExecutor
 
         terminalCommandBuilder.append("ffmpeg -y -flush_packets 1 -i \"");
         terminalCommandBuilder.append(source.getAbsolutePath());
-        // Audio bitrate 48k
-        terminalCommandBuilder.append("\" -b:a 48k -b:v ");
-        // Video bitrate specified
+        terminalCommandBuilder.append("\" ");
+
+        // 2-pass compression
+        terminalCommandBuilder.append("-c:v libx264 -b:v ");
         terminalCommandBuilder.append(bitrateKBPS);
         terminalCommandBuilder.append("k ");
-        // UNUSED, CODE DOES NOT ALLOW FOR FRAME RATE ANYMORE
-        if(options.length > 1)
-        {
-            // Specify frame rate
-            terminalCommandBuilder.append("-r ");
-            terminalCommandBuilder.append(options[1]);
-            // Specify mono
-            terminalCommandBuilder.append(" -ac 1 ");
+        terminalCommandBuilder.append("-pass 1 -an -f ");
+        if (Terminal.isWindows) {
+            // TODO UNTESTED
+            terminalCommandBuilder.append("null NUL ");
+        } else {
+            terminalCommandBuilder.append("mp4 /dev/null ");
         }
 
+        terminalCommandBuilder.append("&& ffmpeg -y -flush_packets 1 -i \"");
+        terminalCommandBuilder.append(source.getAbsolutePath());
+        terminalCommandBuilder.append("\" -c:v libx264 -b:v ");
+        terminalCommandBuilder.append(bitrateKBPS);
+        terminalCommandBuilder.append("k -pass 2 -c:a aac -b:a 128k ");
+
+        // Append destination file
         terminalCommandBuilder.append("\"");
         terminalCommandBuilder.append(destination.getAbsolutePath());
         terminalCommandBuilder.append(File.separator);
         terminalCommandBuilder.append(outputFilename);
-        terminalCommandBuilder.append(Helper.getFileType(source.getName()));
+        // Hardcode mp4, if you want to have a different extension just convert it after
+        terminalCommandBuilder.append(".mp4");
         terminalCommandBuilder.append("\"");
 
         callTerminal(terminalCommandBuilder);
+
+        deleteLogFiles();
     }
 
     /**
@@ -281,6 +290,33 @@ public class TerminalExecutor
                 }
                 catch(Exception e)
                 {
+                    throw new RuntimeException(e);
+                }
+
+                return null;
+            }
+        };
+
+        new Thread(task).start();
+    }
+
+    /**
+     * Delete any remaining log files after doing 2-pass compression
+     */
+    private static void deleteLogFiles() {
+        final Task<Void> task;
+
+        task = new Task<>() {
+            @Override
+            public Void call() {
+                try {
+                    if (Terminal.isWindows) {
+                        // TODO UNTESTED
+                        Terminal.runCommand("del /f ffmpeg2pass-0.log*");
+                    } else {
+                        Terminal.runCommand("rm -f ffmpeg2pass-0.log*");
+                    }
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
 

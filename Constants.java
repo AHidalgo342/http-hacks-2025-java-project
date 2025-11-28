@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 /**
  * Utility class used to hold application-wide constants.

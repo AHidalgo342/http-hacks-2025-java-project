@@ -3,6 +3,9 @@ import javafx.application.Platform;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
+
+// for future projects we should probably all settle on a version numbering scheme thta we all agree on so we dont end up with whatever i put down there :skull:
+
 /**
  * Contains functionality for running terminal commands.
  *
@@ -18,7 +21,7 @@ public class Terminal
         ERROR
     }
 
-    private static final boolean isWindows = System.getProperty("os.name")
+    public static final boolean isWindows = System.getProperty("os.name")
                                                    .toLowerCase()
                                                    .startsWith("windows");
 

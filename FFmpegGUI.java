@@ -27,6 +27,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+// TODO move all files into proper Java project directory tree (/src, /res, /test)
+// TODO Add testing so we dont break anything lmfao
+// TODO Add Flac conversion and compression
+// TODO prevent conversion from lossy files to flacs because why would you ever do that?
+// TODO We should add a background image selector <- Alex you should learn JavaFX lmfao
+
 /**
  * GUI handler.
  *
@@ -881,6 +887,9 @@ public final class FFmpegGUI
             throw new RuntimeException(exception);
         }
     }
+
+    // TODO This entry point causes issues when launching on vs code, unsure if this
+    // is a vs code issue or fi we should just always launch from Launcher
 
     /**
      * Entry point for the program.
