@@ -47,8 +47,8 @@ public final class FFmpegGUI
 {
 
     // constants visuals
-    private static final int STAGE_HEIGHT_PX = 500;
-    private static final int STAGE_WIDTH_PX  = 800;
+    private static final int STAGE_HEIGHT_PX = 720;
+    private static final int STAGE_WIDTH_PX  = 960;
     private static final int PADDING_PX      = 10;
 
     // constants node lists
